@@ -1,0 +1,10 @@
+c:\users\mr\documents\visual studio 2015\Projects\CodeGeneration\CodeGeneration\bin\Debug\CodeGeneration.exe.config
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\bin\Debug\CodeGeneration.exe
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\bin\Debug\CodeGeneration.pdb
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\bin\Debug\Newtonsoft.Json.dll
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\bin\Debug\Newtonsoft.Json.xml
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\obj\Debug\CodeGeneration.csprojResolveAssemblyReference.cache
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\obj\Debug\CodeGeneration.exe
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\obj\Debug\CodeGeneration.pdb
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\bin\Debug\Dapper.dll
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\CodeGeneration\bin\Debug\Dapper.xml
