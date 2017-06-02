@@ -1,0 +1,5 @@
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\bin\Debug\BLL.dll
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\bin\Debug\BLL.pdb
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\obj\Debug\BLL.csprojResolveAssemblyReference.cache
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\obj\Debug\BLL.dll
+c:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\obj\Debug\BLL.pdb
