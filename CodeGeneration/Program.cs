@@ -354,56 +354,15 @@ namespace CodeGeneration
             code.AppendLine("{");
             code.AppendLine($"    public class {tableInfo.Key} : BaseModel");
             code.AppendLine("    {");
-            code.AppendLine($"        public string PrimaryKey = \"{tableInfo.FirstOrDefault(x => x.PrimaryKey == "1")?.FieldName ?? ""}\";");
-            code.AppendLine($"        public string IdentityKey = \"{tableInfo.FirstOrDefault(x => x.IdentityKey == "1")?.FieldName ?? ""}\";\r\n");
+            code.AppendLine($"        public static string PrimaryKey = \"{tableInfo.FirstOrDefault(x => x.PrimaryKey == "1")?.FieldName ?? ""}\";");
+            code.AppendLine($"        public static string IdentityKey = \"{tableInfo.FirstOrDefault(x => x.IdentityKey == "1")?.FieldName ?? ""}\";\r\n");
             foreach (var field in tableInfo)
             {
                 code.AppendLine("        /// <summary>");
                 code.AppendLine($"        /// {field.Describe}");
                 code.AppendLine("        /// </summary>");
-                var type = "";
-                var def = "";
-                field.Type = field.Type.ToLower();
-                if (field.Type == "int"
-                    || field.Type == "tinyint")
-                {
-                    type = "int";
-                }
-                else if (field.Type == "bigint")
-                {
-                    type = "long";
-                }
-                else if (field.Type == "decimal"
-                    || field.Type == "smallmoney"
-                    || field.Type == "money"
-                    || field.Type == "float")
-                {
-                    type = "decimal";
-                }
-                else if (field.Type.Contains("char")
-                    || field.Type.Contains("text"))
-                {
-                    type = "string";
-                    def = " = string.Empty;";
-                }
-                else if (field.Type == "datetime"
-                         ||
-                         field.Type == "date")
-                {
-                    type = "DateTime";
-                    def = $" = ToDateTime(\"{field.Default}\");";
-                }
-                else
-                {
-                    type = "object";
-                    def = " = new object();";
-                    ShowError($"出现未能识别的数据类型{field.Type}");
-                }
-                if (field.FieldName == tableInfo.Key)
-                {
-                    field.FieldName += "_Field";
-                }
-                code.AppendLine($"        public {type} {field.FieldName} {{ get; set; }}{def}\r\n");
+                var typeAndDefault = GetTypeAndDefault(field, tableInfo.Key);
+                code.AppendLine($"        public {typeAndDefault[0]} {field.FieldName} {{ get; set; }}{typeAndDefault[1]}\r\n");
             }
             code.AppendLine("    }\r\n\r\n");
             code.AppendLine($"    public enum {tableInfo.Key}Enum");
@@ -420,9 +379,150 @@ namespace CodeGeneration
             return code;
         }
 
-        static void GetDalCode()
+        static StringBuilder GetDalCode(IGrouping<string, TableInfo> tableInfo)
         {
+            var code = new StringBuilder();
+            code.AppendLine("using System;\r\n");
+            code.AppendLine($"namespace {InfoModel.Dal.Split('/')[0]}");
+            code.AppendLine("{");
+            code.AppendLine($"    public partial class {tableInfo.Key}Dal");
+            code.AppendLine("    {");
+            var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
+            var identityKey = tableInfo.FirstOrDefault(x => x.IdentityKey == "1");
+            var typeAndDefault = new string[2];
+            var tableName = $"{InfoModel.DBName}.dbo.{tableInfo.Key}";
 
+            #region 是否存在的Id
+            if (primaryKey != null)
+            {
+                typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
+                code.AppendLine($"        public bool Exists({typeAndDefault[0]} primaryKey);");
+                code.AppendLine("        {");
+                code.AppendLine($"            var strSql = \"SELECT COUNT(1) FROM {tableName} WHERE {primaryKey.PrimaryKey} = @primaryKey\";");
+                code.AppendLine("            var parameters = new { primaryKey };");
+                code.AppendLine("            return DbClient.Excute(strSql, parameters) > 0;");
+                code.AppendLine("        }\r\n");
+            }
+            #endregion
+
+            #region Add
+            if (identityKey != null)
+            {
+                typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
+                code.AppendLine($"        public {typeAndDefault[0]} Add({tableInfo.Key} model)");
+            }
+            else
+            {
+                code.AppendLine($"        public void Add({tableInfo.Key} model)");
+            }
+            code.AppendLine("        {");
+            code.AppendLine("             var strSql = new StringBuilder();");
+            code.AppendLine($"             strSql.Append(\"INSERT INTO {InfoModel.DBName}.dbo{tableInfo.Key}(\");");
+            code.AppendLine($"             strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + x.FieldName + ",").TrimEnd(',')}\");");
+            code.AppendLine("             strSql.Append(\") VALUES (\");");
+            code.AppendLine($"             strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + "@" + x.FieldName + ",").TrimEnd(',')});\");");
+            code.AppendLine("             strSql.Append(\"SELECT @@IDENTITY\");");
+            if (identityKey != null)
+            {
+                code.AppendLine("             strSql.Append(\"SELECT @@IDENTITY\");");
+                code.AppendLine($"             return DbClient.ExecuteScalar<{typeAndDefault[0]}>(strSql.ToString(), model);");
+            }
+            else
+            {
+                code.AppendLine("             DbClient.Excute(strSql.ToString(), model);");
+            }
+            code.AppendLine("        }\r\n");
+            #endregion
+
+            #region Update
+            if (primaryKey != null ||
+                identityKey != null)
+            {
+                code.AppendLine($"        public bool Update({tableInfo.Key} model);");
+                code.AppendLine("        {");
+                code.AppendLine("            var strSql = new StringBuilder();");
+                code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
+                code.AppendLine(
+                    $"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
+                code.AppendLine(primaryKey != null
+                                    ? $"            strSql.Append(\" WHERE {primaryKey.FieldName} = @{primaryKey.FieldName}\");"
+                                    : $"            strSql.Append(\" WHERE {identityKey.FieldName} = @{identityKey.FieldName}\");");
+                code.AppendLine("            return DbClient.Excute(strSql.ToString(), model) > 0;");
+                code.AppendLine("        }\r\n");
+
+            }
+            code.AppendLine("        public bool Update(string where);");
+            code.AppendLine("        {");
+            code.AppendLine($"        strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
+            code.AppendLine(
+                $"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
+            code.AppendLine("        strSql.Append(\" WHERE 1=1 {where}\")");
+            code.AppendLine("            return DbClient.Excute(strSql.ToString(), model) > 0;");
+            code.AppendLine("        }\r\n");
+            #endregion
+
+            #region Delete
+            if (primaryKey != null ||
+                identityKey != null)
+            {
+                typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
+                var fileName = primaryKey?.FieldName;
+                if (string.IsNullOrEmpty(typeAndDefault[0]))
+                {
+                    typeAndDefault = GetTypeAndDefault(identityKey, tableInfo.Key);
+                    fileName = identityKey?.FieldName;
+                }
+                code.AppendLine($"        public bool Delete({typeAndDefault[0]} key);");
+                code.AppendLine("        {");
+                code.AppendLine($"            var strSql = \"DELETE FROM {tableName} WHERE {fileName} = @key\";");
+                code.AppendLine("            var parameters = new {{ key }};");
+                code.AppendLine("            return DbClient.Excute(strSql, parameters) > 0;");
+                code.AppendLine("        }\r\n");
+            }
+
+            code.AppendLine("        public int Delete(string where);");
+            code.AppendLine("        {");
+            code.AppendLine($"            var strSql = \"DELETE FROM {tableName} WHERE 1=1 {{where}}\";");
+            code.AppendLine("            return DbClient.Excute(strSql) > 0;");
+            code.AppendLine("        }\r\n");
+            #endregion
+
+            #region Select
+            if (primaryKey != null ||
+                identityKey != null)
+            {
+                typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
+                var fileName = primaryKey?.FieldName;
+                if (string.IsNullOrEmpty(typeAndDefault[0]))
+                {
+                    typeAndDefault = GetTypeAndDefault(identityKey, tableInfo.Key);
+                    fileName = identityKey?.FieldName;
+                }
+                code.AppendLine($"        public {tableInfo.Key} GetModel({typeAndDefault[0]} key);");
+                code.AppendLine("        {");
+                code.AppendLine($"            var strSql = \"SELECT * FROM {tableName} WHERE {fileName} = @key\";");
+                code.AppendLine("            var parameters = new {{ key }};");
+                code.AppendLine("            return DbClient.Query<{tableInfo.Key}>(strSql, parameters).FirstOrDefault();");
+                code.AppendLine("        }\r\n");
+            }
+
+            code.AppendLine($"        public List<{tableInfo.Key}> GetModelList(string where);");
+            code.AppendLine("        {");
+            code.AppendLine($"            var strSql = \"SELECT * FROM {tableName} WHERE {{where}}\";");
+            code.AppendLine("            return DbClient.Query<{tableInfo.Key}>(strSql).ToList();");
+            code.AppendLine("        }\r\n");
+
+            code.AppendLine($"        public List<{tableInfo.Key}> GetModelPage(string where, int pageIndex, int pageSize);");
+            code.AppendLine("        {");
+            code.AppendLine($"            var strSql = \"SELECT * FROM {tableName} WHERE {{where}}\";");
+            code.AppendLine("            return DbClient.Query<{tableInfo.Key}>(strSql).ToList();");
+            code.AppendLine("        }\r\n");
+
+            #endregion
+
+            code.AppendLine("    }");
+            code.AppendLine("}");
+            return code;
         }
 
         static void GetBllCode()
@@ -559,24 +659,52 @@ namespace CodeGeneration
             return path;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        static string[] GetTypeAndDefault(TableInfo field, string tableName)
+        {
+            string type;
+            var def = "";
+            field.Type = field.Type.ToLower();
+            if (field.Type == "int"
+                || field.Type == "tinyint")
+            {
+                type = "int";
+            }
+            else if (field.Type == "bigint")
+            {
+                type = "long";
+            }
+            else if (field.Type == "decimal"
+                || field.Type == "smallmoney"
+                || field.Type == "money"
+                || field.Type == "float")
+            {
+                type = "decimal";
+            }
+            else if (field.Type.Contains("char")
+                || field.Type.Contains("text"))
+            {
+                type = "string";
+                def = " = string.Empty;";
+            }
+            else if (field.Type == "datetime"
+                     ||
+                     field.Type == "date")
+            {
+                type = "DateTime";
+                def = $" = ToDateTime(\"{field.Default}\");";
+            }
+            else
+            {
+                type = "object";
+                def = " = new object();";
+                ShowError($"出现未能识别的数据类型{field.Type}");
+            }
+            if (field.FieldName == tableName)
+            {
+                field.FieldName += "_Field";
+            }
+            return new[] { type, def };
+        }
 
 
 
@@ -597,7 +725,7 @@ namespace CodeGeneration
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine(msg);
             Console.ResetColor();
-            Console.WriteLine("回车继续.....");
+            Console.Write(" ===> 回车继续.....");
             Console.ReadLine();
         }
 
