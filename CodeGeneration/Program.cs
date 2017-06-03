@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Xml;
@@ -18,7 +19,7 @@ namespace CodeGeneration
         // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
         {
-            Console.WriteLine("配置文件加载成功");
+            START: Console.WriteLine("配置文件加载成功");
             Console.Write("初始化");
             Load();
             DirectoryInfo[] directoryInfos;
@@ -50,11 +51,7 @@ namespace CodeGeneration
                     Console.WriteLine("正在帮您生成 BaseModel.cs...");
                     try
                     {
-                        var sw = File.CreateText(path + "\\BaseModel.cs");
-                        sw.Write(GetBaseModelCode().ToString());
-                        sw.Close();
-                        var pathSplit = path.Split('\\');
-                        IntoCsproj(path + $"\\{pathSplit[pathSplit.Length - 1]}.csproj", "BaseModel.cs");
+                        WriteToFile(GetBaseModelCode(), path + "\\BaseModel.cs", path + "\\" + pathDb + ".csproj");
                     }
                     catch (Exception ex)
                     {
@@ -71,6 +68,7 @@ namespace CodeGeneration
             if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
             {
                 Console.WriteLine($"验证: {pathDb} Success");
+
                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
                 layersPaths.Add("Bll", ExamineFolder(InfoModel.Bll, path));
             }
@@ -80,6 +78,25 @@ namespace CodeGeneration
             if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
             {
                 Console.WriteLine($"验证: {pathDb} Success");
+                Console.WriteLine("验证是否存在DBClient.cs");
+                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
+                if (File.Exists(path + "\\DBClient.cs"))
+                {
+                    ShowGood("已存在DBClient.cs");
+                }
+                else
+                {
+                    Console.WriteLine("正在帮您生成 DBClient.cs...");
+                    try
+                    {
+                        WriteToFile(GetDbClientCode(), path + "\\DBClient.cs", path + "\\" + pathDb + ".csproj");
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError("出现异常-->" + ex.Message);
+                    }
+                    ShowGood("生成BaseModel.cs Success");
+                }
                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
                 layersPaths.Add("Dal", ExamineFolder(InfoModel.Dal, path));
             }
@@ -98,8 +115,12 @@ namespace CodeGeneration
                 return;
             }
             Console.WriteLine($"连接: {InfoModel.DBName} Success");
-            Console.WriteLine("输入需要表名以\",\"隔开(整库生成请输入ALL)");
+            READERROR: Console.WriteLine("输入需要表名以\",\"隔开(整库生成请输入ALL)");
             var tables = Console.ReadLine();
+            if (string.IsNullOrEmpty(tables))
+            {
+                goto READERROR;
+            }
             var tableInfoList = GetTableInfos(tables);
 
             var group = from table in tableInfoList
@@ -115,7 +136,22 @@ namespace CodeGeneration
                     switch (layersPath.Key)
                     {
                         case "Model":
-
+                            try
+                            {
+                                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.Model.Split('/')[0]))?.FullName ?? "";
+                                if (!string.IsNullOrEmpty(path))
+                                {
+                                    WriteToFile(GetModelCode(g), layersPath.Value + "//" + g.Key + ".cs", path + "\\" + InfoModel.Model.Split('/')[0] + ".csproj");
+                                }
+                                else
+                                {
+                                    ShowError("路径错误-->跳过 Model ");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ShowError("出现异常-->" + ex.Message);
+                            }
                             break;
                         case "Bll":
 
@@ -129,6 +165,8 @@ namespace CodeGeneration
             }
 
             Console.ReadLine();
+            Console.Clear();
+            goto START;
         }
 
 
@@ -214,7 +252,101 @@ namespace CodeGeneration
             return code;
         }
 
-        static void GetModelCode(IGrouping<string, TableInfo> tableInfo)
+        static StringBuilder GetDbClientCode()
+        {
+            var code = new StringBuilder();
+            code.AppendLine("using Dapper;");
+            code.AppendLine("using System;");
+            code.AppendLine("using System.Collections.Generic;");
+            code.AppendLine("using System.Configuration;");
+            code.AppendLine("using System.Data.SqlClient;");
+            code.AppendLine("using System.Data;\r\n");
+            code.AppendLine($"namespace {InfoModel.Dal.Split('/')[0]}");
+            code.AppendLine("{");
+            code.AppendLine("    public class DbClient");
+            code.AppendLine("    {");
+            code.AppendLine("        public static IEnumerable<T> Query<T>(string sql, object param = null)");
+            code.AppendLine("        {");
+            code.AppendLine("            if (string.IsNullOrEmpty(sql))");
+            code.AppendLine("            {");
+            code.AppendLine("                throw new ArgumentNullException(nameof(sql));");
+            code.AppendLine("            }");
+            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
+            code.AppendLine("            {");
+            code.AppendLine("                IEnumerable<T> tList = con.Query<T>(sql, param);");
+            code.AppendLine("                con.Close();");
+            code.AppendLine("                return tList;");
+            code.AppendLine("            }");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        public static int Excute(string sql, object param = null, IDbTransaction transaction = null)");
+            code.AppendLine("        {");
+            code.AppendLine("            if (string.IsNullOrEmpty(sql))");
+            code.AppendLine("            {");
+            code.AppendLine("                throw new ArgumentNullException(nameof(sql));");
+            code.AppendLine("            }");
+            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
+            code.AppendLine("            {");
+            code.AppendLine("                return con.Execute(sql, param, transaction);");
+            code.AppendLine("            }");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        public static T ExecuteScalar<T>(string sql, object param = null)");
+            code.AppendLine("        {");
+            code.AppendLine("            if (string.IsNullOrEmpty(sql))");
+            code.AppendLine("            {");
+            code.AppendLine("                throw new ArgumentNullException(nameof(sql));");
+            code.AppendLine("            }");
+            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
+            code.AppendLine("            {");
+            code.AppendLine("                return con.ExecuteScalar<T>(sql, param);");
+            code.AppendLine("            }");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        public static T ExecuteScalarProc<T>(string strProcName, object param = null)");
+            code.AppendLine("        {");
+            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
+            code.AppendLine("            {");
+            code.AppendLine("                return (T)con.ExecuteScalar(strProcName, param, commandType: CommandType.StoredProcedure);");
+            code.AppendLine("            }");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        public static IEnumerable<T> ExecuteQueryProc<T>(string strProcName, object param = null)");
+            code.AppendLine("        {");
+            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
+            code.AppendLine("            {");
+            code.AppendLine("                IEnumerable<T> tList = con.Query<T>(strProcName, param, commandType: CommandType.StoredProcedure);");
+            code.AppendLine("                con.Close();");
+            code.AppendLine("                return tList;");
+            code.AppendLine("            }");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        public static int ExecuteProc(string strProcName, object param = null)");
+            code.AppendLine("        {");
+            code.AppendLine("            try");
+            code.AppendLine("            {");
+            code.AppendLine("                using (IDbConnection con = DataSource.GetConnection())");
+            code.AppendLine("                {");
+            code.AppendLine("                    return con.Execute(strProcName, param, commandType: CommandType.StoredProcedure);");
+            code.AppendLine("                }");
+            code.AppendLine("            }");
+            code.AppendLine("            catch (Exception)");
+            code.AppendLine("            {");
+            code.AppendLine("                return 0;");
+            code.AppendLine("            }");
+            code.AppendLine("        }");
+            code.AppendLine("    }\r\n\r\n");
+            code.AppendLine("    public class DataSource");
+            code.AppendLine("    {");
+            code.AppendLine($"        public static string ConnString = ConfigurationManager.ConnectionStrings[\"{InfoModel.DBName}\"].ConnectionString;");
+            code.AppendLine("        public static IDbConnection GetConnection()");
+            code.AppendLine("        {");
+            code.AppendLine("            if (string.IsNullOrEmpty(ConnString))");
+            code.AppendLine("                throw new NoNullAllowedException(nameof(ConnString));");
+            code.AppendLine("            return new SqlConnection(ConnString);");
+            code.AppendLine("        }");
+            code.AppendLine("    }");
+            code.AppendLine("}");
+
+            return code;
+        }
+
+        static StringBuilder GetModelCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
             code.AppendLine("using System;\r\n");
@@ -235,12 +367,57 @@ namespace CodeGeneration
                 if (field.Type == "int"
                     || field.Type == "tinyint")
                 {
-
+                    type = "int";
                 }
-                code.AppendLine("        public {todo} {todo} { get; set; }=\"\"\r\n");
+                else if (field.Type == "bigint")
+                {
+                    type = "long";
+                }
+                else if (field.Type == "decimal"
+                    || field.Type == "smallmoney"
+                    || field.Type == "money"
+                    || field.Type == "float")
+                {
+                    type = "decimal";
+                }
+                else if (field.Type.Contains("char")
+                    || field.Type.Contains("text"))
+                {
+                    type = "string";
+                    def = " = string.Empty;";
+                }
+                else if (field.Type == "datetime"
+                         ||
+                         field.Type == "date")
+                {
+                    type = "DateTime";
+                    def = $" = ToDateTime(\"{field.Default}\");";
+                }
+                else
+                {
+                    type = "object";
+                    def = " = new object();";
+                    ShowError($"出现未能识别的数据类型{field.Type}");
+                }
+                if (field.FieldName == tableInfo.Key)
+                {
+                    field.FieldName += "_Field";
+                }
+                code.AppendLine($"        public {type} {field.FieldName} {{ get; set; }}{def}\r\n");
+            }
+            code.AppendLine("    }\r\n\r\n");
+            code.AppendLine($"    public enum {tableInfo.Key}Enum");
+            code.AppendLine("    {");
+            foreach (var field in tableInfo)
+            {
+                code.AppendLine("        /// <summary>");
+                code.AppendLine($"        /// {field.Describe}");
+                code.AppendLine("        /// </summary>");
+                code.AppendLine("        " + field.FieldName + ",");
             }
             code.AppendLine("    }");
             code.AppendLine("}");
+            return code;
         }
 
         static void GetDalCode()
@@ -251,6 +428,18 @@ namespace CodeGeneration
         static void GetBllCode()
         {
 
+        }
+
+        static void WriteToFile(StringBuilder sb, string path, string csprojPath)
+        {
+            var pathSplit = path.Split('\\');
+            if (!File.Exists(path))
+            {
+                IntoCsproj(csprojPath, pathSplit[pathSplit.Length - 1]);
+            }
+            var sw = File.CreateText(path);
+            sw.Write(sb.ToString());
+            sw.Close();
         }
 
         /// <summary>
@@ -266,7 +455,7 @@ namespace CodeGeneration
             var compile = doc.SelectSingleNode("//x:Compile", mgr);
             var xelKey = doc.CreateElement("Compile", null);
             var xelType = doc.CreateAttribute("Include");
-            xelType.Value = fileName;
+            xelType.Value = fileName.Replace("//", "\\");
             xelKey.SetAttributeNode(xelType);
             var parent = compile?.ParentNode;
             parent?.AppendChild(xelKey);
@@ -359,6 +548,14 @@ namespace CodeGeneration
                     ShowGood($"生成 {pathFolder} Success");
                 }
             }
+            //获取文件信息
+            var fileInfo = new FileInfo(path);
+            //获得该文件的访问权限
+            var fileSecurity = fileInfo.GetAccessControl();
+            //添加ereryone用户组的访问权限规则 完全控制权限
+            fileSecurity.AddAccessRule(new FileSystemAccessRule("Everyone", FileSystemRights.FullControl, AccessControlType.Allow));
+            //设置访问权限
+            fileInfo.SetAccessControl(fileSecurity);
             return path;
         }
 
@@ -400,6 +597,7 @@ namespace CodeGeneration
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine(msg);
             Console.ResetColor();
+            Console.WriteLine("回车继续.....");
             Console.ReadLine();
         }
 
