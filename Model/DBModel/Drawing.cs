@@ -4,8 +4,8 @@ namespace Model
 {
     public class Drawing : BaseModel
     {
-        public string PrimaryKey = "RowGuid";
-        public string IdentityKey = "DrawingID";
+        public static string PrimaryKey = "RowGuid";
+        public static string IdentityKey = "DrawingID";
 
         /// <summary>
         /// 图纸ID

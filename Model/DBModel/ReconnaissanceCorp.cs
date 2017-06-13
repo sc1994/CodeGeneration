@@ -4,8 +4,8 @@ namespace Model
 {
     public class ReconnaissanceCorp : BaseModel
     {
-        public string PrimaryKey = "CorpID";
-        public string IdentityKey = "CorpID";
+        public static string PrimaryKey = "CorpID";
+        public static string IdentityKey = "CorpID";
 
         /// <summary>
         /// 单位ID

@@ -4,8 +4,8 @@ namespace Model
 {
     public class TaskCensorFlow : BaseModel
     {
-        public string PrimaryKey = "RowGuid";
-        public string IdentityKey = "TaskCensorFlowID";
+        public static string PrimaryKey = "RowGuid";
+        public static string IdentityKey = "TaskCensorFlowID";
 
         /// <summary>
         /// ID

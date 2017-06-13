@@ -4,8 +4,8 @@ namespace Model
 {
     public class WeiXinMenu : BaseModel
     {
-        public string PrimaryKey = "MenuId";
-        public string IdentityKey = "";
+        public static string PrimaryKey = "MenuId";
+        public static string IdentityKey = "";
 
         /// <summary>
         /// 

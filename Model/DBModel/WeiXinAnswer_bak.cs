@@ -4,8 +4,8 @@ namespace Model
 {
     public class WeiXinAnswer_bak : BaseModel
     {
-        public string PrimaryKey = "ID";
-        public string IdentityKey = "ID";
+        public static string PrimaryKey = "ID";
+        public static string IdentityKey = "ID";
 
         /// <summary>
         /// 

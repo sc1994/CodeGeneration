@@ -157,13 +157,28 @@ namespace CodeGeneration
 
                             break;
                         case "Dal":
-
+                            try
+                            {
+                                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.Dal.Split('/')[0]))?.FullName ?? "";
+                                if (!string.IsNullOrEmpty(path))
+                                {
+                                    WriteToFile(GetDalCode(g), layersPath.Value + "//" + g.Key + "Dal.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
+                                }
+                                else
+                                {
+                                    ShowError("路径错误-->跳过 Model ");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ShowError("出现异常-->" + ex.Message);
+                            }
                             break;
                         default: continue;
                     }
                 }
             }
-
+            Console.WriteLine("正在检查程序集之间的引用关系...."); // todo
             Console.ReadLine();
             Console.Clear();
             goto START;
@@ -382,7 +397,9 @@ namespace CodeGeneration
         static StringBuilder GetDalCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine("using System;\r\n");
+            code.AppendLine("using System.Collections.Generic;");
+            code.AppendLine("using System.Linq;");
+            code.AppendLine("using System.Text;\r\n");
             code.AppendLine($"namespace {InfoModel.Dal.Split('/')[0]}");
             code.AppendLine("{");
             code.AppendLine($"    public partial class {tableInfo.Key}Dal");
@@ -392,17 +409,20 @@ namespace CodeGeneration
             var typeAndDefault = new string[2];
             var tableName = $"{InfoModel.DBName}.dbo.{tableInfo.Key}";
 
-            #region 是否存在的Id
+            #region 是否存在
             if (primaryKey != null)
             {
                 typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
-                code.AppendLine($"        public bool Exists({typeAndDefault[0]} primaryKey);");
+                code.AppendLine($"        public bool Exists({typeAndDefault[0]} primaryKey)");
                 code.AppendLine("        {");
                 code.AppendLine($"            var strSql = \"SELECT COUNT(1) FROM {tableName} WHERE {primaryKey.PrimaryKey} = @primaryKey\";");
                 code.AppendLine("            var parameters = new { primaryKey };");
                 code.AppendLine("            return DbClient.Excute(strSql, parameters) > 0;");
                 code.AppendLine("        }\r\n");
             }
+
+            code.AppendLine("        public bool ExistsByWhere(string where)");
+            code.AppendLine($"            => DbClient.ExecuteScalar<int>($\"SELECT COUNT(1) FROM {tableName} WHERE {{where}};\") > 0;\r\n");
             #endregion
 
             #region Add
@@ -416,20 +436,19 @@ namespace CodeGeneration
                 code.AppendLine($"        public void Add({tableInfo.Key} model)");
             }
             code.AppendLine("        {");
-            code.AppendLine("             var strSql = new StringBuilder();");
-            code.AppendLine($"             strSql.Append(\"INSERT INTO {InfoModel.DBName}.dbo{tableInfo.Key}(\");");
-            code.AppendLine($"             strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + x.FieldName + ",").TrimEnd(',')}\");");
-            code.AppendLine("             strSql.Append(\") VALUES (\");");
-            code.AppendLine($"             strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + "@" + x.FieldName + ",").TrimEnd(',')});\");");
-            code.AppendLine("             strSql.Append(\"SELECT @@IDENTITY\");");
+            code.AppendLine("            var strSql = new StringBuilder();");
+            code.AppendLine($"            strSql.Append(\"INSERT INTO {InfoModel.DBName}.dbo{tableInfo.Key}(\");");
+            code.AppendLine($"            strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + x.FieldName + ",").TrimEnd(',')}\");");
+            code.AppendLine("            strSql.Append(\") VALUES (\");");
+            code.AppendLine($"            strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + "@" + x.FieldName + ",").TrimEnd(',')});\");");
             if (identityKey != null)
             {
-                code.AppendLine("             strSql.Append(\"SELECT @@IDENTITY\");");
-                code.AppendLine($"             return DbClient.ExecuteScalar<{typeAndDefault[0]}>(strSql.ToString(), model);");
+                code.AppendLine("            strSql.Append(\"SELECT @@IDENTITY\");");
+                code.AppendLine($"            return DbClient.ExecuteScalar<{typeAndDefault[0]}>(strSql.ToString(), model);");
             }
             else
             {
-                code.AppendLine("             DbClient.Excute(strSql.ToString(), model);");
+                code.AppendLine("            DbClient.Excute(strSql.ToString(), model);");
             }
             code.AppendLine("        }\r\n");
             #endregion
@@ -438,12 +457,11 @@ namespace CodeGeneration
             if (primaryKey != null ||
                 identityKey != null)
             {
-                code.AppendLine($"        public bool Update({tableInfo.Key} model);");
+                code.AppendLine($"        public bool Update({tableInfo.Key} model)");
                 code.AppendLine("        {");
                 code.AppendLine("            var strSql = new StringBuilder();");
                 code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
-                code.AppendLine(
-                    $"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
+                code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
                 code.AppendLine(primaryKey != null
                                     ? $"            strSql.Append(\" WHERE {primaryKey.FieldName} = @{primaryKey.FieldName}\");"
                                     : $"            strSql.Append(\" WHERE {identityKey.FieldName} = @{identityKey.FieldName}\");");
@@ -451,13 +469,13 @@ namespace CodeGeneration
                 code.AppendLine("        }\r\n");
 
             }
-            code.AppendLine("        public bool Update(string where);");
+            code.AppendLine("        public bool Update(string where)");
             code.AppendLine("        {");
-            code.AppendLine($"        strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
-            code.AppendLine(
-                $"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
-            code.AppendLine("        strSql.Append(\" WHERE 1=1 {where}\")");
-            code.AppendLine("            return DbClient.Excute(strSql.ToString(), model) > 0;");
+            code.AppendLine("            var strSql = new StringBuilder();");
+            code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
+            code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
+            code.AppendLine("            strSql.Append($\" WHERE 1=1 {where}\");");
+            code.AppendLine("            return DbClient.Excute(strSql.ToString()) > 0;");
             code.AppendLine("        }\r\n");
             #endregion
 
@@ -472,19 +490,15 @@ namespace CodeGeneration
                     typeAndDefault = GetTypeAndDefault(identityKey, tableInfo.Key);
                     fileName = identityKey?.FieldName;
                 }
-                code.AppendLine($"        public bool Delete({typeAndDefault[0]} key);");
+                code.AppendLine($"        public bool Delete({typeAndDefault[0]} key)");
                 code.AppendLine("        {");
                 code.AppendLine($"            var strSql = \"DELETE FROM {tableName} WHERE {fileName} = @key\";");
-                code.AppendLine("            var parameters = new {{ key }};");
-                code.AppendLine("            return DbClient.Excute(strSql, parameters) > 0;");
+                code.AppendLine("            return DbClient.Excute(strSql, new { key }) > 0;");
                 code.AppendLine("        }\r\n");
             }
 
-            code.AppendLine("        public int Delete(string where);");
-            code.AppendLine("        {");
-            code.AppendLine($"            var strSql = \"DELETE FROM {tableName} WHERE 1=1 {{where}}\";");
-            code.AppendLine("            return DbClient.Excute(strSql) > 0;");
-            code.AppendLine("        }\r\n");
+            code.AppendLine("        public int DeleteByWhere(string where)");
+            code.AppendLine($"            => DbClient.Excute($\"DELETE FROM {tableName} WHERE 1 = 1 {{where}}\");\r\n");
             #endregion
 
             #region Select
@@ -498,26 +512,32 @@ namespace CodeGeneration
                     typeAndDefault = GetTypeAndDefault(identityKey, tableInfo.Key);
                     fileName = identityKey?.FieldName;
                 }
-                code.AppendLine($"        public {tableInfo.Key} GetModel({typeAndDefault[0]} key);");
+                // 主键或者自增键查询
+                code.AppendLine($"        public {tableInfo.Key} GetModel({typeAndDefault[0]} key)");
                 code.AppendLine("        {");
                 code.AppendLine($"            var strSql = \"SELECT * FROM {tableName} WHERE {fileName} = @key\";");
-                code.AppendLine("            var parameters = new {{ key }};");
-                code.AppendLine("            return DbClient.Query<{tableInfo.Key}>(strSql, parameters).FirstOrDefault();");
+                code.AppendLine($"            return DbClient.Query<{tableInfo.Key}>(strSql, new {{ key }}).FirstOrDefault();");
                 code.AppendLine("        }\r\n");
             }
-
-            code.AppendLine($"        public List<{tableInfo.Key}> GetModelList(string where);");
+            // 普通查询
+            code.AppendLine($"        public List<{tableInfo.Key}> GetModelList(string where)");
             code.AppendLine("        {");
-            code.AppendLine($"            var strSql = \"SELECT * FROM {tableName} WHERE {{where}}\";");
-            code.AppendLine("            return DbClient.Query<{tableInfo.Key}>(strSql).ToList();");
+            code.AppendLine($"            var strSql = $\"SELECT * FROM {tableName} WHERE {{where}}\";");
+            code.AppendLine($"            return DbClient.Query<{tableInfo.Key}>(strSql).ToList();");
             code.AppendLine("        }\r\n");
-
-            code.AppendLine($"        public List<{tableInfo.Key}> GetModelPage(string where, int pageIndex, int pageSize);");
+            // 分页查询
+            code.AppendLine($"        public List<{tableInfo.Key}> GetModelPage(string where, int pageIndex, int pageSize, out int total)");
             code.AppendLine("        {");
-            code.AppendLine($"            var strSql = \"SELECT * FROM {tableName} WHERE {{where}}\";");
-            code.AppendLine("            return DbClient.Query<{tableInfo.Key}>(strSql).ToList();");
+            code.AppendLine("            var strSql = new StringBuilder();");
+            code.AppendLine("            strSql.Append($\"SELECT * FROM ( SELECT TOP ( {pageSize} )\");");
+            code.AppendLine("            strSql.Append(\"ROW_NUMBER() OVER ( ORDER BY ct.TaskID DESC ) AS ROWNUMBER,* \");");
+            code.AppendLine($"            strSql.Append(\" FROM  {tableName} \");");
+            code.AppendLine("            strSql.Append($\" WHERE {where} \");");
+            code.AppendLine("            strSql.Append(\" ) A\");");
+            code.AppendLine("            strSql.Append($\" WHERE   ROWNUMBER BETWEEN {(pageIndex - 1) * pageSize + 1} AND {pageIndex * pageSize}; \");");
+            code.AppendLine($"            total = DbClient.ExecuteScalar<int>($\"SELECT COUNT(1) FROM {tableName} WHERE {{where}};\");");
+            code.AppendLine($"            return DbClient.Query<{tableInfo.Key}>(strSql.ToString()).ToList();");
             code.AppendLine("        }\r\n");
-
             #endregion
 
             code.AppendLine("    }");
@@ -525,7 +545,7 @@ namespace CodeGeneration
             return code;
         }
 
-        static void GetBllCode()
+        static void GetBllCode(IGrouping<string, TableInfo> tableInfo)
         {
 
         }
@@ -707,9 +727,6 @@ namespace CodeGeneration
         }
 
 
-
-
-
         static void Load()
         {
             for (int i = 0; i < 5; i++)
@@ -882,13 +899,13 @@ namespace CodeGeneration
 
     class TableInfo
     {
-        public string TableName;
-        public string FieldName;
-        public string IdentityKey;
-        public string PrimaryKey;
-        public string Type;
-        public int Size;
-        public string Default;
-        public string Describe;
+        public string TableName { get; set; }
+        public string FieldName { get; set; }
+        public string IdentityKey { get; set; }
+        public string PrimaryKey { get; set; }
+        public string Type { get; set; }
+        public int Size { get; set; }
+        public string Default { get; set; }
+        public string Describe { get; set; }
     }
 }

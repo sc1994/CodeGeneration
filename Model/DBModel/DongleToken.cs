@@ -4,8 +4,8 @@ namespace Model
 {
     public class DongleToken : BaseModel
     {
-        public string PrimaryKey = "Id";
-        public string IdentityKey = "Id";
+        public static string PrimaryKey = "Id";
+        public static string IdentityKey = "Id";
 
         /// <summary>
         /// 

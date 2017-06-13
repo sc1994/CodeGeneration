@@ -4,9 +4,8 @@ namespace Model
 {
     public class CensorOpinions : BaseModel
     {
-
-        public string PrimaryKey = "ExamineID";
-        public string IdentityKey = "ExamineID";
+        public static string PrimaryKey = "ExamineID";
+        public static string IdentityKey = "ExamineID";
 
         /// <summary>
         /// 审查编号

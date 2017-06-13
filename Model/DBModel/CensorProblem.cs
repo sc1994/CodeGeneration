@@ -4,8 +4,8 @@ namespace Model
 {
     public class CensorProblem : BaseModel
     {
-        public string PrimaryKey = "ProblemID";
-        public string IdentityKey = "ProblemID";
+        public static string PrimaryKey = "ProblemID";
+        public static string IdentityKey = "ProblemID";
 
         /// <summary>
         /// 问题编号
@@ -28,9 +28,19 @@ namespace Model
         public decimal DrawingX { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public decimal DrawingX2 { get; set; }
+
+        /// <summary>
         /// 图纸Y坐标
         /// </summary>
         public decimal DrawingY { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public decimal DrawingY2 { get; set; }
 
         /// <summary>
         /// 专业(对应CensorProfession )
@@ -67,6 +77,16 @@ namespace Model
         /// </summary>
         public int InputUser { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public int PageAge { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DrawingGuId { get; set; } = string.Empty;
+
     }
 
 
@@ -89,9 +109,17 @@ namespace Model
         /// </summary>
         DrawingX,
         /// <summary>
+        /// 
+        /// </summary>
+        DrawingX2,
+        /// <summary>
         /// 图纸Y坐标
         /// </summary>
         DrawingY,
+        /// <summary>
+        /// 
+        /// </summary>
+        DrawingY2,
         /// <summary>
         /// 专业(对应CensorProfession )
         /// </summary>
@@ -120,5 +148,13 @@ namespace Model
         /// 
         /// </summary>
         InputUser,
+        /// <summary>
+        /// 
+        /// </summary>
+        PageAge,
+        /// <summary>
+        /// 
+        /// </summary>
+        DrawingGuId,
     }
 }

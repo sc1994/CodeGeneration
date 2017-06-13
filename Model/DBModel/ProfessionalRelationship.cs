@@ -4,8 +4,8 @@ namespace Model
 {
     public class ProfessionalRelationship : BaseModel
     {
-        public string PrimaryKey = "PRID";
-        public string IdentityKey = "PRID";
+        public static string PrimaryKey = "PRID";
+        public static string IdentityKey = "PRID";
 
         /// <summary>
         /// 关系ID

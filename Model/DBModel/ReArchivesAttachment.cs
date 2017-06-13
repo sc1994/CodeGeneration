@@ -4,8 +4,8 @@ namespace Model
 {
     public class ReArchivesAttachment : BaseModel
     {
-        public string PrimaryKey = "ReAttachmentID";
-        public string IdentityKey = "ReAttachmentID";
+        public static string PrimaryKey = "ReAttachmentID";
+        public static string IdentityKey = "ReAttachmentID";
 
         /// <summary>
         /// 附件ID

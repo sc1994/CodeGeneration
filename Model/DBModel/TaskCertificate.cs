@@ -4,8 +4,8 @@ namespace Model
 {
     public class TaskCertificate : BaseModel
     {
-        public string PrimaryKey = "CID";
-        public string IdentityKey = "CID";
+        public static string PrimaryKey = "CID";
+        public static string IdentityKey = "CID";
 
         /// <summary>
         /// 

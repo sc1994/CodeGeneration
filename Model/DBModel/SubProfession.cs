@@ -4,8 +4,8 @@ namespace Model
 {
     public class SubProfession : BaseModel
     {
-        public string PrimaryKey = "SubProfessionID";
-        public string IdentityKey = "SubProfessionID";
+        public static string PrimaryKey = "SubProfessionID";
+        public static string IdentityKey = "SubProfessionID";
 
         /// <summary>
         /// ID

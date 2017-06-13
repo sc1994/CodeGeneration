@@ -4,8 +4,8 @@ namespace Model
 {
     public class PolicyReviewArchive : BaseModel
     {
-        public string PrimaryKey = "PolicyReviewArchiveID";
-        public string IdentityKey = "PolicyReviewArchiveID";
+        public static string PrimaryKey = "PolicyReviewArchiveID";
+        public static string IdentityKey = "PolicyReviewArchiveID";
 
         /// <summary>
         /// 材料ID

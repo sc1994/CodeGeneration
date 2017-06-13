@@ -4,8 +4,8 @@ namespace Model
 {
     public class WeiXinArticle : BaseModel
     {
-        public string PrimaryKey = "AID";
-        public string IdentityKey = "AID";
+        public static string PrimaryKey = "AID";
+        public static string IdentityKey = "AID";
 
         /// <summary>
         /// 

@@ -47,9 +47,71 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DBClient.cs" />
+    <Compile Include="DBDAL\WeiXinJudgmentDal.cs" />
+    <Compile Include="DBDAL\WeiXinMenuDal.cs" />
+    <Compile Include="DBDAL\DrawingDal.cs" />
+    <Compile Include="DBDAL\DesignCorpDal.cs" />
+    <Compile Include="DBDAL\CensorProblemRelationDal.cs" />
+    <Compile Include="DBDAL\WeiXinMsgDal.cs" />
+    <Compile Include="DBDAL\WeiXinMsgArticleDal.cs" />
+    <Compile Include="DBDAL\ProjectRelationShipDal.cs" />
+    <Compile Include="DBDAL\CustomerInfoDal.cs" />
+    <Compile Include="DBDAL\RemoteProjectsDal.cs" />
+    <Compile Include="DBDAL\TaskArchivesAttachmentDal.cs" />
+    <Compile Include="DBDAL\WaitHandleDal.cs" />
+    <Compile Include="DBDAL\CensorOpinionsDal.cs" />
+    <Compile Include="DBDAL\ReconnaissanceCorpDal.cs" />
+    <Compile Include="DBDAL\ChangeCensorDal.cs" />
+    <Compile Include="DBDAL\ProjectsDal.cs" />
+    <Compile Include="DBDAL\ChargeFormulaDal.cs" />
+    <Compile Include="DBDAL\ConfigTableDal.cs" />
+    <Compile Include="DBDAL\CooperationDal.cs" />
+    <Compile Include="DBDAL\CorpKeyDiskGrantDal.cs" />
+    <Compile Include="DBDAL\DesignCorpEmployeesDal.cs" />
+    <Compile Include="DBDAL\LoginLogDal.cs" />
+    <Compile Include="DBDAL\RemoteCensorTasksDal.cs" />
+    <Compile Include="DBDAL\CensorChargeDal.cs" />
+    <Compile Include="DBDAL\DrawingClassifyDal.cs" />
+    <Compile Include="DBDAL\RemoteProjectArchivesAttachmentDal.cs" />
+    <Compile Include="DBDAL\DrawingSignatureSiteDal.cs" />
+    <Compile Include="DBDAL\DongleTokenDal.cs" />
+    <Compile Include="DBDAL\ModuleDal.cs" />
+    <Compile Include="DBDAL\ConstructionCorpDal.cs" />
+    <Compile Include="DBDAL\FormulaColumnDal.cs" />
+    <Compile Include="DBDAL\M_MessageDal.cs" />
+    <Compile Include="DBDAL\CensorTasksDal.cs" />
+    <Compile Include="DBDAL\M_MessageReceivedDal.cs" />
+    <Compile Include="DBDAL\ProjectArchivesAttachmentDal.cs" />
+    <Compile Include="DBDAL\M_MessageSendedDal.cs" />
+    <Compile Include="DBDAL\ProjectsTypeDal.cs" />
+    <Compile Include="DBDAL\PolicyReviewArchiveDal.cs" />
+    <Compile Include="DBDAL\RemoteTaskArchivesDal.cs" />
+    <Compile Include="DBDAL\ProfessionalRelationshipDal.cs" />
+    <Compile Include="DBDAL\ExpertsDal.cs" />
+    <Compile Include="DBDAL\RemoteTaskArchivesAttachmentDal.cs" />
+    <Compile Include="DBDAL\ReArchivesAttachmentDal.cs" />
+    <Compile Include="DBDAL\ReCensorOpinionsDal.cs" />
+    <Compile Include="DBDAL\ReCensorProblemDal.cs" />
+    <Compile Include="DBDAL\CensorProblemDal.cs" />
+    <Compile Include="DBDAL\RegionInfoDal.cs" />
+    <Compile Include="DBDAL\EmployeesDal.cs" />
+    <Compile Include="DBDAL\SubProfessionDal.cs" />
+    <Compile Include="DBDAL\TaskArchivesDal.cs" />
+    <Compile Include="DBDAL\TaskCertificateDal.cs" />
+    <Compile Include="DBDAL\UserInfoDal.cs" />
+    <Compile Include="DBDAL\TaskDescriptionDal.cs" />
+    <Compile Include="DBDAL\UserKeyDiskGrantDal.cs" />
+    <Compile Include="DBDAL\TaskCensorFlowDal.cs" />
+    <Compile Include="DBDAL\WeiXinAnswerDal.cs" />
+    <Compile Include="DBDAL\ProjectArchivesDal.cs" />
+    <Compile Include="DBDAL\WeiXinAnswer_bakDal.cs" />
+    <Compile Include="DBDAL\WeiXinArticleDal.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{dde9fce2-8894-4780-ad22-d4f02b381826}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

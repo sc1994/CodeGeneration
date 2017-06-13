@@ -4,8 +4,8 @@ namespace Model
 {
     public class DrawingSignatureSite : BaseModel
     {
-        public string PrimaryKey = "SiteID";
-        public string IdentityKey = "SiteID";
+        public static string PrimaryKey = "SiteID";
+        public static string IdentityKey = "SiteID";
 
         /// <summary>
         /// ID

@@ -4,8 +4,8 @@ namespace Model
 {
     public class M_Message : BaseModel
     {
-        public string PrimaryKey = "iMessageID";
-        public string IdentityKey = "iMessageID";
+        public static string PrimaryKey = "iMessageID";
+        public static string IdentityKey = "iMessageID";
 
         /// <summary>
         /// 

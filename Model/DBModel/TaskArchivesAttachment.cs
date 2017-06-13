@@ -4,8 +4,8 @@ namespace Model
 {
     public class TaskArchivesAttachment : BaseModel
     {
-        public string PrimaryKey = "RowGuid";
-        public string IdentityKey = "AttachmentID";
+        public static string PrimaryKey = "RowGuid";
+        public static string IdentityKey = "AttachmentID";
 
         /// <summary>
         /// 附件ID

@@ -4,8 +4,8 @@ namespace Model
 {
     public class DrawingClassify : BaseModel
     {
-        public string PrimaryKey = "DCID";
-        public string IdentityKey = "DCID";
+        public static string PrimaryKey = "DCID";
+        public static string IdentityKey = "DCID";
 
         /// <summary>
         /// 

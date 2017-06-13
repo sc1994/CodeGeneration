@@ -4,8 +4,8 @@ namespace Model
 {
     public class ProjectRelationShip : BaseModel
     {
-        public string PrimaryKey = "ProjectRelationShipID";
-        public string IdentityKey = "ProjectRelationShipID";
+        public static string PrimaryKey = "ProjectRelationShipID";
+        public static string IdentityKey = "ProjectRelationShipID";
 
         /// <summary>
         /// 

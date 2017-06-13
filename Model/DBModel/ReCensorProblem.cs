@@ -4,8 +4,8 @@ namespace Model
 {
     public class ReCensorProblem : BaseModel
     {
-        public string PrimaryKey = "ReProblemID";
-        public string IdentityKey = "ReProblemID";
+        public static string PrimaryKey = "ReProblemID";
+        public static string IdentityKey = "ReProblemID";
 
         /// <summary>
         /// 问题编号

@@ -4,8 +4,8 @@ namespace Model
 {
     public class DesignCorpEmployees : BaseModel
     {
-        public string PrimaryKey = "DCEID";
-        public string IdentityKey = "DCEID";
+        public static string PrimaryKey = "DCEID";
+        public static string IdentityKey = "DCEID";
 
         /// <summary>
         /// 设计人员编号

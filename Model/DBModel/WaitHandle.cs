@@ -4,8 +4,8 @@ namespace Model
 {
     public class WaitHandle : BaseModel
     {
-        public string PrimaryKey = "RowGuid";
-        public string IdentityKey = "ID";
+        public static string PrimaryKey = "RowGuid";
+        public static string IdentityKey = "ID";
 
         /// <summary>
         /// 

@@ -4,8 +4,8 @@ namespace Model
 {
     public class ChargeFormula : BaseModel
     {
-        public string PrimaryKey = "FormulaID";
-        public string IdentityKey = "FormulaID";
+        public static string PrimaryKey = "FormulaID";
+        public static string IdentityKey = "FormulaID";
 
         /// <summary>
         /// 公式编号

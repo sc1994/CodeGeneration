@@ -4,8 +4,8 @@ namespace Model
 {
     public class ChangeCensor : BaseModel
     {
-        public string PrimaryKey = "ChangeCensorID";
-        public string IdentityKey = "ChangeCensorID";
+        public static string PrimaryKey = "ChangeCensorID";
+        public static string IdentityKey = "ChangeCensorID";
 
         /// <summary>
         /// 

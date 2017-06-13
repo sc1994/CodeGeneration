@@ -4,8 +4,8 @@ namespace Model
 {
     public class CorpKeyDiskGrant : BaseModel
     {
-        public string PrimaryKey = "CorpKeyDiskGrantID";
-        public string IdentityKey = "CorpKeyDiskGrantID";
+        public static string PrimaryKey = "CorpKeyDiskGrantID";
+        public static string IdentityKey = "CorpKeyDiskGrantID";
 
         /// <summary>
         /// 发放ID

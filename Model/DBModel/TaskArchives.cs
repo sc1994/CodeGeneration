@@ -4,8 +4,8 @@ namespace Model
 {
     public class TaskArchives : BaseModel
     {
-        public string PrimaryKey = "ArchiveID";
-        public string IdentityKey = "ArchiveID";
+        public static string PrimaryKey = "ArchiveID";
+        public static string IdentityKey = "ArchiveID";
 
         /// <summary>
         /// 任务材料ID

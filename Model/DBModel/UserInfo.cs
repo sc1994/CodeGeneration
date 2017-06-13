@@ -4,8 +4,8 @@ namespace Model
 {
     public class UserInfo : BaseModel
     {
-        public string PrimaryKey = "UserID";
-        public string IdentityKey = "UserID";
+        public static string PrimaryKey = "UserID";
+        public static string IdentityKey = "UserID";
 
         /// <summary>
         /// 用户ID

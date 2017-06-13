@@ -4,8 +4,8 @@ namespace Model
 {
     public class Projects : BaseModel
     {
-        public string PrimaryKey = "ProjectID";
-        public string IdentityKey = "ProjectID";
+        public static string PrimaryKey = "ProjectID";
+        public static string IdentityKey = "ProjectID";
 
         /// <summary>
         /// 项目编号

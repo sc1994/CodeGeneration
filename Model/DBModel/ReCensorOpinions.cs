@@ -4,8 +4,8 @@ namespace Model
 {
     public class ReCensorOpinions : BaseModel
     {
-        public string PrimaryKey = "ReExamineID";
-        public string IdentityKey = "ReExamineID";
+        public static string PrimaryKey = "ReExamineID";
+        public static string IdentityKey = "ReExamineID";
 
         /// <summary>
         /// 审查编号

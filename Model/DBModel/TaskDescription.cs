@@ -4,8 +4,8 @@ namespace Model
 {
     public class TaskDescription : BaseModel
     {
-        public string PrimaryKey = "RowGuid";
-        public string IdentityKey = "RowID";
+        public static string PrimaryKey = "RowGuid";
+        public static string IdentityKey = "RowID";
 
         /// <summary>
         /// 

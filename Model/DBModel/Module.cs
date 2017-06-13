@@ -4,8 +4,8 @@ namespace Model
 {
     public class Module : BaseModel
     {
-        public string PrimaryKey = "ModuleId";
-        public string IdentityKey = "ModuleId";
+        public static string PrimaryKey = "";
+        public static string IdentityKey = "";
 
         /// <summary>
         /// 

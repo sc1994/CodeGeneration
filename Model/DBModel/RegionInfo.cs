@@ -4,8 +4,8 @@ namespace Model
 {
     public class RegionInfo : BaseModel
     {
-        public string PrimaryKey = "RegionID";
-        public string IdentityKey = "RegionID";
+        public static string PrimaryKey = "RegionID";
+        public static string IdentityKey = "RegionID";
 
         /// <summary>
         /// 区域编号

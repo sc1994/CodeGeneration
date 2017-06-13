@@ -4,8 +4,8 @@ namespace Model
 {
     public class Employees : BaseModel
     {
-        public string PrimaryKey = "";
-        public string IdentityKey = "";
+        public static string PrimaryKey = "";
+        public static string IdentityKey = "";
 
         /// <summary>
         /// 员工ID

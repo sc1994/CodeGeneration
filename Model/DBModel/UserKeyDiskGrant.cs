@@ -4,8 +4,8 @@ namespace Model
 {
     public class UserKeyDiskGrant : BaseModel
     {
-        public string PrimaryKey = "UserKeyDiskGrantID";
-        public string IdentityKey = "UserKeyDiskGrantID";
+        public static string PrimaryKey = "UserKeyDiskGrantID";
+        public static string IdentityKey = "UserKeyDiskGrantID";
 
         /// <summary>
         /// 发放ID

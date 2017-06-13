@@ -1,4 +1,1 @@
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\DAL\bin\Debug\DAL.dll
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\DAL\bin\Debug\DAL.pdb
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\DAL\obj\Debug\DAL.dll
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\DAL\obj\Debug\DAL.pdb
+C:\Users\Mr\documents\visual studio 2015\Projects\CodeGeneration\DAL\obj\Debug\DAL.csprojResolveAssemblyReference.cache

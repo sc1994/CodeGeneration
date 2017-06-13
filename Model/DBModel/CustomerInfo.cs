@@ -4,8 +4,8 @@ namespace Model
 {
     public class CustomerInfo : BaseModel
     {
-        public string PrimaryKey = "CustomerID";
-        public string IdentityKey = "CustomerID";
+        public static string PrimaryKey = "CustomerID";
+        public static string IdentityKey = "CustomerID";
 
         /// <summary>
         /// 客户编号

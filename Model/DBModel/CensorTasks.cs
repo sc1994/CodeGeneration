@@ -4,8 +4,8 @@ namespace Model
 {
     public class CensorTasks : BaseModel
     {
-        public string PrimaryKey = "TaskID";
-        public string IdentityKey = "";
+        public static string PrimaryKey = "TaskID";
+        public static string IdentityKey = "";
 
         /// <summary>
         /// 报审编号【客户编号+YTSQ20140001/SJSQ20140001】
@@ -297,6 +297,16 @@ namespace Model
         /// </summary>
         public int OperateStaus { get; set; }
 
+        /// <summary>
+        /// 审查日期
+        /// </summary>
+        public DateTime CensorOpinionDate { get; set; } = ToDateTime("('1900-1-1')");
+
+        /// <summary>
+        /// 图纸下载日期
+        /// </summary>
+        public DateTime DownLoadDate { get; set; } = ToDateTime("('1900-1-1')");
+
     }
 
 
@@ -534,5 +544,13 @@ namespace Model
         /// 
         /// </summary>
         OperateStaus,
+        /// <summary>
+        /// 审查日期
+        /// </summary>
+        CensorOpinionDate,
+        /// <summary>
+        /// 图纸下载日期
+        /// </summary>
+        DownLoadDate,
     }
 }

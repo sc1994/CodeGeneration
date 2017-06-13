@@ -4,8 +4,8 @@ namespace Model
 {
     public class FormulaColumn : BaseModel
     {
-        public string PrimaryKey = "FormulaColumnID";
-        public string IdentityKey = "FormulaColumnID";
+        public static string PrimaryKey = "FormulaColumnID";
+        public static string IdentityKey = "FormulaColumnID";
 
         /// <summary>
         /// 栏目ID

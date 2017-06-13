@@ -4,8 +4,8 @@ namespace Model
 {
     public class WeiXinSelect : BaseModel
     {
-        public string PrimaryKey = "";
-        public string IdentityKey = "ID";
+        public static string PrimaryKey = "";
+        public static string IdentityKey = "ID";
 
         /// <summary>
         /// 

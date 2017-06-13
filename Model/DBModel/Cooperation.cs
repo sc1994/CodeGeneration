@@ -4,8 +4,8 @@ namespace Model
 {
     public class Cooperation : BaseModel
     {
-        public string PrimaryKey = "CorpID";
-        public string IdentityKey = "CorpID";
+        public static string PrimaryKey = "CorpID";
+        public static string IdentityKey = "CorpID";
 
         /// <summary>
         /// 协作单位ID

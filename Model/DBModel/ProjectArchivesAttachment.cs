@@ -4,8 +4,8 @@ namespace Model
 {
     public class ProjectArchivesAttachment : BaseModel
     {
-        public string PrimaryKey = "ProjectAttachmentID";
-        public string IdentityKey = "ProjectAttachmentID";
+        public static string PrimaryKey = "ProjectAttachmentID";
+        public static string IdentityKey = "ProjectAttachmentID";
 
         /// <summary>
         /// 附件ID
