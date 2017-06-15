@@ -45,7 +45,7 @@ namespace Model
         /// <summary>
         /// 收费日期
         /// </summary>
-        public DateTime ChargeDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ChargeDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 计算人

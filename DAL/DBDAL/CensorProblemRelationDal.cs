@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.CensorProblemRelation WHERE {where};") > 0;
 
         public string Add(CensorProblemRelation model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboCensorProblemRelation(");
-             strSql.Append("ID,RowGuid,ProblemID,ProjectID,DrawingRowGuid,DrawingX1,DrawingY1,DrawingX2,DrawingY2,PageNumber");
-             strSql.Append(") VALUES (");
-             strSql.Append("@ID,@RowGuid,@ProblemID,@ProjectID,@DrawingRowGuid,@DrawingX1,@DrawingY1,@DrawingX2,@DrawingY2,@PageNumber);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboCensorProblemRelation(");
+            strSql.Append("ID,RowGuid,ProblemID,ProjectID,DrawingRowGuid,DrawingX1,DrawingY1,DrawingX2,DrawingY2,PageNumber");
+            strSql.Append(") VALUES (");
+            strSql.Append("@ID,@RowGuid,@ProblemID,@ProjectID,@DrawingRowGuid,@DrawingX1,@DrawingY1,@DrawingX2,@DrawingY2,@PageNumber);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
         }
 
         public bool Update(CensorProblemRelation model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.CensorProblemRelation WHERE 1 = 1 {where}");
 
         public CensorProblemRelation GetModel(string key)

@@ -55,12 +55,12 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime ChangeTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ChangeTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 
         /// </summary>
-        public DateTime CensorTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime CensorTime { get; set; } = ToDateTime("1900-1-1");
 
     }
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Model;
+using System.Text;
 
 namespace DAL
 {
@@ -19,13 +19,13 @@ namespace DAL
 
         public string Add(WaitHandle model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboWaitHandle(");
-             strSql.Append("ID,RowGuid,ShowTitle,ShowContent,TargetUser,TaskID,LinkUrl,CreateTime,IsShow,PlanFinishTime");
-             strSql.Append(") VALUES (");
-             strSql.Append("@ID,@RowGuid,@ShowTitle,@ShowContent,@TargetUser,@TaskID,@LinkUrl,@CreateTime,@IsShow,@PlanFinishTime);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboWaitHandle(");
+            strSql.Append("ID,RowGuid,ShowTitle,ShowContent,TargetUser,TaskID,LinkUrl,CreateTime,IsShow,PlanFinishTime");
+            strSql.Append(") VALUES (");
+            strSql.Append("@ID,@RowGuid,@ShowTitle,@ShowContent,@TargetUser,@TaskID,@LinkUrl,@CreateTime,@IsShow,@PlanFinishTime);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
         }
 
         public bool Update(WaitHandle model)
@@ -52,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.WaitHandle WHERE 1 = 1 {where}");
 
         public WaitHandle GetModel(string key)

@@ -50,7 +50,7 @@ namespace Model
         /// <summary>
         /// 刷新时间
         /// </summary>
-        public DateTime RefreshTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime RefreshTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 微信号

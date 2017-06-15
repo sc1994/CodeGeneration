@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Model;
+using System.Text;
 
 namespace DAL
 {
@@ -14,7 +14,7 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.CensorCharge WHERE {where};") > 0;
 
         public int Add(CensorCharge model)
@@ -52,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.CensorCharge WHERE 1 = 1 {where}");
 
         public CensorCharge GetModel(int key)
@@ -81,5 +81,4 @@ namespace DAL
         }
 
     }
-
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.RemoteProjectArchivesAttachment WHERE {where};") > 0;
 
         public int Add(RemoteProjectArchivesAttachment model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboRemoteProjectArchivesAttachment(");
-             strSql.Append("ProjectAttachmentID,ProjectArchiveID,ProjectArchiveName,YCTaskID,ProjectAttachmentName,ProjectAttachmentPath");
-             strSql.Append(") VALUES (");
-             strSql.Append("@ProjectAttachmentID,@ProjectArchiveID,@ProjectArchiveName,@YCTaskID,@ProjectAttachmentName,@ProjectAttachmentPath);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboRemoteProjectArchivesAttachment(");
+            strSql.Append("ProjectAttachmentID,ProjectArchiveID,ProjectArchiveName,YCTaskID,ProjectAttachmentName,ProjectAttachmentPath");
+            strSql.Append(") VALUES (");
+            strSql.Append("@ProjectAttachmentID,@ProjectArchiveID,@ProjectArchiveName,@YCTaskID,@ProjectAttachmentName,@ProjectAttachmentPath);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
 
         public bool Update(RemoteProjectArchivesAttachment model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.RemoteProjectArchivesAttachment WHERE 1 = 1 {where}");
 
         public RemoteProjectArchivesAttachment GetModel(int key)

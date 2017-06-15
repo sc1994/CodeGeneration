@@ -70,7 +70,7 @@ namespace Model
         /// <summary>
         /// 批准日期
         /// </summary>
-        public DateTime Pzrq { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime Pzrq { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 机构类型
@@ -85,7 +85,7 @@ namespace Model
         /// <summary>
         /// 有效日期
         /// </summary>
-        public DateTime ValidDay { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ValidDay { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 客户状态

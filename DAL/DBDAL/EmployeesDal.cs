@@ -1,22 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
 {
     public partial class EmployeesDal
     {
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.Employees WHERE {where};") > 0;
 
         public void Add(Employees model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboEmployees(");
-             strSql.Append("EmployeeID,EmployeeCode,EmployeeName,Mobile,Telephone,Email,EmployeeContent,Department,Post,Photo,EmployeeRoles,IdCard,Employeesign");
-             strSql.Append(") VALUES (");
-             strSql.Append("@EmployeeID,@EmployeeCode,@EmployeeName,@Mobile,@Telephone,@Email,@EmployeeContent,@Department,@Post,@Photo,@EmployeeRoles,@IdCard,@Employeesign);");
-             DbClient.Excute(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboEmployees(");
+            strSql.Append("EmployeeID,EmployeeCode,EmployeeName,Mobile,Telephone,Email,EmployeeContent,Department,Post,Photo,EmployeeRoles,IdCard,Employeesign");
+            strSql.Append(") VALUES (");
+            strSql.Append("@EmployeeID,@EmployeeCode,@EmployeeName,@Mobile,@Telephone,@Email,@EmployeeContent,@Department,@Post,@Photo,@EmployeeRoles,@IdCard,@Employeesign);");
+            DbClient.Excute(strSql.ToString(), model);
         }
 
         public bool Update(string where)
@@ -28,7 +29,7 @@ namespace DAL
             return DbClient.Excute(strSql.ToString()) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.Employees WHERE 1 = 1 {where}");
 
         public List<Employees> GetModelList(string where)

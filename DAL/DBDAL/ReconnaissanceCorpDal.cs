@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.ReconnaissanceCorp WHERE {where};") > 0;
 
         public int Add(ReconnaissanceCorp model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboReconnaissanceCorp(");
-             strSql.Append("CorpID,CorpName,CorpGrade,ContactPerson,ContactPersonTel,CorpRegion,OrganizationCode,CertificateNo,LegalPerson,LegalPersonPosition,Address,Postcode,Supervisor,TelePhone,Provinces,Cities,District,EstablishedTime,RegisteredTime,RegisteredCapital,RegistrationNumber,BusinessType,Token,Seed,Remark");
-             strSql.Append(") VALUES (");
-             strSql.Append("@CorpID,@CorpName,@CorpGrade,@ContactPerson,@ContactPersonTel,@CorpRegion,@OrganizationCode,@CertificateNo,@LegalPerson,@LegalPersonPosition,@Address,@Postcode,@Supervisor,@TelePhone,@Provinces,@Cities,@District,@EstablishedTime,@RegisteredTime,@RegisteredCapital,@RegistrationNumber,@BusinessType,@Token,@Seed,@Remark);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboReconnaissanceCorp(");
+            strSql.Append("CorpID,CorpName,CorpGrade,ContactPerson,ContactPersonTel,CorpRegion,OrganizationCode,CertificateNo,LegalPerson,LegalPersonPosition,Address,Postcode,Supervisor,TelePhone,Provinces,Cities,District,EstablishedTime,RegisteredTime,RegisteredCapital,RegistrationNumber,BusinessType,Token,Seed,Remark");
+            strSql.Append(") VALUES (");
+            strSql.Append("@CorpID,@CorpName,@CorpGrade,@ContactPerson,@ContactPersonTel,@CorpRegion,@OrganizationCode,@CertificateNo,@LegalPerson,@LegalPersonPosition,@Address,@Postcode,@Supervisor,@TelePhone,@Provinces,@Cities,@District,@EstablishedTime,@RegisteredTime,@RegisteredCapital,@RegistrationNumber,@BusinessType,@Token,@Seed,@Remark);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
 
         public bool Update(ReconnaissanceCorp model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.ReconnaissanceCorp WHERE 1 = 1 {where}");
 
         public ReconnaissanceCorp GetModel(int key)

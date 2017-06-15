@@ -30,7 +30,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime SendTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime SendTime { get; set; } = ToDateTime("1900-1-1");
 
     }
 

@@ -54,6 +54,7 @@
     <Compile Include="DBDAL\CensorProblemRelationDal.cs" />
     <Compile Include="DBDAL\WeiXinMsgDal.cs" />
     <Compile Include="DBDAL\WeiXinMsgArticleDal.cs" />
+    <Compile Include="DBDAL\WeiXinSelectDal.cs" />
     <Compile Include="DBDAL\ProjectRelationShipDal.cs" />
     <Compile Include="DBDAL\CustomerInfoDal.cs" />
     <Compile Include="DBDAL\RemoteProjectsDal.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="DBDAL\TaskArchivesDal.cs" />
     <Compile Include="DBDAL\TaskCertificateDal.cs" />
     <Compile Include="DBDAL\UserInfoDal.cs" />
+    <Compile Include="DBDAL\RemoteProjectArchivesDal.cs" />
     <Compile Include="DBDAL\TaskDescriptionDal.cs" />
     <Compile Include="DBDAL\UserKeyDiskGrantDal.cs" />
     <Compile Include="DBDAL\TaskCensorFlowDal.cs" />

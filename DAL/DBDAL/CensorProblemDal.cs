@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Model;
+using System.Text;
 
 namespace DAL
 {
@@ -14,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.CensorProblem WHERE {where};") > 0;
 
         public int Add(CensorProblem model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboCensorProblem(");
-             strSql.Append("ProblemID,TaskID,TextID,DrawingX,DrawingX2,DrawingY,DrawingY2,Profession,ProblemDescription,ProblemType,ProblemSubMajor,ProblemSetNo,IsHiddenDanger,InputUser,PageAge,DrawingGuId");
-             strSql.Append(") VALUES (");
-             strSql.Append("@ProblemID,@TaskID,@TextID,@DrawingX,@DrawingX2,@DrawingY,@DrawingY2,@Profession,@ProblemDescription,@ProblemType,@ProblemSubMajor,@ProblemSetNo,@IsHiddenDanger,@InputUser,@PageAge,@DrawingGuId);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboCensorProblem(");
+            strSql.Append("ProblemID,TaskID,TextID,DrawingX,DrawingX2,DrawingY,DrawingY2,Profession,ProblemDescription,ProblemType,ProblemSubMajor,ProblemSetNo,IsHiddenDanger,InputUser,PageAge,DrawingGuId");
+            strSql.Append(") VALUES (");
+            strSql.Append("@ProblemID,@TaskID,@TextID,@DrawingX,@DrawingX2,@DrawingY,@DrawingY2,@Profession,@ProblemDescription,@ProblemType,@ProblemSubMajor,@ProblemSetNo,@IsHiddenDanger,@InputUser,@PageAge,@DrawingGuId);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
 
         public bool Update(CensorProblem model)
@@ -52,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.CensorProblem WHERE 1 = 1 {where}");
 
         public CensorProblem GetModel(int key)

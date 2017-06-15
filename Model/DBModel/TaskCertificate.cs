@@ -105,7 +105,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime CensorDateDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime CensorDateDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 
@@ -125,7 +125,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime AwardDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime AwardDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,17 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.RemoteCensorTasks WHERE {where};") > 0;
 
-        public void Add(RemoteCensorTasks model)
+        public string Add(RemoteCensorTasks model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboRemoteCensorTasks(");
-             strSql.Append("YCTaskID,CustomerID,DisplayProjectName,CardNo,YTTaskID,SJTaskID,Location,ProjectSupType,ProjectSupTypeRemark,ConstructCorp,ContactPerson,ContactPersonTel,SurveyCorp,SurveyCorpGrade,SurveyCorpRegion,DesignCorp,DesignCorpGrade,DesignCorpRegion,AirDefenseDesignCorp,AirDefenseDesignCorpGrade,AirDefenseDesignCorpRegion,DeliverDate,IssueDate,CensorCircs,ApplyState,ApplyExplain,CensorOpinion1,CensorOpinion2,ValidateCode,ConstructionNo,SeismicNo,TaskResponsibleMan,TechResponsibleMan,RevertNote,ReportedState,sbxmid,ReportedID,ReportedTime,TaskApplyer,TaskApprover,ApproveDate,Awarder,WinXinNo,UnAllotProfessionNum,AllotProfessionNum,UnCensorProfessionNum,CensorProfessionNum,DrawingTotalNum,DrawingSubmitDate,TaskAcceptDate,TaskAllotDate,ReplySubmitDate,ReplyCompleteDate,AwardDate,IsUnion,AcceptCustomers,SerialNo,OperateStaus,CensorOpinionDate,DownLoadDate");
-             strSql.Append(") VALUES (");
-             strSql.Append("@YCTaskID,@CustomerID,@DisplayProjectName,@CardNo,@YTTaskID,@SJTaskID,@Location,@ProjectSupType,@ProjectSupTypeRemark,@ConstructCorp,@ContactPerson,@ContactPersonTel,@SurveyCorp,@SurveyCorpGrade,@SurveyCorpRegion,@DesignCorp,@DesignCorpGrade,@DesignCorpRegion,@AirDefenseDesignCorp,@AirDefenseDesignCorpGrade,@AirDefenseDesignCorpRegion,@DeliverDate,@IssueDate,@CensorCircs,@ApplyState,@ApplyExplain,@CensorOpinion1,@CensorOpinion2,@ValidateCode,@ConstructionNo,@SeismicNo,@TaskResponsibleMan,@TechResponsibleMan,@RevertNote,@ReportedState,@sbxmid,@ReportedID,@ReportedTime,@TaskApplyer,@TaskApprover,@ApproveDate,@Awarder,@WinXinNo,@UnAllotProfessionNum,@AllotProfessionNum,@UnCensorProfessionNum,@CensorProfessionNum,@DrawingTotalNum,@DrawingSubmitDate,@TaskAcceptDate,@TaskAllotDate,@ReplySubmitDate,@ReplyCompleteDate,@AwardDate,@IsUnion,@AcceptCustomers,@SerialNo,@OperateStaus,@CensorOpinionDate,@DownLoadDate);");
-             DbClient.Excute(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboRemoteCensorTasks(");
+            strSql.Append("YCTaskID,CustomerID,DisplayProjectName,CardNo,YTTaskID,SJTaskID,Location,ProjectSupType,ProjectSupTypeRemark,ConstructCorp,ContactPerson,ContactPersonTel,SurveyCorp,SurveyCorpGrade,SurveyCorpRegion,DesignCorp,DesignCorpGrade,DesignCorpRegion,AirDefenseDesignCorp,AirDefenseDesignCorpGrade,AirDefenseDesignCorpRegion,DeliverDate,IssueDate,CensorCircs,ApplyState,ApplyExplain,CensorOpinion1,CensorOpinion2,ValidateCode,ConstructionNo,SeismicNo,TaskResponsibleMan,TechResponsibleMan,RevertNote,ReportedState,sbxmid,ReportedID,ReportedTime,TaskApplyer,TaskApprover,ApproveDate,Awarder,WinXinNo,UnAllotProfessionNum,AllotProfessionNum,UnCensorProfessionNum,CensorProfessionNum,DrawingTotalNum,DrawingSubmitDate,TaskAcceptDate,TaskAllotDate,ReplySubmitDate,ReplyCompleteDate,AwardDate,IsUnion,AcceptCustomers,SerialNo,OperateStaus,CensorOpinionDate,DownLoadDate");
+            strSql.Append(") VALUES (");
+            strSql.Append("@YCTaskID,@CustomerID,@DisplayProjectName,@CardNo,@YTTaskID,@SJTaskID,@Location,@ProjectSupType,@ProjectSupTypeRemark,@ConstructCorp,@ContactPerson,@ContactPersonTel,@SurveyCorp,@SurveyCorpGrade,@SurveyCorpRegion,@DesignCorp,@DesignCorpGrade,@DesignCorpRegion,@AirDefenseDesignCorp,@AirDefenseDesignCorpGrade,@AirDefenseDesignCorpRegion,@DeliverDate,@IssueDate,@CensorCircs,@ApplyState,@ApplyExplain,@CensorOpinion1,@CensorOpinion2,@ValidateCode,@ConstructionNo,@SeismicNo,@TaskResponsibleMan,@TechResponsibleMan,@RevertNote,@ReportedState,@sbxmid,@ReportedID,@ReportedTime,@TaskApplyer,@TaskApprover,@ApproveDate,@Awarder,@WinXinNo,@UnAllotProfessionNum,@AllotProfessionNum,@UnCensorProfessionNum,@CensorProfessionNum,@DrawingTotalNum,@DrawingSubmitDate,@TaskAcceptDate,@TaskAllotDate,@ReplySubmitDate,@ReplyCompleteDate,@AwardDate,@IsUnion,@AcceptCustomers,@SerialNo,@OperateStaus,@CensorOpinionDate,@DownLoadDate);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
         }
 
         public bool Update(RemoteCensorTasks model)
@@ -50,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.RemoteCensorTasks WHERE 1 = 1 {where}");
 
         public RemoteCensorTasks GetModel(string key)

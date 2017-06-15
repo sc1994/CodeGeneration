@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BaseModel.cs" />
     <Compile Include="DBModel\WeiXinJudgment.cs" />
     <Compile Include="DBModel\WeiXinMenu.cs" />
     <Compile Include="DBModel\Drawing.cs" />

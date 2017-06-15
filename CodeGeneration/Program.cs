@@ -19,6 +19,8 @@ namespace CodeGeneration
         // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
         {
+            Log();
+            Console.ReadLine();
             START: Console.WriteLine("配置文件加载成功");
             Console.Write("初始化");
             Load();
@@ -399,6 +401,7 @@ namespace CodeGeneration
             var code = new StringBuilder();
             code.AppendLine("using System.Collections.Generic;");
             code.AppendLine("using System.Linq;");
+            code.AppendLine($"using {InfoModel.Model.Split('/')[0]};");
             code.AppendLine("using System.Text;\r\n");
             code.AppendLine($"namespace {InfoModel.Dal.Split('/')[0]}");
             code.AppendLine("{");
@@ -426,7 +429,7 @@ namespace CodeGeneration
             #endregion
 
             #region Add
-            if (identityKey != null)
+            if (primaryKey != null)
             {
                 typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
                 code.AppendLine($"        public {typeAndDefault[0]} Add({tableInfo.Key} model)");
@@ -441,7 +444,7 @@ namespace CodeGeneration
             code.AppendLine($"            strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + x.FieldName + ",").TrimEnd(',')}\");");
             code.AppendLine("            strSql.Append(\") VALUES (\");");
             code.AppendLine($"            strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + "@" + x.FieldName + ",").TrimEnd(',')});\");");
-            if (identityKey != null)
+            if (primaryKey != null)
             {
                 code.AppendLine("            strSql.Append(\"SELECT @@IDENTITY\");");
                 code.AppendLine($"            return DbClient.ExecuteScalar<{typeAndDefault[0]}>(strSql.ToString(), model);");
@@ -480,16 +483,10 @@ namespace CodeGeneration
             #endregion
 
             #region Delete
-            if (primaryKey != null ||
-                identityKey != null)
+            if (primaryKey != null)
             {
                 typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
-                var fileName = primaryKey?.FieldName;
-                if (string.IsNullOrEmpty(typeAndDefault[0]))
-                {
-                    typeAndDefault = GetTypeAndDefault(identityKey, tableInfo.Key);
-                    fileName = identityKey?.FieldName;
-                }
+                var fileName = primaryKey.FieldName;
                 code.AppendLine($"        public bool Delete({typeAndDefault[0]} key)");
                 code.AppendLine("        {");
                 code.AppendLine($"            var strSql = \"DELETE FROM {tableName} WHERE {fileName} = @key\";");
@@ -502,16 +499,10 @@ namespace CodeGeneration
             #endregion
 
             #region Select
-            if (primaryKey != null ||
-                identityKey != null)
+            if (primaryKey != null)
             {
                 typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
-                var fileName = primaryKey?.FieldName;
-                if (string.IsNullOrEmpty(typeAndDefault[0]))
-                {
-                    typeAndDefault = GetTypeAndDefault(identityKey, tableInfo.Key);
-                    fileName = identityKey?.FieldName;
-                }
+                var fileName = primaryKey.FieldName;
                 // 主键或者自增键查询
                 code.AppendLine($"        public {tableInfo.Key} GetModel({typeAndDefault[0]} key)");
                 code.AppendLine("        {");
@@ -545,9 +536,20 @@ namespace CodeGeneration
             return code;
         }
 
-        static void GetBllCode(IGrouping<string, TableInfo> tableInfo)
+        static StringBuilder GetBllCode(IGrouping<string, TableInfo> tableInfo)
         {
-
+            var code = new StringBuilder();
+            code.AppendLine("using System.Collections.Generic;\r\n");
+            code.AppendLine($"namespace {InfoModel.Bll.Split('/')[0]}");
+            code.AppendLine("{");
+            code.AppendLine($"    public partial class {tableInfo.Key}Dll");
+            code.AppendLine("    {");
+            var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
+            var identityKey = tableInfo.FirstOrDefault(x => x.IdentityKey == "1");
+            var typeAndDefault = new string[2];
+            code.AppendLine("    }");
+            code.AppendLine("}");
+            return code;
         }
 
         static void WriteToFile(StringBuilder sb, string path, string csprojPath)
@@ -560,6 +562,41 @@ namespace CodeGeneration
             var sw = File.CreateText(path);
             sw.Write(sb.ToString());
             sw.Close();
+        }
+
+        static void Log()
+        {
+            var log = @"
+                                                     _-~~~~-                           
+                                                    -   @  @                           
+                                                   '         \                         
+                                                   |\      .. |         |\    /|       
+                                             \     ' `. '\___/` .`.     | \,,/_/       
+                                             |\_  /    `-____--//    __/ \/    \       
+                                              \ \/    .\\     \/  _--/     (D)  \      
+                                               \    .'  \\     |   -/    (_      \     
+                                                `.   \  /'     |   /       \_ / ==\    
+                                          __------\   |       .'_/         / \_ O o)   
+                                         /        _|  /`-__-'/             /   \==/    
+                                        /        |   \                    /            
+                                       ||         \__/                 \_/\            
+                                       ||         /              _      /  |           
+                                       | |      /--______      ___\    /\  :           
+                                       | /   __-  - _/   ------    |  |   \ \          
+                                        |   -  -   /                | |     \ )        
+                                        |  |   -  |                 | )     | |        
+                                         | |    | |                 | |    | |         
+                                         | |    < |                 | |   |_/          
+                                         < |    /__\                <  \               
+                                         /__\                       /___\    --by : suncheng
+";
+            Console.ForegroundColor = ConsoleColor.Blue;
+            foreach (var s in log)
+            {
+                Console.Write(s);
+                Thread.Sleep(1);
+            }
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -701,7 +738,8 @@ namespace CodeGeneration
                 type = "decimal";
             }
             else if (field.Type.Contains("char")
-                || field.Type.Contains("text"))
+                || field.Type.Contains("text")
+                || field.Type.Contains("image"))
             {
                 type = "string";
                 def = " = string.Empty;";
@@ -711,7 +749,7 @@ namespace CodeGeneration
                      field.Type == "date")
             {
                 type = "DateTime";
-                def = $" = ToDateTime(\"{field.Default}\");";
+                def = $" = ToDateTime(\"{field.Default.Replace("(", "").Replace(")", "").Replace("'", "")}\");";
             }
             else
             {

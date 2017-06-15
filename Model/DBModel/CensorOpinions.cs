@@ -30,12 +30,12 @@ namespace Model
         /// <summary>
         /// 分配时间
         /// </summary>
-        public DateTime AssignTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime AssignTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 计划完成时间
         /// </summary>
-        public DateTime PlanFinishTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime PlanFinishTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 设计人
@@ -100,7 +100,7 @@ namespace Model
         /// <summary>
         /// 审查日期
         /// </summary>
-        public DateTime CensorDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime CensorDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 审定人

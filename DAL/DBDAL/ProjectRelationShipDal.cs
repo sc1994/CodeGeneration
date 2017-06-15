@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.ProjectRelationShip WHERE {where};") > 0;
 
         public int Add(ProjectRelationShip model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboProjectRelationShip(");
-             strSql.Append("ProjectRelationShipID,ProjectID,jnbz,txxs,wmbwcl,wmbwhd,pwmbwcl,pwmbwhd,wqtqtcl,wqtbwfs,wqtdxnbwcl,wqtbbwcl,wqtdxnbwhd,wqtbbwhd,lqbwbwcl,lqbwbwhd,wcckcl,wcblcl,wczkchd,wczycs,tcckcl,tcblcl,tczkchd,tczycs,hm,ffbytmxb,jkbwcl,jkbwhd,tcdbbwcl,tcdbbwhd,nfbwcl,nfbwhd,dmbwcl,dmbwhd,dxswqbwcl,dxswqbwhd,ztxjtf,mqtf,fhq,jnsfdb,kzszyly,sfazfxjlzz");
-             strSql.Append(") VALUES (");
-             strSql.Append("@ProjectRelationShipID,@ProjectID,@jnbz,@txxs,@wmbwcl,@wmbwhd,@pwmbwcl,@pwmbwhd,@wqtqtcl,@wqtbwfs,@wqtdxnbwcl,@wqtbbwcl,@wqtdxnbwhd,@wqtbbwhd,@lqbwbwcl,@lqbwbwhd,@wcckcl,@wcblcl,@wczkchd,@wczycs,@tcckcl,@tcblcl,@tczkchd,@tczycs,@hm,@ffbytmxb,@jkbwcl,@jkbwhd,@tcdbbwcl,@tcdbbwhd,@nfbwcl,@nfbwhd,@dmbwcl,@dmbwhd,@dxswqbwcl,@dxswqbwhd,@ztxjtf,@mqtf,@fhq,@jnsfdb,@kzszyly,@sfazfxjlzz);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboProjectRelationShip(");
+            strSql.Append("ProjectRelationShipID,ProjectID,jnbz,txxs,wmbwcl,wmbwhd,pwmbwcl,pwmbwhd,wqtqtcl,wqtbwfs,wqtdxnbwcl,wqtbbwcl,wqtdxnbwhd,wqtbbwhd,lqbwbwcl,lqbwbwhd,wcckcl,wcblcl,wczkchd,wczycs,tcckcl,tcblcl,tczkchd,tczycs,hm,ffbytmxb,jkbwcl,jkbwhd,tcdbbwcl,tcdbbwhd,nfbwcl,nfbwhd,dmbwcl,dmbwhd,dxswqbwcl,dxswqbwhd,ztxjtf,mqtf,fhq,jnsfdb,kzszyly,sfazfxjlzz");
+            strSql.Append(") VALUES (");
+            strSql.Append("@ProjectRelationShipID,@ProjectID,@jnbz,@txxs,@wmbwcl,@wmbwhd,@pwmbwcl,@pwmbwhd,@wqtqtcl,@wqtbwfs,@wqtdxnbwcl,@wqtbbwcl,@wqtdxnbwhd,@wqtbbwhd,@lqbwbwcl,@lqbwbwhd,@wcckcl,@wcblcl,@wczkchd,@wczycs,@tcckcl,@tcblcl,@tczkchd,@tczycs,@hm,@ffbytmxb,@jkbwcl,@jkbwhd,@tcdbbwcl,@tcdbbwhd,@nfbwcl,@nfbwhd,@dmbwcl,@dmbwhd,@dxswqbwcl,@dxswqbwhd,@ztxjtf,@mqtf,@fhq,@jnsfdb,@kzszyly,@sfazfxjlzz);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
 
         public bool Update(ProjectRelationShip model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.ProjectRelationShip WHERE 1 = 1 {where}");
 
         public ProjectRelationShip GetModel(int key)

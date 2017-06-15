@@ -40,7 +40,7 @@ namespace Model
         /// <summary>
         /// 操作时间
         /// </summary>
-        public DateTime OperationDate { get; set; } = ToDateTime("(((1900)-(1))-(1))");
+        public DateTime OperationDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 操作时长

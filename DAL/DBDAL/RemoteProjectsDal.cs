@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.RemoteProjects WHERE {where};") > 0;
 
         public int Add(RemoteProjects model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboRemoteProjects(");
-             strSql.Append("ProjectID,YCTaskID,ProjectSubType,ProjectName,SurveyReportID,SurveyReportName,Areas,Floors,High,Investment,Sffz,PartFloors,UndergroundFloors,AtticFloors,PartHigh,CraneTonnage,ProjectLevel,AseismaticType,Structure,AseismaticLevel,WallMaterials,FieldType,Foundation,FireproofLevel,UnderFireproofLevel,RoofWaterproofLevel,UnderWaterproofLevel,DefendLevel,PlantSpan,AccountReceivable,Demo,FormulaContent,ChargeAmount,ISPreferentia,FormulaName,MinChargeAmount,DrawingNum,Lng,Lat");
-             strSql.Append(") VALUES (");
-             strSql.Append("@ProjectID,@YCTaskID,@ProjectSubType,@ProjectName,@SurveyReportID,@SurveyReportName,@Areas,@Floors,@High,@Investment,@Sffz,@PartFloors,@UndergroundFloors,@AtticFloors,@PartHigh,@CraneTonnage,@ProjectLevel,@AseismaticType,@Structure,@AseismaticLevel,@WallMaterials,@FieldType,@Foundation,@FireproofLevel,@UnderFireproofLevel,@RoofWaterproofLevel,@UnderWaterproofLevel,@DefendLevel,@PlantSpan,@AccountReceivable,@Demo,@FormulaContent,@ChargeAmount,@ISPreferentia,@FormulaName,@MinChargeAmount,@DrawingNum,@Lng,@Lat);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboRemoteProjects(");
+            strSql.Append("ProjectID,YCTaskID,ProjectSubType,ProjectName,SurveyReportID,SurveyReportName,Areas,Floors,High,Investment,Sffz,PartFloors,UndergroundFloors,AtticFloors,PartHigh,CraneTonnage,ProjectLevel,AseismaticType,Structure,AseismaticLevel,WallMaterials,FieldType,Foundation,FireproofLevel,UnderFireproofLevel,RoofWaterproofLevel,UnderWaterproofLevel,DefendLevel,PlantSpan,AccountReceivable,Demo,FormulaContent,ChargeAmount,ISPreferentia,FormulaName,MinChargeAmount,DrawingNum,Lng,Lat");
+            strSql.Append(") VALUES (");
+            strSql.Append("@ProjectID,@YCTaskID,@ProjectSubType,@ProjectName,@SurveyReportID,@SurveyReportName,@Areas,@Floors,@High,@Investment,@Sffz,@PartFloors,@UndergroundFloors,@AtticFloors,@PartHigh,@CraneTonnage,@ProjectLevel,@AseismaticType,@Structure,@AseismaticLevel,@WallMaterials,@FieldType,@Foundation,@FireproofLevel,@UnderFireproofLevel,@RoofWaterproofLevel,@UnderWaterproofLevel,@DefendLevel,@PlantSpan,@AccountReceivable,@Demo,@FormulaContent,@ChargeAmount,@ISPreferentia,@FormulaName,@MinChargeAmount,@DrawingNum,@Lng,@Lat);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
 
         public bool Update(RemoteProjects model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.RemoteProjects WHERE 1 = 1 {where}");
 
         public RemoteProjects GetModel(int key)

@@ -1,22 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
 {
     public partial class ExpertsDal
     {
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.Experts WHERE {where};") > 0;
 
         public void Add(Experts model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboExperts(");
-             strSql.Append("ExpertCode,ExpertName,Mobile,Telephone,Email,CertificateID,Profession,PersonalIntroduction,RoomNum,Photo,ExpertType,IdCard,Expertsign");
-             strSql.Append(") VALUES (");
-             strSql.Append("@ExpertCode,@ExpertName,@Mobile,@Telephone,@Email,@CertificateID,@Profession,@PersonalIntroduction,@RoomNum,@Photo,@ExpertType,@IdCard,@Expertsign);");
-             DbClient.Excute(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboExperts(");
+            strSql.Append("ExpertCode,ExpertName,Mobile,Telephone,Email,CertificateID,Profession,PersonalIntroduction,RoomNum,Photo,ExpertType,IdCard,Expertsign");
+            strSql.Append(") VALUES (");
+            strSql.Append("@ExpertCode,@ExpertName,@Mobile,@Telephone,@Email,@CertificateID,@Profession,@PersonalIntroduction,@RoomNum,@Photo,@ExpertType,@IdCard,@Expertsign);");
+            DbClient.Excute(strSql.ToString(), model);
         }
 
         public bool Update(string where)
@@ -28,7 +29,7 @@ namespace DAL
             return DbClient.Excute(strSql.ToString()) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.Experts WHERE 1 = 1 {where}");
 
         public List<Experts> GetModelList(string where)

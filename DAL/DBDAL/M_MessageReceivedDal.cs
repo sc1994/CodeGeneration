@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.M_MessageReceived WHERE {where};") > 0;
 
         public int Add(M_MessageReceived model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboM_MessageReceived(");
-             strSql.Append("MID,SendTelNumber,ReceiveTime,MessageContent,IsReaded");
-             strSql.Append(") VALUES (");
-             strSql.Append("@MID,@SendTelNumber,@ReceiveTime,@MessageContent,@IsReaded);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboM_MessageReceived(");
+            strSql.Append("MID,SendTelNumber,ReceiveTime,MessageContent,IsReaded");
+            strSql.Append(") VALUES (");
+            strSql.Append("@MID,@SendTelNumber,@ReceiveTime,@MessageContent,@IsReaded);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
 
         public bool Update(M_MessageReceived model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.M_MessageReceived WHERE 1 = 1 {where}");
 
         public M_MessageReceived GetModel(int key)

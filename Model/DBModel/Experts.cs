@@ -55,7 +55,7 @@ namespace Model
         /// <summary>
         /// 图片
         /// </summary>
-        public object Photo { get; set; } = new object();
+        public string Photo { get; set; } = string.Empty;
 
         /// <summary>
         /// 专家类型

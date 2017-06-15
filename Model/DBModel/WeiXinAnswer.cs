@@ -50,7 +50,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime AnswerTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime AnswerTime { get; set; } = ToDateTime("1900-1-1");
 
     }
 

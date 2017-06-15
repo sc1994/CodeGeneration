@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.Drawing WHERE {where};") > 0;
 
         public string Add(Drawing model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboDrawing(");
-             strSql.Append("DrawingID,RowGuid,DrawingNumber,DrawingEdition,DrawingName,DrawingSize,DrawingSpace,DrawingDesigner,DrawingUploadTime,DrawingSubmitTime,DrawingSignatureTime,DrawingSignatureStatus,CheckTime,CheckSignatureStatus,AllottedTime,ReviewTime,ReviewSignatureStatus,ReviewStatus,TaskID,ProjectID,ProjectSupType,Profession,ProfessionValue,DCID,DrawingClassifyName,DrawingStatus,BlueprintType,BlueprintSize,BlueprintPath,SignatureBlueprintPath,BlueprintDescription,IsSignature,AttachmentTypeID");
-             strSql.Append(") VALUES (");
-             strSql.Append("@DrawingID,@RowGuid,@DrawingNumber,@DrawingEdition,@DrawingName,@DrawingSize,@DrawingSpace,@DrawingDesigner,@DrawingUploadTime,@DrawingSubmitTime,@DrawingSignatureTime,@DrawingSignatureStatus,@CheckTime,@CheckSignatureStatus,@AllottedTime,@ReviewTime,@ReviewSignatureStatus,@ReviewStatus,@TaskID,@ProjectID,@ProjectSupType,@Profession,@ProfessionValue,@DCID,@DrawingClassifyName,@DrawingStatus,@BlueprintType,@BlueprintSize,@BlueprintPath,@SignatureBlueprintPath,@BlueprintDescription,@IsSignature,@AttachmentTypeID);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboDrawing(");
+            strSql.Append("DrawingID,RowGuid,DrawingNumber,DrawingEdition,DrawingName,DrawingSize,DrawingSpace,DrawingDesigner,DrawingUploadTime,DrawingSubmitTime,DrawingSignatureTime,DrawingSignatureStatus,CheckTime,CheckSignatureStatus,AllottedTime,ReviewTime,ReviewSignatureStatus,ReviewStatus,TaskID,ProjectID,ProjectSupType,Profession,ProfessionValue,DCID,DrawingClassifyName,DrawingStatus,BlueprintType,BlueprintSize,BlueprintPath,SignatureBlueprintPath,BlueprintDescription,IsSignature,AttachmentTypeID");
+            strSql.Append(") VALUES (");
+            strSql.Append("@DrawingID,@RowGuid,@DrawingNumber,@DrawingEdition,@DrawingName,@DrawingSize,@DrawingSpace,@DrawingDesigner,@DrawingUploadTime,@DrawingSubmitTime,@DrawingSignatureTime,@DrawingSignatureStatus,@CheckTime,@CheckSignatureStatus,@AllottedTime,@ReviewTime,@ReviewSignatureStatus,@ReviewStatus,@TaskID,@ProjectID,@ProjectSupType,@Profession,@ProfessionValue,@DCID,@DrawingClassifyName,@DrawingStatus,@BlueprintType,@BlueprintSize,@BlueprintPath,@SignatureBlueprintPath,@BlueprintDescription,@IsSignature,@AttachmentTypeID);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
         }
 
         public bool Update(Drawing model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.Drawing WHERE 1 = 1 {where}");
 
         public Drawing GetModel(string key)

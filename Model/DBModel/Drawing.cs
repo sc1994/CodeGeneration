@@ -50,17 +50,17 @@ namespace Model
         /// <summary>
         /// 上传时间
         /// </summary>
-        public DateTime DrawingUploadTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime DrawingUploadTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 图纸提交时间
         /// </summary>
-        public DateTime DrawingSubmitTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime DrawingSubmitTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 出图签章时间
         /// </summary>
-        public DateTime DrawingSignatureTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime DrawingSignatureTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 出图签章状态
@@ -70,7 +70,7 @@ namespace Model
         /// <summary>
         /// 初审时间
         /// </summary>
-        public DateTime CheckTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime CheckTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 初审签章状态
@@ -80,12 +80,12 @@ namespace Model
         /// <summary>
         /// 分配时间
         /// </summary>
-        public DateTime AllottedTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime AllottedTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 审查时间
         /// </summary>
-        public DateTime ReviewTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ReviewTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 审查签章状态

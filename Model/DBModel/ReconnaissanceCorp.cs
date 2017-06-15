@@ -95,12 +95,12 @@ namespace Model
         /// <summary>
         /// 最早成立时间
         /// </summary>
-        public DateTime EstablishedTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime EstablishedTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 工商注册时间
         /// </summary>
-        public DateTime RegisteredTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime RegisteredTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 注册资本

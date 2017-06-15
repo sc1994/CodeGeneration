@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.TaskArchivesAttachment WHERE {where};") > 0;
 
         public string Add(TaskArchivesAttachment model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboTaskArchivesAttachment(");
-             strSql.Append("AttachmentID,RowGuid,ArchiveID,ArchiveName,TaskID,AttachmentName,AttachmentPath,OriginalName");
-             strSql.Append(") VALUES (");
-             strSql.Append("@AttachmentID,@RowGuid,@ArchiveID,@ArchiveName,@TaskID,@AttachmentName,@AttachmentPath,@OriginalName);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboTaskArchivesAttachment(");
+            strSql.Append("AttachmentID,RowGuid,ArchiveID,ArchiveName,TaskID,AttachmentName,AttachmentPath,OriginalName");
+            strSql.Append(") VALUES (");
+            strSql.Append("@AttachmentID,@RowGuid,@ArchiveID,@ArchiveName,@TaskID,@AttachmentName,@AttachmentPath,@OriginalName);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
         }
 
         public bool Update(TaskArchivesAttachment model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.TaskArchivesAttachment WHERE 1 = 1 {where}");
 
         public TaskArchivesAttachment GetModel(string key)

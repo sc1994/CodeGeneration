@@ -55,7 +55,7 @@ namespace Model
         /// <summary>
         /// 照片
         /// </summary>
-        public object Photo { get; set; } = new object();
+        public string Photo { get; set; } = string.Empty;
 
         /// <summary>
         /// 员工角色

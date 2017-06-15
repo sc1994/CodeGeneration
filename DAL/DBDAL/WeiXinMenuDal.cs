@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,17 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.WeiXinMenu WHERE {where};") > 0;
 
-        public void Add(WeiXinMenu model)
+        public int Add(WeiXinMenu model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboWeiXinMenu(");
-             strSql.Append("MenuId,MenuName,MenuType,MenuKey,MenuUrl,FID");
-             strSql.Append(") VALUES (");
-             strSql.Append("@MenuId,@MenuName,@MenuType,@MenuKey,@MenuUrl,@FID);");
-             DbClient.Excute(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboWeiXinMenu(");
+            strSql.Append("MenuId,MenuName,MenuType,MenuKey,MenuUrl,FID");
+            strSql.Append(") VALUES (");
+            strSql.Append("@MenuId,@MenuName,@MenuType,@MenuKey,@MenuUrl,@FID);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
 
         public bool Update(WeiXinMenu model)
@@ -50,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.WeiXinMenu WHERE 1 = 1 {where}");
 
         public WeiXinMenu GetModel(int key)

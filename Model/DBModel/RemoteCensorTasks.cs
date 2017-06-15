@@ -115,12 +115,12 @@ namespace Model
         /// <summary>
         /// 送审日期
         /// </summary>
-        public DateTime DeliverDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime DeliverDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 颁书日期（审查结束日期）
         /// </summary>
-        public DateTime IssueDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime IssueDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 任务状态(0等待补齐材料|1等待分配|2正在审查|3审查结束|4回复通过|5收费完成|6审批通过)
@@ -195,7 +195,7 @@ namespace Model
         /// <summary>
         /// 上报时间
         /// </summary>
-        public DateTime ReportedTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ReportedTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 任务接审人
@@ -210,7 +210,7 @@ namespace Model
         /// <summary>
         /// 审批时间
         /// </summary>
-        public DateTime ApproveDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ApproveDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 颁证人
@@ -250,32 +250,32 @@ namespace Model
         /// <summary>
         /// 图纸提交日期
         /// </summary>
-        public DateTime DrawingSubmitDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime DrawingSubmitDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 任务接收时间
         /// </summary>
-        public DateTime TaskAcceptDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime TaskAcceptDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 任务分配时间
         /// </summary>
-        public DateTime TaskAllotDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime TaskAllotDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 回复提交日期
         /// </summary>
-        public DateTime ReplySubmitDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ReplySubmitDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 回复完成日期
         /// </summary>
-        public DateTime ReplyCompleteDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ReplyCompleteDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 颁证日期
         /// </summary>
-        public DateTime AwardDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime AwardDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 是否联合接审 1是0否
@@ -300,12 +300,12 @@ namespace Model
         /// <summary>
         /// 审查日期
         /// </summary>
-        public DateTime CensorOpinionDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime CensorOpinionDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 图纸下载日期
         /// </summary>
-        public DateTime DownLoadDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime DownLoadDate { get; set; } = ToDateTime("1900-1-1");
 
     }
 

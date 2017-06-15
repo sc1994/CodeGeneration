@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Model;
 using System.Text;
 
 namespace DAL
@@ -13,18 +14,18 @@ namespace DAL
             return DbClient.Excute(strSql, parameters) > 0;
         }
 
-        public bool Exists(string where)
+        public bool ExistsByWhere(string where)
             => DbClient.ExecuteScalar<int>($"SELECT COUNT(1) FROM DJES.dbo.CustomerInfo WHERE {where};") > 0;
 
         public int Add(CustomerInfo model)
         {
-             var strSql = new StringBuilder();
-             strSql.Append("INSERT INTO DJES.dboCustomerInfo(");
-             strSql.Append("CustomerID,CustomerName,DisplayCustomerName,CustomerType,Password,Bank,Account,Website,Jgzzjgdm,Jgrdzsh,Cspzjg,Pzwh,Pzrq,Jglx,Logo,ValidDay,Status,MinChargeAmount,PreferentialQuota,PreferentialDiscount,MaxChargeAmount,WeiXinPicture,Remind,AppId,AppSecret,AppToken,AppEncodingAesKey,ConstructHeading,SeismicHeading,Message_POST_URL,Message_ACCOUNT,Message_AUTHKEY,Message_CGID,WX_CorpId,WX_CorpSecret,WX_CorpToken,WX_EncodingAESKey,WX_Agentid,SignatureServer");
-             strSql.Append(") VALUES (");
-             strSql.Append("@CustomerID,@CustomerName,@DisplayCustomerName,@CustomerType,@Password,@Bank,@Account,@Website,@Jgzzjgdm,@Jgrdzsh,@Cspzjg,@Pzwh,@Pzrq,@Jglx,@Logo,@ValidDay,@Status,@MinChargeAmount,@PreferentialQuota,@PreferentialDiscount,@MaxChargeAmount,@WeiXinPicture,@Remind,@AppId,@AppSecret,@AppToken,@AppEncodingAesKey,@ConstructHeading,@SeismicHeading,@Message_POST_URL,@Message_ACCOUNT,@Message_AUTHKEY,@Message_CGID,@WX_CorpId,@WX_CorpSecret,@WX_CorpToken,@WX_EncodingAESKey,@WX_Agentid,@SignatureServer);");
-             strSql.Append("SELECT @@IDENTITY");
-             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
+            var strSql = new StringBuilder();
+            strSql.Append("INSERT INTO DJES.dboCustomerInfo(");
+            strSql.Append("CustomerID,CustomerName,DisplayCustomerName,CustomerType,Password,Bank,Account,Website,Jgzzjgdm,Jgrdzsh,Cspzjg,Pzwh,Pzrq,Jglx,Logo,ValidDay,Status,MinChargeAmount,PreferentialQuota,PreferentialDiscount,MaxChargeAmount,WeiXinPicture,Remind,AppId,AppSecret,AppToken,AppEncodingAesKey,ConstructHeading,SeismicHeading,Message_POST_URL,Message_ACCOUNT,Message_AUTHKEY,Message_CGID,WX_CorpId,WX_CorpSecret,WX_CorpToken,WX_EncodingAESKey,WX_Agentid,SignatureServer");
+            strSql.Append(") VALUES (");
+            strSql.Append("@CustomerID,@CustomerName,@DisplayCustomerName,@CustomerType,@Password,@Bank,@Account,@Website,@Jgzzjgdm,@Jgrdzsh,@Cspzjg,@Pzwh,@Pzrq,@Jglx,@Logo,@ValidDay,@Status,@MinChargeAmount,@PreferentialQuota,@PreferentialDiscount,@MaxChargeAmount,@WeiXinPicture,@Remind,@AppId,@AppSecret,@AppToken,@AppEncodingAesKey,@ConstructHeading,@SeismicHeading,@Message_POST_URL,@Message_ACCOUNT,@Message_AUTHKEY,@Message_CGID,@WX_CorpId,@WX_CorpSecret,@WX_CorpToken,@WX_EncodingAESKey,@WX_Agentid,@SignatureServer);");
+            strSql.Append("SELECT @@IDENTITY");
+            return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
 
         public bool Update(CustomerInfo model)
@@ -51,7 +52,7 @@ namespace DAL
             return DbClient.Excute(strSql, new { key }) > 0;
         }
 
-        public int Delete(string where)
+        public int DeleteByWhere(string where)
             => DbClient.Excute($"DELETE FROM DJES.dbo.CustomerInfo WHERE 1 = 1 {where}");
 
         public CustomerInfo GetModel(int key)

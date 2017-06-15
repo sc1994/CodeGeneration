@@ -25,17 +25,17 @@ namespace Model
         /// <summary>
         /// 回复日期
         /// </summary>
-        public DateTime ReviewDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ReviewDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 分配时间
         /// </summary>
-        public DateTime ReAssignTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ReAssignTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 计划完成时间
         /// </summary>
-        public DateTime RePlanFinishTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime RePlanFinishTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 复审专家
@@ -45,7 +45,7 @@ namespace Model
         /// <summary>
         /// 复审日期
         /// </summary>
-        public DateTime ReCensorDate { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ReCensorDate { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 复审材料
@@ -75,7 +75,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime TaskResponsibleCensorDate { get; set; } = ToDateTime("(((1900)-(1))-(1))");
+        public DateTime TaskResponsibleCensorDate { get; set; } = ToDateTime("1900-1-1");
 
     }
 

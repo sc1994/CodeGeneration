@@ -40,7 +40,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime AddTime { get; set; } = ToDateTime("(((1900)-(1))-(1))");
+        public DateTime AddTime { get; set; } = ToDateTime("1900-1-1");
 
     }
 

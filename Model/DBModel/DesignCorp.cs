@@ -95,12 +95,12 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime EstablishedTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime EstablishedTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 
         /// </summary>
-        public DateTime RegisteredTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime RegisteredTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 

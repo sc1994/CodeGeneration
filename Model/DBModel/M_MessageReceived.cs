@@ -20,7 +20,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime ReceiveTime { get; set; } = ToDateTime("('1900-1-1')");
+        public DateTime ReceiveTime { get; set; } = ToDateTime("1900-1-1");
 
         /// <summary>
         /// 
