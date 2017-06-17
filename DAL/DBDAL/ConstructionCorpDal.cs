@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Model;
+using Model.DBModel;
 using System.Text;
 
-namespace DAL
+namespace DAL.DBDAL
 {
     public partial class ConstructionCorpDal
     {
@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboConstructionCorp(");
-            strSql.Append("CorpName,ContactPerson,ContactPersonTel,WinXinNo");
+            strSql.Append("CorpName,ContactPerson,ContactPersonTel,WinXinNo,OrganizationCode,Password,CorpStatus,RegisterDate");
             strSql.Append(") VALUES (");
-            strSql.Append("@CorpName,@ContactPerson,@ContactPersonTel,@WinXinNo);");
+            strSql.Append("@CorpName,@ContactPerson,@ContactPersonTel,@WinXinNo,@OrganizationCode,@Password,@CorpStatus,@RegisterDate);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
@@ -32,7 +32,7 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("UPDATE DJES.dboConstructionCorp SET ");
-            strSql.Append("CorpName = @CorpName,ContactPerson = @ContactPerson,ContactPersonTel = @ContactPersonTel,WinXinNo = @WinXinNo");
+            strSql.Append("CorpName = @CorpName,ContactPerson = @ContactPerson,ContactPersonTel = @ContactPersonTel,WinXinNo = @WinXinNo,OrganizationCode = @OrganizationCode,Password = @Password,CorpStatus = @CorpStatus,RegisterDate = @RegisterDate");
             strSql.Append(" WHERE CorpID = @CorpID");
             return DbClient.Excute(strSql.ToString(), model) > 0;
         }
@@ -41,7 +41,7 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("UPDATE DJES.dboConstructionCorp SET ");
-            strSql.Append("CorpName = @CorpName,ContactPerson = @ContactPerson,ContactPersonTel = @ContactPersonTel,WinXinNo = @WinXinNo");
+            strSql.Append("CorpName = @CorpName,ContactPerson = @ContactPerson,ContactPersonTel = @ContactPersonTel,WinXinNo = @WinXinNo,OrganizationCode = @OrganizationCode,Password = @Password,CorpStatus = @CorpStatus,RegisterDate = @RegisterDate");
             strSql.Append($" WHERE 1=1 {where}");
             return DbClient.Excute(strSql.ToString()) > 0;
         }

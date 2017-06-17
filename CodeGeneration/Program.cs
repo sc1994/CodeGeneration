@@ -388,7 +388,7 @@ namespace CodeGeneration
         {
             var code = new StringBuilder();
             code.AppendLine("using System;\r\n");
-            code.AppendLine($"namespace {InfoModel.Model.Split('/')[0]}");
+            code.AppendLine($"namespace {InfoModel.Model.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine($"    public class {tableInfo.Key} : BaseModel");
             code.AppendLine("    {");
@@ -422,9 +422,9 @@ namespace CodeGeneration
             var code = new StringBuilder();
             code.AppendLine("using System.Collections.Generic;");
             code.AppendLine("using System.Linq;");
-            code.AppendLine($"using {InfoModel.Model.Split('/')[0]};");
+            code.AppendLine($"using {InfoModel.Model.Replace("/", ".")};");
             code.AppendLine("using System.Text;\r\n");
-            code.AppendLine($"namespace {InfoModel.Dal.Split('/')[0]}");
+            code.AppendLine($"namespace {InfoModel.Dal.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine($"    public partial class {tableInfo.Key}Dal");
             code.AppendLine("    {");
@@ -560,7 +560,7 @@ namespace CodeGeneration
         static StringBuilder GetDalExtendCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine($"namespace {InfoModel.Dal.Split('/')[0]}");
+            code.AppendLine($"namespace {InfoModel.Dal.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine($"    public partial class {tableInfo.Key}Dal");
             code.AppendLine("    {");
@@ -573,7 +573,7 @@ namespace CodeGeneration
         {
             var code = new StringBuilder();
             code.AppendLine("using System.Collections.Generic;\r\n");
-            code.AppendLine($"namespace {InfoModel.Bll.Split('/')[0]}");
+            code.AppendLine($"namespace {InfoModel.Bll.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine($"    public partial class {tableInfo.Key}Bll");
             code.AppendLine("    {");
@@ -596,8 +596,6 @@ namespace CodeGeneration
             sw.Write(sb.ToString());
             sw.Close();
         }
-
-
 
         /// <summary>
         /// 在csproj文件中注册,使其包含在项目中

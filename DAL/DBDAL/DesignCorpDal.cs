@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Model;
+using Model.DBModel;
 using System.Text;
 
-namespace DAL
+namespace DAL.DBDAL
 {
     public partial class DesignCorpDal
     {

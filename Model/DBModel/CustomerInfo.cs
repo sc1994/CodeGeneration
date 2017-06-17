@@ -1,11 +1,11 @@
 using System;
 
-namespace Model
+namespace Model.DBModel
 {
     public class CustomerInfo : BaseModel
     {
-        public static string PrimaryKey = "CustomerID";
-        public static string IdentityKey = "CustomerID";
+        public static string PrimaryKey = "";
+        public static string IdentityKey = "";
 
         /// <summary>
         /// 客户编号
@@ -26,6 +26,11 @@ namespace Model
         /// 客户类型
         /// </summary>
         public string CustomerType { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 部门类型
+        /// </summary>
+        public int CustomerTypeCode { get; set; }
 
         /// <summary>
         /// 省系统登录密码
@@ -223,6 +228,10 @@ namespace Model
         /// 客户类型
         /// </summary>
         CustomerType,
+        /// <summary>
+        /// 部门类型
+        /// </summary>
+        CustomerTypeCode,
         /// <summary>
         /// 省系统登录密码
         /// </summary>

@@ -171,6 +171,8 @@
     <Compile Include="DBDAL\WeiXinAnswer_bakDal.Extend.cs" />
     <Compile Include="DBDAL\WeiXinArticleDal.cs" />
     <Compile Include="DBDAL\WeiXinArticleDal.Extend.cs" />
+    <Compile Include="DBDAL\OperationLogDal.cs" />
+    <Compile Include="DBDAL\OperationLogDal.Extend.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj">

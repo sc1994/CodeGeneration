@@ -1,6 +1,6 @@
 using System;
 
-namespace Model
+namespace Model.DBModel
 {
     public class ConstructionCorp : BaseModel
     {
@@ -32,6 +32,26 @@ namespace Model
         /// </summary>
         public string WinXinNo { get; set; } = string.Empty;
 
+        /// <summary>
+        /// 代码证
+        /// </summary>
+        public string OrganizationCode { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 登录密码
+        /// </summary>
+        public string Password { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int CorpStatus { get; set; }
+
+        /// <summary>
+        /// 注册日期
+        /// </summary>
+        public DateTime RegisterDate { get; set; } = ToDateTime("1900-01-01");
+
     }
 
 
@@ -57,5 +77,21 @@ namespace Model
         /// 建设单位微信号
         /// </summary>
         WinXinNo,
+        /// <summary>
+        /// 代码证
+        /// </summary>
+        OrganizationCode,
+        /// <summary>
+        /// 登录密码
+        /// </summary>
+        Password,
+        /// <summary>
+        /// 状态
+        /// </summary>
+        CorpStatus,
+        /// <summary>
+        /// 注册日期
+        /// </summary>
+        RegisterDate,
     }
 }

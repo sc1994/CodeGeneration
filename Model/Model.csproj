@@ -104,6 +104,7 @@
     <Compile Include="DBModel\ProjectArchives.cs" />
     <Compile Include="DBModel\WeiXinAnswer_bak.cs" />
     <Compile Include="DBModel\WeiXinArticle.cs" />
+    <Compile Include="DBModel\OperationLog.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
