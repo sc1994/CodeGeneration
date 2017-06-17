@@ -20,7 +20,7 @@ namespace CodeGeneration
         static void Main(string[] args)
         {
             #region 初始化
-            START: Log();
+            START: Logo();
             Console.ReadLine();
             Console.WriteLine("配置文件加载成功");
             ShowInfo();
@@ -45,6 +45,7 @@ namespace CodeGeneration
 
             #region 检验必要的文件和路径
             var layersPaths = new Dictionary<string, string>();
+            #region Model
             var pathDb = InfoModel.Model.Split('/')[0];
             string path;
             if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
@@ -74,16 +75,37 @@ namespace CodeGeneration
             }
             else
                 ShowError($"验证: {InfoModel.Model} Error");
-            pathDb = InfoModel.Bll.Split('/')[0];
+            #endregion
+
+            #region IDAL
+            pathDb = InfoModel.IDal.Split('/')[0];
             if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
             {
                 Console.WriteLine($"验证: {pathDb} Success");
-
                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
-                layersPaths.Add("Bll", ExamineFolder(InfoModel.Bll, path));
+                Console.WriteLine("验证是否存在BaseModel.cs");
+                if (File.Exists(path + "\\BaseModel.cs"))
+                {
+                    ShowGood("已存在IBaseDal.cs");
+                }
+                else
+                {
+                    Console.WriteLine("正在帮您生成 IBaseDal.cs...");
+                    try
+                    {
+                        WriteToFile(GetIBaseDalCode(), path + "\\IBaseDal.cs", path + "\\" + pathDb + ".csproj");
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError("出现异常-->" + ex.Message);
+                    }
+                    ShowGood("生成IBaseDal.cs Success");
+                }
+                layersPaths.Add("IDal", ExamineFolder(InfoModel.IDal, path));
             }
-            else
-                ShowError($"验证: {pathDb} Error");
+            #endregion
+
+            #region DAL
             pathDb = InfoModel.Dal.Split('/')[0];
             if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
             {
@@ -112,6 +134,38 @@ namespace CodeGeneration
             }
             else
                 ShowError($"验证: {pathDb} Error");
+            #endregion
+
+            #region BLL
+            pathDb = InfoModel.Bll.Split('/')[0];
+            if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
+            {
+                Console.WriteLine($"验证: {pathDb} Success");
+                Console.WriteLine("验证是否存在BaseBll.cs");
+                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
+                if (File.Exists(path + "\\BaseBll.cs"))
+                {
+                    ShowGood("已存在BaseBll.cs");
+                }
+                else
+                {
+                    Console.WriteLine("正在帮您生成 BaseBll.cs...");
+                    try
+                    {
+                        WriteToFile(GetBaseBllCode(), path + "\\BaseBll.cs", path + "\\" + pathDb + ".csproj");
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError("出现异常-->" + ex.Message);
+                    }
+                    ShowGood("生成BaseBll.cs Success");
+                }
+                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
+                layersPaths.Add("Bll", ExamineFolder(InfoModel.Bll, path));
+            }
+            else
+                ShowError($"验证: {pathDb} Error");
+            #endregion
             #endregion
 
             #region 和数据库握手
@@ -157,7 +211,7 @@ namespace CodeGeneration
                                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.Model.Split('/')[0]))?.FullName ?? "";
                                 if (!string.IsNullOrEmpty(path))
                                 {
-                                    WriteToFile(GetModelCode(g), layersPath.Value + "//" + g.Key + ".cs", path + "\\" + InfoModel.Model.Split('/')[0] + ".csproj");
+                                    WriteToFile(GetModelCode(g), layersPath.Value + "\\" + g.Key + ".cs", path + "\\" + InfoModel.Model.Split('/')[0] + ".csproj");
                                 }
                                 else
                                 {
@@ -173,6 +227,22 @@ namespace CodeGeneration
 
                         #region 生成BLL
                         case "Bll":
+                            try
+                            {
+                                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.Bll.Split('/')[0]))?.FullName ?? "";
+                                if (!string.IsNullOrEmpty(path))
+                                {
+                                    WriteToFile(GetBllCode(g), layersPath.Value + "\\" + g.Key + "Bll.cs", path + "\\" + InfoModel.Bll.Split('/')[0] + ".csproj");
+                                }
+                                else
+                                {
+                                    ShowError("路径错误-->跳过 Bll ");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ShowError("出现异常-->" + ex.Message);
+                            }
                             break;
                         #endregion
 
@@ -183,12 +253,33 @@ namespace CodeGeneration
                                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.Dal.Split('/')[0]))?.FullName ?? "";
                                 if (!string.IsNullOrEmpty(path))
                                 {
-                                    WriteToFile(GetDalCode(g), layersPath.Value + "//" + g.Key + "Dal.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
-                                    WriteToFile(GetDalExtendCode(g), layersPath.Value + "//" + g.Key + "Dal.Extend.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
+                                    WriteToFile(GetDalCode(g), layersPath.Value + "\\" + g.Key + "Dal.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
+                                    WriteToFile(GetDalExtendCode(g), layersPath.Value + "\\" + g.Key + "Dal.Extend.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
                                 }
                                 else
                                 {
                                     ShowError("路径错误-->跳过 Dal ");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ShowError("出现异常-->" + ex.Message);
+                            }
+                            break;
+                        #endregion
+
+                        #region 生成IDal
+                        case "IDal":
+                            try
+                            {
+                                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.IDal.Split('/')[0]))?.FullName ?? "";
+                                if (!string.IsNullOrEmpty(path))
+                                {
+                                    WriteToFile(GetIDalCode(g), layersPath.Value + "\\" + "I" + g.Key + "Dal.cs", path + "\\" + InfoModel.IDal.Split('/')[0] + ".csproj");
+                                }
+                                else
+                                {
+                                    ShowError("路径错误-->跳过 IDal ");
                                 }
                             }
                             catch (Exception ex)
@@ -206,6 +297,7 @@ namespace CodeGeneration
             Console.Clear();
             goto START;
         }
+
 
 
         static StringBuilder GetBaseModelCode()
@@ -285,6 +377,30 @@ namespace CodeGeneration
             code.AppendLine("        {");
             code.AppendLine("            return str == \"1\";");
             code.AppendLine("        }\r\n");
+            code.AppendLine("    }");
+            code.AppendLine("}");
+            return code;
+        }
+
+        static StringBuilder GetIBaseDalCode()
+        {
+            var code = new StringBuilder();
+            code.AppendLine($"using {InfoModel.Model.Split('/')[0]};");
+            code.AppendLine("using System.Collections.Generic;\r\n");
+            code.AppendLine($"namespace {InfoModel.IDal.Split('/')[0]}");
+            code.AppendLine("{");
+            code.AppendLine("    public interface IBaseDal<TModel, TEnum, TKeyType> where TModel : BaseModel");
+            code.AppendLine("    {");
+            code.AppendLine("        bool Exists(TKeyType primaryKey);\r\n");
+            code.AppendLine("        bool ExistsByWhere(string where);\r\n");
+            code.AppendLine("        TKeyType Add(TModel model);\r\n");
+            code.AppendLine("        bool Update(TModel model);\r\n");
+            code.AppendLine("        bool Update(Dictionary<TEnum, object> updates, string where);\r\n");
+            code.AppendLine("        bool Delete(TKeyType primaryKey);\r\n");
+            code.AppendLine("        int DeleteByWhere(string where);\r\n");
+            code.AppendLine("        TModel GetModel(TKeyType primaryKey);\r\n");
+            code.AppendLine("        List<TModel> GetModelList(string where);\r\n");
+            code.AppendLine("        List<TModel> GetModelPage(TEnum order, string where, int pageIndex, int pageSize, out int total);\r\n");
             code.AppendLine("    }");
             code.AppendLine("}");
             return code;
@@ -384,6 +500,117 @@ namespace CodeGeneration
             return code;
         }
 
+        static StringBuilder GetBaseBllCode()
+        {
+            var code = new StringBuilder();
+            code.AppendLine($"using {InfoModel.IDal.Split('/')[0]};");
+            code.AppendLine($"using {InfoModel.Model.Split('/')[0]};");
+            code.AppendLine($"using System.Collections.Generic;\r\n");
+            code.AppendLine($"namespace {InfoModel.Bll.Split('/')[0]}");
+            code.AppendLine("{");
+            code.AppendLine("    public class BaseBll<TModel, TEmun, TKeyType> where TModel : BaseModel");
+            code.AppendLine("    {");
+            code.AppendLine("        protected IBaseDal<TModel, TEmun, TKeyType> Dal;\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 数据是否存在 (表中没有主键时此方法不适用)");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"primaryKey\">主键</param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public bool Exists(TKeyType primaryKey)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.Exists(primaryKey);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 数据是否存在");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public bool ExistsByWhere(string where)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.ExistsByWhere(where);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 向表中添加一条数据");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"model\"></param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public TKeyType Add(TModel model)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.Add(model);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 更新一条数据");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"model\"></param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public bool Update(TModel model)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.Update(model);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 批量更新");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"updates\">需要更新字段的键值对</param>");
+            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public bool Update(Dictionary<TEmun, object> updates, string where)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.Update(updates, where);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 删除一条数据 (表中没有主键时此方法不适用)");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"primaryKey\">主键</param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public bool Delete(TKeyType primaryKey)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.Delete(primaryKey);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 批量删除");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public int DeleteByWhere(string where)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.DeleteByWhere(where);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 获取对象 (表中没有主键时此方法不适用)");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"primaryKey\">主键</param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public TModel GetModel(TKeyType primaryKey)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.GetModel(primaryKey);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 获取对象列表");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public List<TModel> GetModelList(string where)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.GetModelList(where);");
+            code.AppendLine("        }\r\n");
+            code.AppendLine("        /// <summary>");
+            code.AppendLine("        /// 获取分页对象列表");
+            code.AppendLine("        /// </summary>");
+            code.AppendLine("        /// <param name=\"order\">分页排序的依据</param>");
+            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
+            code.AppendLine("        /// <param name=\"pageIndex\">开始页数</param>");
+            code.AppendLine("        /// <param name=\"pageSize\">每页大小</param>");
+            code.AppendLine("        /// <param name=\"total\">out 总数</param>");
+            code.AppendLine("        /// <returns></returns>");
+            code.AppendLine("        public List<TModel> GetModelPage(TEmun order, string where, int pageIndex, int pageSize, out int total)");
+            code.AppendLine("        {");
+            code.AppendLine("            return Dal.GetModelPage(order, where, pageIndex, pageSize, out total);");
+            code.AppendLine("        }");
+            code.AppendLine("    }");
+            code.AppendLine("}");
+            return code;
+        }
+
         static StringBuilder GetModelCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
@@ -417,16 +644,33 @@ namespace CodeGeneration
             return code;
         }
 
+        static StringBuilder GetIDalCode(IGrouping<string, TableInfo> tableInfo)
+        {
+            var code = new StringBuilder();
+            code.AppendLine($"using {InfoModel.Model.Replace("/", ".")};\r\n");
+            code.AppendLine($"namespace {InfoModel.IDal.Replace("/", ".")}");
+            code.AppendLine("{");
+            var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
+            var typeAndDefault = primaryKey != null ? GetTypeAndDefault(primaryKey, "") : new[] { "object", "" };
+            code.AppendLine($"    public interface I{tableInfo.Key}Dal : IBaseDal<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}>");
+            code.AppendLine("    {\r\n");
+            code.AppendLine("    }");
+            code.AppendLine("}");
+            return code;
+        }
+
         static StringBuilder GetDalCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
+            code.AppendLine("using Dapper;");
             code.AppendLine("using System.Collections.Generic;");
             code.AppendLine("using System.Linq;");
+            code.AppendLine($"using {InfoModel.IDal.Replace("/", ".")};");
             code.AppendLine($"using {InfoModel.Model.Replace("/", ".")};");
             code.AppendLine("using System.Text;\r\n");
             code.AppendLine($"namespace {InfoModel.Dal.Replace("/", ".")}");
             code.AppendLine("{");
-            code.AppendLine($"    public partial class {tableInfo.Key}Dal");
+            code.AppendLine($"    public partial class {tableInfo.Key}Dal : I{tableInfo.Key}Dal");
             code.AppendLine("    {");
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
             var identityKey = tableInfo.FirstOrDefault(x => x.IdentityKey == "1");
@@ -434,6 +678,7 @@ namespace CodeGeneration
             var tableName = $"{InfoModel.DBName}.dbo.{tableInfo.Key}";
 
             #region 是否存在
+
             if (primaryKey != null)
             {
                 typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
@@ -442,6 +687,13 @@ namespace CodeGeneration
                 code.AppendLine($"            var strSql = \"SELECT COUNT(1) FROM {tableName} WHERE {primaryKey.PrimaryKey} = @primaryKey\";");
                 code.AppendLine("            var parameters = new { primaryKey };");
                 code.AppendLine("            return DbClient.Excute(strSql, parameters) > 0;");
+                code.AppendLine("        }\r\n");
+            }
+            else
+            {
+                code.AppendLine($"        public bool Exists(object primaryKey)");
+                code.AppendLine("        {");
+                code.AppendLine("            return false;");
                 code.AppendLine("        }\r\n");
             }
 
@@ -457,7 +709,7 @@ namespace CodeGeneration
             }
             else
             {
-                code.AppendLine($"        public void Add({tableInfo.Key} model)");
+                code.AppendLine($"        public object Add({tableInfo.Key} model)");
             }
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
@@ -472,12 +724,13 @@ namespace CodeGeneration
             }
             else
             {
-                code.AppendLine("            DbClient.Excute(strSql.ToString(), model);");
+                code.AppendLine("            return DbClient.Excute(strSql.ToString(), model);");
             }
             code.AppendLine("        }\r\n");
             #endregion
 
             #region Update
+
             if (primaryKey != null ||
                 identityKey != null)
             {
@@ -485,7 +738,8 @@ namespace CodeGeneration
                 code.AppendLine("        {");
                 code.AppendLine("            var strSql = new StringBuilder();");
                 code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
-                code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
+                code.AppendLine(
+                    $"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
                 code.AppendLine(primaryKey != null
                                     ? $"            strSql.Append(\" WHERE {primaryKey.FieldName} = @{primaryKey.FieldName}\");"
                                     : $"            strSql.Append(\" WHERE {identityKey.FieldName} = @{identityKey.FieldName}\");");
@@ -493,25 +747,46 @@ namespace CodeGeneration
                 code.AppendLine("        }\r\n");
 
             }
-            code.AppendLine("        public bool Update(string where)");
+            else
+            {
+                code.AppendLine($"        public bool Update({tableInfo.Key} model)");
+                code.AppendLine("        {");
+                code.AppendLine("            return false;");
+                code.AppendLine("        }\r\n");
+            }
+            code.AppendLine($"        public bool Update(Dictionary<{tableInfo.Key}Enum, object> updates, string where)");
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
             code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
-            code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
+            code.AppendLine("            var para = new DynamicParameters();");
+            code.AppendLine("            foreach (var update in updates)");
+            code.AppendLine("            {");
+            code.AppendLine("                strSql.Append($\" {update.Key} = @{update.Key},\");");
+            code.AppendLine("                para.Add(update.Key.ToString(), update.Value);");
+            code.AppendLine("            }");
+            code.AppendLine("            strSql.Remove(strSql.Length - 1, 1);");
             code.AppendLine("            strSql.Append($\" WHERE 1=1 {where}\");");
-            code.AppendLine("            return DbClient.Excute(strSql.ToString()) > 0;");
+            code.AppendLine("            return DbClient.Excute(strSql.ToString(), para) > 0;");
             code.AppendLine("        }\r\n");
             #endregion
 
             #region Delete
+
             if (primaryKey != null)
             {
                 typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
                 var fileName = primaryKey.FieldName;
-                code.AppendLine($"        public bool Delete({typeAndDefault[0]} key)");
+                code.AppendLine($"        public bool Delete({typeAndDefault[0]} primaryKey)");
                 code.AppendLine("        {");
-                code.AppendLine($"            var strSql = \"DELETE FROM {tableName} WHERE {fileName} = @key\";");
-                code.AppendLine("            return DbClient.Excute(strSql, new { key }) > 0;");
+                code.AppendLine($"            var strSql = \"DELETE FROM {tableName} WHERE {fileName} = @primaryKey\";");
+                code.AppendLine("            return DbClient.Excute(strSql, new { primaryKey }) > 0;");
+                code.AppendLine("        }\r\n");
+            }
+            else
+            {
+                code.AppendLine($"        public bool Delete(object primaryKey)");
+                code.AppendLine("        {");
+                code.AppendLine("            return false;");
                 code.AppendLine("        }\r\n");
             }
 
@@ -520,15 +795,23 @@ namespace CodeGeneration
             #endregion
 
             #region Select
+
             if (primaryKey != null)
             {
                 typeAndDefault = GetTypeAndDefault(primaryKey, tableInfo.Key);
                 var fileName = primaryKey.FieldName;
-                // 主键或者自增键查询
-                code.AppendLine($"        public {tableInfo.Key} GetModel({typeAndDefault[0]} key)");
+                // 主键查询
+                code.AppendLine($"        public {tableInfo.Key} GetModel({typeAndDefault[0]} primaryKey)");
                 code.AppendLine("        {");
-                code.AppendLine($"            var strSql = \"SELECT * FROM {tableName} WHERE {fileName} = @key\";");
-                code.AppendLine($"            return DbClient.Query<{tableInfo.Key}>(strSql, new {{ key }}).FirstOrDefault();");
+                code.AppendLine($"            var strSql = \"SELECT * FROM {tableName} WHERE {fileName} = @primaryKey\";");
+                code.AppendLine($"            return DbClient.Query<{tableInfo.Key}>(strSql, new {{ primaryKey }}).FirstOrDefault();");
+                code.AppendLine("        }\r\n");
+            }
+            else
+            {
+                code.AppendLine($"        public {tableInfo.Key} GetModel(object primaryKey)");
+                code.AppendLine("        {");
+                code.AppendLine("            return null;");
                 code.AppendLine("        }\r\n");
             }
             // 普通查询
@@ -538,11 +821,11 @@ namespace CodeGeneration
             code.AppendLine($"            return DbClient.Query<{tableInfo.Key}>(strSql).ToList();");
             code.AppendLine("        }\r\n");
             // 分页查询
-            code.AppendLine($"        public List<{tableInfo.Key}> GetModelPage(string where, int pageIndex, int pageSize, out int total)");
+            code.AppendLine($"        public List<{tableInfo.Key}> GetModelPage({tableInfo.Key}Enum order, string where, int pageIndex, int pageSize, out int total)");
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
             code.AppendLine("            strSql.Append($\"SELECT * FROM ( SELECT TOP ( {pageSize} )\");");
-            code.AppendLine("            strSql.Append(\"ROW_NUMBER() OVER ( ORDER BY ct.TaskID DESC ) AS ROWNUMBER,* \");");
+            code.AppendLine("            strSql.Append($\"ROW_NUMBER() OVER ( ORDER BY {order} DESC ) AS ROWNUMBER,* \");");
             code.AppendLine($"            strSql.Append(\" FROM  {tableName} \");");
             code.AppendLine("            strSql.Append($\" WHERE {where} \");");
             code.AppendLine("            strSql.Append(\" ) A\");");
@@ -563,7 +846,7 @@ namespace CodeGeneration
             code.AppendLine($"namespace {InfoModel.Dal.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine($"    public partial class {tableInfo.Key}Dal");
-            code.AppendLine("    {");
+            code.AppendLine("    {\r\n");
             code.AppendLine("    }");
             code.AppendLine("}");
             return code;
@@ -572,14 +855,13 @@ namespace CodeGeneration
         static StringBuilder GetBllCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine("using System.Collections.Generic;\r\n");
+            code.AppendLine("using Model.DBModel;\r\n");
             code.AppendLine($"namespace {InfoModel.Bll.Replace("/", ".")}");
             code.AppendLine("{");
-            code.AppendLine($"    public partial class {tableInfo.Key}Bll");
-            code.AppendLine("    {");
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
-            var identityKey = tableInfo.FirstOrDefault(x => x.IdentityKey == "1");
-            var typeAndDefault = new string[2];
+            var typeAndDefault = primaryKey != null ? GetTypeAndDefault(primaryKey, "") : new[] { "object", "" };
+            code.AppendLine($"    public class {tableInfo.Key}Bll : BaseBll<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}>");
+            code.AppendLine("    {\r\n");
             code.AppendLine("    }");
             code.AppendLine("}");
             return code;
@@ -587,10 +869,9 @@ namespace CodeGeneration
 
         static void WriteToFile(StringBuilder sb, string path, string csprojPath)
         {
-            var pathSplit = path.Split('\\');
             if (!File.Exists(path))
             {
-                IntoCsproj(csprojPath, pathSplit[pathSplit.Length - 1]);
+                IntoCsproj(csprojPath, string.Join("\\", path.Split('\\').Except(csprojPath.Split('\\'))));
             }
             var sw = File.CreateText(path);
             sw.Write(sb.ToString());
@@ -806,7 +1087,7 @@ namespace CodeGeneration
             Console.ResetColor();
         }
 
-        static void Log()
+        static void Logo()
         {
             var log = @"
                                                      _-~~~~-                           
@@ -831,7 +1112,7 @@ namespace CodeGeneration
                                          | |    < |                 | |   |_/          
                                          < |    /__\                <  \               
                                          /__\                       /___\          --by : suncheng
-";
+                        ";
             Console.ForegroundColor = ConsoleColor.Blue;
             foreach (var s in log)
             {
@@ -840,17 +1121,6 @@ namespace CodeGeneration
             Console.ResetColor();
         }
 
-        public class Info
-        {
-            public string SolutionPath { get; set; }
-            public string Dal { get; set; }
-            public string Bll { get; set; }
-            public string Model { get; set; }
-            // ReSharper disable once InconsistentNaming
-            public string DBName { get; set; }
-            public string DBService { get; set; }
-            public bool Factory { get; set; }
-        }
 
         public class DbClient
         {
@@ -995,5 +1265,19 @@ namespace CodeGeneration
         public int Size { get; set; }
         public string Default { get; set; }
         public string Describe { get; set; }
+    }
+
+    public class Info
+    {
+        public string SolutionPath { get; set; }
+        public string Dal { get; set; }
+        public string Bll { get; set; }
+        public string Model { get; set; }
+        // ReSharper disable once InconsistentNaming
+        public string DBName { get; set; }
+        public string DBService { get; set; }
+        public bool Factory { get; set; }
+        // ReSharper disable once InconsistentNaming
+        public string IDal { get; set; }
     }
 }

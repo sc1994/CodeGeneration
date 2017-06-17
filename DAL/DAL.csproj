@@ -47,28 +47,16 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DBClient.cs" />
-    <Compile Include="DBDAL\WeiXinJudgmentDal.cs" />
-    <Compile Include="DBDAL\WeiXinJudgmentDal.Extend.cs" />
-    <Compile Include="DBDAL\WeiXinMenuDal.cs" />
-    <Compile Include="DBDAL\WeiXinMenuDal.Extend.cs" />
     <Compile Include="DBDAL\DrawingDal.cs" />
     <Compile Include="DBDAL\DrawingDal.Extend.cs" />
     <Compile Include="DBDAL\DesignCorpDal.cs" />
     <Compile Include="DBDAL\DesignCorpDal.Extend.cs" />
     <Compile Include="DBDAL\CensorProblemRelationDal.cs" />
     <Compile Include="DBDAL\CensorProblemRelationDal.Extend.cs" />
-    <Compile Include="DBDAL\WeiXinMsgDal.cs" />
-    <Compile Include="DBDAL\WeiXinMsgDal.Extend.cs" />
-    <Compile Include="DBDAL\WeiXinMsgArticleDal.cs" />
-    <Compile Include="DBDAL\WeiXinMsgArticleDal.Extend.cs" />
-    <Compile Include="DBDAL\WeiXinSelectDal.cs" />
-    <Compile Include="DBDAL\WeiXinSelectDal.Extend.cs" />
     <Compile Include="DBDAL\XFOpinionsDal.cs" />
     <Compile Include="DBDAL\XFOpinionsDal.Extend.cs" />
     <Compile Include="DBDAL\ProjectRelationShipDal.cs" />
     <Compile Include="DBDAL\ProjectRelationShipDal.Extend.cs" />
-    <Compile Include="DBDAL\CustomerInfoDal.cs" />
-    <Compile Include="DBDAL\CustomerInfoDal.Extend.cs" />
     <Compile Include="DBDAL\RemoteProjectsDal.cs" />
     <Compile Include="DBDAL\RemoteProjectsDal.Extend.cs" />
     <Compile Include="DBDAL\TaskArchivesAttachmentDal.cs" />
@@ -77,6 +65,8 @@
     <Compile Include="DBDAL\WaitHandleDal.Extend.cs" />
     <Compile Include="DBDAL\CensorOpinionsDal.cs" />
     <Compile Include="DBDAL\CensorOpinionsDal.Extend.cs" />
+    <Compile Include="DBDAL\CustomerInfoDal.cs" />
+    <Compile Include="DBDAL\CustomerInfoDal.Extend.cs" />
     <Compile Include="DBDAL\ReconnaissanceCorpDal.cs" />
     <Compile Include="DBDAL\ReconnaissanceCorpDal.Extend.cs" />
     <Compile Include="DBDAL\ChangeCensorDal.cs" />
@@ -109,20 +99,12 @@
     <Compile Include="DBDAL\DongleTokenDal.Extend.cs" />
     <Compile Include="DBDAL\ModuleDal.cs" />
     <Compile Include="DBDAL\ModuleDal.Extend.cs" />
-    <Compile Include="DBDAL\ConstructionCorpDal.cs" />
-    <Compile Include="DBDAL\ConstructionCorpDal.Extend.cs" />
     <Compile Include="DBDAL\FormulaColumnDal.cs" />
     <Compile Include="DBDAL\FormulaColumnDal.Extend.cs" />
-    <Compile Include="DBDAL\M_MessageDal.cs" />
-    <Compile Include="DBDAL\M_MessageDal.Extend.cs" />
     <Compile Include="DBDAL\CensorTasksDal.cs" />
     <Compile Include="DBDAL\CensorTasksDal.Extend.cs" />
-    <Compile Include="DBDAL\M_MessageReceivedDal.cs" />
-    <Compile Include="DBDAL\M_MessageReceivedDal.Extend.cs" />
     <Compile Include="DBDAL\ProjectArchivesAttachmentDal.cs" />
     <Compile Include="DBDAL\ProjectArchivesAttachmentDal.Extend.cs" />
-    <Compile Include="DBDAL\M_MessageSendedDal.cs" />
-    <Compile Include="DBDAL\M_MessageSendedDal.Extend.cs" />
     <Compile Include="DBDAL\ProjectsTypeDal.cs" />
     <Compile Include="DBDAL\ProjectsTypeDal.Extend.cs" />
     <Compile Include="DBDAL\PolicyReviewArchiveDal.cs" />
@@ -131,10 +113,14 @@
     <Compile Include="DBDAL\RemoteTaskArchivesDal.Extend.cs" />
     <Compile Include="DBDAL\ProfessionalRelationshipDal.cs" />
     <Compile Include="DBDAL\ProfessionalRelationshipDal.Extend.cs" />
+    <Compile Include="DBDAL\OperationLogDal.cs" />
+    <Compile Include="DBDAL\OperationLogDal.Extend.cs" />
     <Compile Include="DBDAL\ExpertsDal.cs" />
     <Compile Include="DBDAL\ExpertsDal.Extend.cs" />
     <Compile Include="DBDAL\RemoteTaskArchivesAttachmentDal.cs" />
     <Compile Include="DBDAL\RemoteTaskArchivesAttachmentDal.Extend.cs" />
+    <Compile Include="DBDAL\ConstructionCorpDal.cs" />
+    <Compile Include="DBDAL\ConstructionCorpDal.Extend.cs" />
     <Compile Include="DBDAL\ReArchivesAttachmentDal.cs" />
     <Compile Include="DBDAL\ReArchivesAttachmentDal.Extend.cs" />
     <Compile Include="DBDAL\ReCensorOpinionsDal.cs" />
@@ -163,18 +149,14 @@
     <Compile Include="DBDAL\UserKeyDiskGrantDal.Extend.cs" />
     <Compile Include="DBDAL\TaskCensorFlowDal.cs" />
     <Compile Include="DBDAL\TaskCensorFlowDal.Extend.cs" />
-    <Compile Include="DBDAL\WeiXinAnswerDal.cs" />
-    <Compile Include="DBDAL\WeiXinAnswerDal.Extend.cs" />
     <Compile Include="DBDAL\ProjectArchivesDal.cs" />
     <Compile Include="DBDAL\ProjectArchivesDal.Extend.cs" />
-    <Compile Include="DBDAL\WeiXinAnswer_bakDal.cs" />
-    <Compile Include="DBDAL\WeiXinAnswer_bakDal.Extend.cs" />
-    <Compile Include="DBDAL\WeiXinArticleDal.cs" />
-    <Compile Include="DBDAL\WeiXinArticleDal.Extend.cs" />
-    <Compile Include="DBDAL\OperationLogDal.cs" />
-    <Compile Include="DBDAL\OperationLogDal.Extend.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IDAL\IDAL.csproj">
+      <Project>{99b4eaa8-03c2-4b4a-ae10-feb66969d91b}</Project>
+      <Name>IDAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{dde9fce2-8894-4780-ad22-d4f02b381826}</Project>
       <Name>Model</Name>
