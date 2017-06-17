@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboDrawingSignatureSite(");
-            strSql.Append("SiteID,DrawingSpace,DesignCorpSiteX,DesignCorpSiteY,CensorCorpSiteX,CensorCorpSiteY,ExpertSiteX,ExpertSiteY,Remarks");
+            strSql.Append("DrawingSpace,DesignCorpSiteX,DesignCorpSiteY,CensorCorpSiteX,CensorCorpSiteY,ExpertSiteX,ExpertSiteY,Remarks");
             strSql.Append(") VALUES (");
-            strSql.Append("@SiteID,@DrawingSpace,@DesignCorpSiteX,@DesignCorpSiteY,@CensorCorpSiteX,@CensorCorpSiteY,@ExpertSiteX,@ExpertSiteY,@Remarks);");
+            strSql.Append("@DrawingSpace,@DesignCorpSiteX,@DesignCorpSiteY,@CensorCorpSiteX,@CensorCorpSiteY,@ExpertSiteX,@ExpertSiteY,@Remarks);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

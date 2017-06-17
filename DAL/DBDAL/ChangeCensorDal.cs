@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboChangeCensor(");
-            strSql.Append("ChangeCensorID,CustomerID,TaskID,ChangeProject,Profession,ChangeAttachment,MasterCensor,CensorOpinions,ChangeNum,ChangeTime,CensorTime");
+            strSql.Append("CustomerID,TaskID,ChangeProject,Profession,ChangeAttachment,MasterCensor,CensorOpinions,ChangeNum,ChangeTime,CensorTime");
             strSql.Append(") VALUES (");
-            strSql.Append("@ChangeCensorID,@CustomerID,@TaskID,@ChangeProject,@Profession,@ChangeAttachment,@MasterCensor,@CensorOpinions,@ChangeNum,@ChangeTime,@CensorTime);");
+            strSql.Append("@CustomerID,@TaskID,@ChangeProject,@Profession,@ChangeAttachment,@MasterCensor,@CensorOpinions,@ChangeNum,@ChangeTime,@CensorTime);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

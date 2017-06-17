@@ -50,6 +50,7 @@
     <Compile Include="DBModel\WeiXinMsg.cs" />
     <Compile Include="DBModel\WeiXinMsgArticle.cs" />
     <Compile Include="DBModel\WeiXinSelect.cs" />
+    <Compile Include="DBModel\XFOpinions.cs" />
     <Compile Include="DBModel\ProjectRelationShip.cs" />
     <Compile Include="DBModel\CustomerInfo.cs" />
     <Compile Include="DBModel\RemoteProjects.cs" />

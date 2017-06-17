@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboCorpKeyDiskGrant(");
-            strSql.Append("CorpKeyDiskGrantID,CorpKeyDiskNumber,CorpKeyDiskName,CorpKeyDiskPassWord,CorpID,CorpName,Remark");
+            strSql.Append("CorpKeyDiskNumber,CorpKeyDiskName,CorpKeyDiskPassWord,CorpID,CorpName,Remark");
             strSql.Append(") VALUES (");
-            strSql.Append("@CorpKeyDiskGrantID,@CorpKeyDiskNumber,@CorpKeyDiskName,@CorpKeyDiskPassWord,@CorpID,@CorpName,@Remark);");
+            strSql.Append("@CorpKeyDiskNumber,@CorpKeyDiskName,@CorpKeyDiskPassWord,@CorpID,@CorpName,@Remark);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

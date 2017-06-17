@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboFormulaColumn(");
-            strSql.Append("FormulaColumnID,FormulaID,FormulaColumnName,FormulaColumnmodulu");
+            strSql.Append("FormulaID,FormulaColumnName,FormulaColumnmodulu");
             strSql.Append(") VALUES (");
-            strSql.Append("@FormulaColumnID,@FormulaID,@FormulaColumnName,@FormulaColumnmodulu);");
+            strSql.Append("@FormulaID,@FormulaColumnName,@FormulaColumnmodulu);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

@@ -4,5 +4,5 @@
   "Bll": "BLL/DBDLL",
   "Model": "Model/DBModel",
   "DBService": "Data Source=120.26.239.189;Initial Catalog=DJES;Integrated Security=False;user id=sa;password=Zjqcx010622;", // 数据库连接字段
-  "DBName": "DJES"
+  "DBName": "DJES",
 }

@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboSubProfession(");
-            strSql.Append("SubProfessionID,SubProfession_Field,Profession");
+            strSql.Append("SubProfession_Field,Profession");
             strSql.Append(") VALUES (");
-            strSql.Append("@SubProfessionID,@SubProfession_Field,@Profession);");
+            strSql.Append("@SubProfession_Field,@Profession);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

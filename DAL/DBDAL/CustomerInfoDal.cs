@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboCustomerInfo(");
-            strSql.Append("CustomerID,CustomerName,DisplayCustomerName,CustomerType,Password,Bank,Account,Website,Jgzzjgdm,Jgrdzsh,Cspzjg,Pzwh,Pzrq,Jglx,Logo,ValidDay,Status,MinChargeAmount,PreferentialQuota,PreferentialDiscount,MaxChargeAmount,WeiXinPicture,Remind,AppId,AppSecret,AppToken,AppEncodingAesKey,ConstructHeading,SeismicHeading,Message_POST_URL,Message_ACCOUNT,Message_AUTHKEY,Message_CGID,WX_CorpId,WX_CorpSecret,WX_CorpToken,WX_EncodingAESKey,WX_Agentid,SignatureServer");
+            strSql.Append("CustomerName,DisplayCustomerName,CustomerType,Password,Bank,Account,Website,Jgzzjgdm,Jgrdzsh,Cspzjg,Pzwh,Pzrq,Jglx,Logo,ValidDay,Status,MinChargeAmount,PreferentialQuota,PreferentialDiscount,MaxChargeAmount,WeiXinPicture,Remind,AppId,AppSecret,AppToken,AppEncodingAesKey,ConstructHeading,SeismicHeading,Message_POST_URL,Message_ACCOUNT,Message_AUTHKEY,Message_CGID,WX_CorpId,WX_CorpSecret,WX_CorpToken,WX_EncodingAESKey,WX_Agentid,SignatureServer");
             strSql.Append(") VALUES (");
-            strSql.Append("@CustomerID,@CustomerName,@DisplayCustomerName,@CustomerType,@Password,@Bank,@Account,@Website,@Jgzzjgdm,@Jgrdzsh,@Cspzjg,@Pzwh,@Pzrq,@Jglx,@Logo,@ValidDay,@Status,@MinChargeAmount,@PreferentialQuota,@PreferentialDiscount,@MaxChargeAmount,@WeiXinPicture,@Remind,@AppId,@AppSecret,@AppToken,@AppEncodingAesKey,@ConstructHeading,@SeismicHeading,@Message_POST_URL,@Message_ACCOUNT,@Message_AUTHKEY,@Message_CGID,@WX_CorpId,@WX_CorpSecret,@WX_CorpToken,@WX_EncodingAESKey,@WX_Agentid,@SignatureServer);");
+            strSql.Append("@CustomerName,@DisplayCustomerName,@CustomerType,@Password,@Bank,@Account,@Website,@Jgzzjgdm,@Jgrdzsh,@Cspzjg,@Pzwh,@Pzrq,@Jglx,@Logo,@ValidDay,@Status,@MinChargeAmount,@PreferentialQuota,@PreferentialDiscount,@MaxChargeAmount,@WeiXinPicture,@Remind,@AppId,@AppSecret,@AppToken,@AppEncodingAesKey,@ConstructHeading,@SeismicHeading,@Message_POST_URL,@Message_ACCOUNT,@Message_AUTHKEY,@Message_CGID,@WX_CorpId,@WX_CorpSecret,@WX_CorpToken,@WX_EncodingAESKey,@WX_Agentid,@SignatureServer);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

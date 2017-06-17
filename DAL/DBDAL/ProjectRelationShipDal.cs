@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboProjectRelationShip(");
-            strSql.Append("ProjectRelationShipID,ProjectID,jnbz,txxs,wmbwcl,wmbwhd,pwmbwcl,pwmbwhd,wqtqtcl,wqtbwfs,wqtdxnbwcl,wqtbbwcl,wqtdxnbwhd,wqtbbwhd,lqbwbwcl,lqbwbwhd,wcckcl,wcblcl,wczkchd,wczycs,tcckcl,tcblcl,tczkchd,tczycs,hm,ffbytmxb,jkbwcl,jkbwhd,tcdbbwcl,tcdbbwhd,nfbwcl,nfbwhd,dmbwcl,dmbwhd,dxswqbwcl,dxswqbwhd,ztxjtf,mqtf,fhq,jnsfdb,kzszyly,sfazfxjlzz");
+            strSql.Append("ProjectID,jnbz,txxs,wmbwcl,wmbwhd,pwmbwcl,pwmbwhd,wqtqtcl,wqtbwfs,wqtdxnbwcl,wqtbbwcl,wqtdxnbwhd,wqtbbwhd,lqbwbwcl,lqbwbwhd,wcckcl,wcblcl,wczkchd,wczycs,tcckcl,tcblcl,tczkchd,tczycs,hm,ffbytmxb,jkbwcl,jkbwhd,tcdbbwcl,tcdbbwhd,nfbwcl,nfbwhd,dmbwcl,dmbwhd,dxswqbwcl,dxswqbwhd,ztxjtf,mqtf,fhq,jnsfdb,kzszyly,sfazfxjlzz");
             strSql.Append(") VALUES (");
-            strSql.Append("@ProjectRelationShipID,@ProjectID,@jnbz,@txxs,@wmbwcl,@wmbwhd,@pwmbwcl,@pwmbwhd,@wqtqtcl,@wqtbwfs,@wqtdxnbwcl,@wqtbbwcl,@wqtdxnbwhd,@wqtbbwhd,@lqbwbwcl,@lqbwbwhd,@wcckcl,@wcblcl,@wczkchd,@wczycs,@tcckcl,@tcblcl,@tczkchd,@tczycs,@hm,@ffbytmxb,@jkbwcl,@jkbwhd,@tcdbbwcl,@tcdbbwhd,@nfbwcl,@nfbwhd,@dmbwcl,@dmbwhd,@dxswqbwcl,@dxswqbwhd,@ztxjtf,@mqtf,@fhq,@jnsfdb,@kzszyly,@sfazfxjlzz);");
+            strSql.Append("@ProjectID,@jnbz,@txxs,@wmbwcl,@wmbwhd,@pwmbwcl,@pwmbwhd,@wqtqtcl,@wqtbwfs,@wqtdxnbwcl,@wqtbbwcl,@wqtdxnbwhd,@wqtbbwhd,@lqbwbwcl,@lqbwbwhd,@wcckcl,@wcblcl,@wczkchd,@wczycs,@tcckcl,@tcblcl,@tczkchd,@tczycs,@hm,@ffbytmxb,@jkbwcl,@jkbwhd,@tcdbbwcl,@tcdbbwhd,@nfbwcl,@nfbwhd,@dmbwcl,@dmbwhd,@dxswqbwcl,@dxswqbwhd,@ztxjtf,@mqtf,@fhq,@jnsfdb,@kzszyly,@sfazfxjlzz);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

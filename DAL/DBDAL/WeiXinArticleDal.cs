@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboWeiXinArticle(");
-            strSql.Append("AID,Title,Description,Image,Url,WXContent,AddTime");
+            strSql.Append("Title,Description,Image,Url,WXContent,AddTime");
             strSql.Append(") VALUES (");
-            strSql.Append("@AID,@Title,@Description,@Image,@Url,@WXContent,@AddTime);");
+            strSql.Append("@Title,@Description,@Image,@Url,@WXContent,@AddTime);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

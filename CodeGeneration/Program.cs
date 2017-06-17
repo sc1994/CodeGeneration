@@ -19,9 +19,15 @@ namespace CodeGeneration
         // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
         {
-            Log();
+            #region 初始化
+            START: Log();
             Console.ReadLine();
-            START: Console.WriteLine("配置文件加载成功");
+            Console.WriteLine("配置文件加载成功");
+            ShowInfo();
+            if (Console.ReadLine()?.ToLower() != "y")
+            {
+                goto START;
+            }
             Console.Write("初始化");
             Load();
             DirectoryInfo[] directoryInfos;
@@ -35,7 +41,9 @@ namespace CodeGeneration
                 throw;
             }
             Console.WriteLine("加载解决方案 Success");
+            #endregion
 
+            #region 检验必要的文件和路径
             var layersPaths = new Dictionary<string, string>();
             var pathDb = InfoModel.Model.Split('/')[0];
             string path;
@@ -104,7 +112,9 @@ namespace CodeGeneration
             }
             else
                 ShowError($"验证: {pathDb} Error");
+            #endregion
 
+            #region 和数据库握手
             Console.Write("尝试连接: " + InfoModel.DBName);
             Load();
             try
@@ -119,6 +129,7 @@ namespace CodeGeneration
             Console.WriteLine($"连接: {InfoModel.DBName} Success");
             READERROR: Console.WriteLine("输入需要表名以\",\"隔开(整库生成请输入ALL)");
             var tables = Console.ReadLine();
+
             if (string.IsNullOrEmpty(tables))
             {
                 goto READERROR;
@@ -129,15 +140,18 @@ namespace CodeGeneration
                         group table by table.TableName
                         into g
                         select g;
+            #endregion
 
             foreach (var g in group)
             {
                 foreach (var layersPath in layersPaths)
                 {
-                    Console.WriteLine($"表: {g.Key}正在生成数据到: {layersPath.Value}");
+                    Console.WriteLine($"表: {g.Key}正在生成数据到: {layersPath.Value} ....");
                     switch (layersPath.Key)
                     {
+                        #region 生成Model
                         case "Model":
+
                             try
                             {
                                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.Model.Split('/')[0]))?.FullName ?? "";
@@ -155,9 +169,14 @@ namespace CodeGeneration
                                 ShowError("出现异常-->" + ex.Message);
                             }
                             break;
-                        case "Bll":
+                        #endregion
 
+                        #region 生成BLL
+                        case "Bll":
                             break;
+                        #endregion
+
+                        #region 生成DAL
                         case "Dal":
                             try
                             {
@@ -165,10 +184,11 @@ namespace CodeGeneration
                                 if (!string.IsNullOrEmpty(path))
                                 {
                                     WriteToFile(GetDalCode(g), layersPath.Value + "//" + g.Key + "Dal.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
+                                    WriteToFile(GetDalExtendCode(g), layersPath.Value + "//" + g.Key + "Dal.Extend.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
                                 }
                                 else
                                 {
-                                    ShowError("路径错误-->跳过 Model ");
+                                    ShowError("路径错误-->跳过 Dal ");
                                 }
                             }
                             catch (Exception ex)
@@ -176,6 +196,7 @@ namespace CodeGeneration
                                 ShowError("出现异常-->" + ex.Message);
                             }
                             break;
+                        #endregion
                         default: continue;
                     }
                 }
@@ -441,9 +462,9 @@ namespace CodeGeneration
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
             code.AppendLine($"            strSql.Append(\"INSERT INTO {InfoModel.DBName}.dbo{tableInfo.Key}(\");");
-            code.AppendLine($"            strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + x.FieldName + ",").TrimEnd(',')}\");");
+            code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1").Aggregate("", (current, x) => current + x.FieldName + ",").TrimEnd(',')}\");");
             code.AppendLine("            strSql.Append(\") VALUES (\");");
-            code.AppendLine($"            strSql.Append(\"{tableInfo.Aggregate("", (current, x) => current + "@" + x.FieldName + ",").TrimEnd(',')});\");");
+            code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1").Aggregate("", (current, x) => current + "@" + x.FieldName + ",").TrimEnd(',')});\");");
             if (primaryKey != null)
             {
                 code.AppendLine("            strSql.Append(\"SELECT @@IDENTITY\");");
@@ -536,13 +557,25 @@ namespace CodeGeneration
             return code;
         }
 
+        static StringBuilder GetDalExtendCode(IGrouping<string, TableInfo> tableInfo)
+        {
+            var code = new StringBuilder();
+            code.AppendLine($"namespace {InfoModel.Dal.Split('/')[0]}");
+            code.AppendLine("{");
+            code.AppendLine($"    public partial class {tableInfo.Key}Dal");
+            code.AppendLine("    {");
+            code.AppendLine("    }");
+            code.AppendLine("}");
+            return code;
+        }
+
         static StringBuilder GetBllCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
             code.AppendLine("using System.Collections.Generic;\r\n");
             code.AppendLine($"namespace {InfoModel.Bll.Split('/')[0]}");
             code.AppendLine("{");
-            code.AppendLine($"    public partial class {tableInfo.Key}Dll");
+            code.AppendLine($"    public partial class {tableInfo.Key}Bll");
             code.AppendLine("    {");
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
             var identityKey = tableInfo.FirstOrDefault(x => x.IdentityKey == "1");
@@ -564,40 +597,7 @@ namespace CodeGeneration
             sw.Close();
         }
 
-        static void Log()
-        {
-            var log = @"
-                                                     _-~~~~-                           
-                                                    -   @  @                           
-                                                   '         \                         
-                                                   |\      .. |         |\    /|       
-                                             \     ' `. '\___/` .`.     | \,,/_/       
-                                             |\_  /    `-____--//    __/ \/    \       
-                                              \ \/    .\\     \/  _--/     (D)  \      
-                                               \    .'  \\     |   -/    (_      \     
-                                                `.   \  /'     |   /       \_ / ==\    
-                                          __------\   |       .'_/         / \_ O o)   
-                                         /        _|  /`-__-'/             /   \==/    
-                                        /        |   \                    /            
-                                       ||         \__/                 \_/\            
-                                       ||         /              _      /  |           
-                                       | |      /--______      ___\    /\  :           
-                                       | /   __-  - _/   ------    |  |   \ \          
-                                        |   -  -   /                | |     \ )        
-                                        |  |   -  |                 | )     | |        
-                                         | |    | |                 | |    | |         
-                                         | |    < |                 | |   |_/          
-                                         < |    /__\                <  \               
-                                         /__\                       /___\    --by : suncheng
-";
-            Console.ForegroundColor = ConsoleColor.Blue;
-            foreach (var s in log)
-            {
-                Console.Write(s);
-                Thread.Sleep(1);
-            }
-            Console.ResetColor();
-        }
+
 
         /// <summary>
         /// 在csproj文件中注册,使其包含在项目中
@@ -764,7 +764,6 @@ namespace CodeGeneration
             return new[] { type, def };
         }
 
-
         static void Load()
         {
             for (int i = 0; i < 5; i++)
@@ -791,6 +790,58 @@ namespace CodeGeneration
             Console.ResetColor();
         }
 
+        static void ShowInfo()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            Console.WriteLine("**********************************************************************************");
+            Console.WriteLine($"*  解决方案路径 : {InfoModel.SolutionPath} ");
+            Console.WriteLine($"*  数据库连接信息 : {InfoModel.DBService} ");
+            Console.WriteLine($"*  数据层代码将生成在 : {InfoModel.Dal} 文件夹中 ");
+            Console.WriteLine($"*  逻辑层代码将生成在 : {InfoModel.Bll} 文件夹中 ");
+            Console.WriteLine($"*  实体层代码将生成在 : {InfoModel.Model} 文件夹中 ");
+            Console.WriteLine("*  将使用工厂模式  ");
+            Console.WriteLine($"*  *");
+            Console.WriteLine($"*  *");
+            Console.WriteLine("**********************************************************************************");
+            Console.WriteLine("请确认配置信息Y/N ?");
+            Console.ResetColor();
+        }
+
+        static void Log()
+        {
+            var log = @"
+                                                     _-~~~~-                           
+                                                    -   @  @                           
+                                                   '         \                         
+                                                   |\      .. |         |\    /|       
+                                             \     ' `. '\___/` .`.     | \,,/_/       
+                                             |\_  /    `-____--//    __/ \/    \       
+                                              \ \/    .\\     \/  _--/     (D)  \      
+                                               \    .'  \\     |   -/    (_      \     
+                                                `.   \  /'     |   /       \_ / ==\    
+                                          __------\   |       .'_/         / \_ O o)   
+                                         /        _|  /`-__-'/             /   \==/    
+                                        /        |   \                    /            
+                                       ||         \__/                 \_/\            
+                                       ||         /              _      /  |           
+                                       | |      /--______      ___\    /\  :           
+                                       | /   __-  - _/   ------    |  |   \ \          
+                                        |   -  -   /                | |     \ )        
+                                        |  |   -  |                 | )     | |        
+                                         | |    | |                 | |    | |         
+                                         | |    < |                 | |   |_/          
+                                         < |    /__\                <  \               
+                                         /__\                       /___\          --by : suncheng
+";
+            Console.ForegroundColor = ConsoleColor.Blue;
+            foreach (var s in log)
+            {
+                Console.Write(s);
+            }
+            Console.ResetColor();
+        }
+
         public class Info
         {
             public string SolutionPath { get; set; }
@@ -800,6 +851,7 @@ namespace CodeGeneration
             // ReSharper disable once InconsistentNaming
             public string DBName { get; set; }
             public string DBService { get; set; }
+            public bool Factory { get; set; }
         }
 
         public class DbClient

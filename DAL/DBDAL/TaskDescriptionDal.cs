@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboTaskDescription(");
-            strSql.Append("RowID,RowGuid,Creator,CreateDate,OperateType,Description,TaskID,IsShow,UpdateTime");
+            strSql.Append("RowGuid,Creator,CreateDate,OperateType,Description,TaskID,IsShow,UpdateTime");
             strSql.Append(") VALUES (");
-            strSql.Append("@RowID,@RowGuid,@Creator,@CreateDate,@OperateType,@Description,@TaskID,@IsShow,@UpdateTime);");
+            strSql.Append("@RowGuid,@Creator,@CreateDate,@OperateType,@Description,@TaskID,@IsShow,@UpdateTime);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
         }

@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboCensorOpinions(");
-            strSql.Append("ExamineID,TaskID,CustomerID,Profession,AssignTime,PlanFinishTime,Designer,MajorRespose,Assessor,Regester,SealNo,CensorOpinions_Field,DisobeyItems,DisobeyStandards,MasterCensor,MCertifieateID,SecondCensor,SCertifieateID,CensorDate,Opinioner,OpinionerDate,TaskAssigner,DrawingNum,IsSignature,MasterCensorDate,SecondCensorDate,CensorOpinionsType");
+            strSql.Append("TaskID,CustomerID,Profession,AssignTime,PlanFinishTime,Designer,MajorRespose,Assessor,Regester,SealNo,CensorOpinions_Field,DisobeyItems,DisobeyStandards,MasterCensor,MCertifieateID,SecondCensor,SCertifieateID,CensorDate,Opinioner,OpinionerDate,TaskAssigner,DrawingNum,IsSignature,MasterCensorDate,SecondCensorDate,CensorOpinionsType");
             strSql.Append(") VALUES (");
-            strSql.Append("@ExamineID,@TaskID,@CustomerID,@Profession,@AssignTime,@PlanFinishTime,@Designer,@MajorRespose,@Assessor,@Regester,@SealNo,@CensorOpinions_Field,@DisobeyItems,@DisobeyStandards,@MasterCensor,@MCertifieateID,@SecondCensor,@SCertifieateID,@CensorDate,@Opinioner,@OpinionerDate,@TaskAssigner,@DrawingNum,@IsSignature,@MasterCensorDate,@SecondCensorDate,@CensorOpinionsType);");
+            strSql.Append("@TaskID,@CustomerID,@Profession,@AssignTime,@PlanFinishTime,@Designer,@MajorRespose,@Assessor,@Regester,@SealNo,@CensorOpinions_Field,@DisobeyItems,@DisobeyStandards,@MasterCensor,@MCertifieateID,@SecondCensor,@SCertifieateID,@CensorDate,@Opinioner,@OpinionerDate,@TaskAssigner,@DrawingNum,@IsSignature,@MasterCensorDate,@SecondCensorDate,@CensorOpinionsType);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

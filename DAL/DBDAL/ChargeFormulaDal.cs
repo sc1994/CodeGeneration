@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboChargeFormula(");
-            strSql.Append("FormulaID,CustomerID,FormulaName,FormulaType,DisplayFormulaContent,MinChargeAmount,PreferentialQuota,PreferentialDiscount,MaxChargeAmount,ISPreferentia");
+            strSql.Append("CustomerID,FormulaName,FormulaType,DisplayFormulaContent,MinChargeAmount,PreferentialQuota,PreferentialDiscount,MaxChargeAmount,ISPreferentia");
             strSql.Append(") VALUES (");
-            strSql.Append("@FormulaID,@CustomerID,@FormulaName,@FormulaType,@DisplayFormulaContent,@MinChargeAmount,@PreferentialQuota,@PreferentialDiscount,@MaxChargeAmount,@ISPreferentia);");
+            strSql.Append("@CustomerID,@FormulaName,@FormulaType,@DisplayFormulaContent,@MinChargeAmount,@PreferentialQuota,@PreferentialDiscount,@MaxChargeAmount,@ISPreferentia);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

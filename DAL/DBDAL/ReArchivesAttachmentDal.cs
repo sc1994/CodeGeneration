@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboReArchivesAttachment(");
-            strSql.Append("ReAttachmentID,ReExamineID,Profession,TaskID,ReAttachmentName,ReAttachmentPath,YuanAttachmentPath,ReState,Edition,ReViewType");
+            strSql.Append("ReExamineID,Profession,TaskID,ReAttachmentName,ReAttachmentPath,YuanAttachmentPath,ReState,Edition,ReViewType");
             strSql.Append(") VALUES (");
-            strSql.Append("@ReAttachmentID,@ReExamineID,@Profession,@TaskID,@ReAttachmentName,@ReAttachmentPath,@YuanAttachmentPath,@ReState,@Edition,@ReViewType);");
+            strSql.Append("@ReExamineID,@Profession,@TaskID,@ReAttachmentName,@ReAttachmentPath,@YuanAttachmentPath,@ReState,@Edition,@ReViewType);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

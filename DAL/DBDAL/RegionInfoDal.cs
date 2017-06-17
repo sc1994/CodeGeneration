@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboRegionInfo(");
-            strSql.Append("RegionID,RegionName,RegionNo,Sfld,Sffz,dzjsd");
+            strSql.Append("RegionName,RegionNo,Sfld,Sffz,dzjsd");
             strSql.Append(") VALUES (");
-            strSql.Append("@RegionID,@RegionName,@RegionNo,@Sfld,@Sffz,@dzjsd);");
+            strSql.Append("@RegionName,@RegionNo,@Sfld,@Sffz,@dzjsd);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboM_MessageSended(");
-            strSql.Append("MID,ReceiveTelNumber,SendTime,MessageContent");
+            strSql.Append("ReceiveTelNumber,SendTime,MessageContent");
             strSql.Append(") VALUES (");
-            strSql.Append("@MID,@ReceiveTelNumber,@SendTime,@MessageContent);");
+            strSql.Append("@ReceiveTelNumber,@SendTime,@MessageContent);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboReconnaissanceCorp(");
-            strSql.Append("CorpID,CorpName,CorpGrade,ContactPerson,ContactPersonTel,CorpRegion,OrganizationCode,CertificateNo,LegalPerson,LegalPersonPosition,Address,Postcode,Supervisor,TelePhone,Provinces,Cities,District,EstablishedTime,RegisteredTime,RegisteredCapital,RegistrationNumber,BusinessType,Token,Seed,Remark");
+            strSql.Append("CorpName,CorpGrade,ContactPerson,ContactPersonTel,CorpRegion,OrganizationCode,CertificateNo,LegalPerson,LegalPersonPosition,Address,Postcode,Supervisor,TelePhone,Provinces,Cities,District,EstablishedTime,RegisteredTime,RegisteredCapital,RegistrationNumber,BusinessType,Token,Seed,Remark");
             strSql.Append(") VALUES (");
-            strSql.Append("@CorpID,@CorpName,@CorpGrade,@ContactPerson,@ContactPersonTel,@CorpRegion,@OrganizationCode,@CertificateNo,@LegalPerson,@LegalPersonPosition,@Address,@Postcode,@Supervisor,@TelePhone,@Provinces,@Cities,@District,@EstablishedTime,@RegisteredTime,@RegisteredCapital,@RegistrationNumber,@BusinessType,@Token,@Seed,@Remark);");
+            strSql.Append("@CorpName,@CorpGrade,@ContactPerson,@ContactPersonTel,@CorpRegion,@OrganizationCode,@CertificateNo,@LegalPerson,@LegalPersonPosition,@Address,@Postcode,@Supervisor,@TelePhone,@Provinces,@Cities,@District,@EstablishedTime,@RegisteredTime,@RegisteredCapital,@RegistrationNumber,@BusinessType,@Token,@Seed,@Remark);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

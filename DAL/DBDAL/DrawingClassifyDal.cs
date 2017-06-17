@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboDrawingClassify(");
-            strSql.Append("DCID,ProjectSupType,DrawingClassifyName,DrawingClassifyMark,DCRemarks");
+            strSql.Append("ProjectSupType,DrawingClassifyName,DrawingClassifyMark,DCRemarks");
             strSql.Append(") VALUES (");
-            strSql.Append("@DCID,@ProjectSupType,@DrawingClassifyName,@DrawingClassifyMark,@DCRemarks);");
+            strSql.Append("@ProjectSupType,@DrawingClassifyName,@DrawingClassifyMark,@DCRemarks);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

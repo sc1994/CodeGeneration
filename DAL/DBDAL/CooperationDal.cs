@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboCooperation(");
-            strSql.Append("CorpID,CustomerID,CorpName,ContactPerson,ContactPersonTel,Location");
+            strSql.Append("CustomerID,CorpName,ContactPerson,ContactPersonTel,Location");
             strSql.Append(") VALUES (");
-            strSql.Append("@CorpID,@CustomerID,@CorpName,@ContactPerson,@ContactPersonTel,@Location);");
+            strSql.Append("@CustomerID,@CorpName,@ContactPerson,@ContactPersonTel,@Location);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

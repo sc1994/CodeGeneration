@@ -14,9 +14,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboWeiXinSelect(");
-            strSql.Append("ID,Subject,OptionA,OptionB,OptionC,OptionD,Answer");
+            strSql.Append("Subject,OptionA,OptionB,OptionC,OptionD,Answer");
             strSql.Append(") VALUES (");
-            strSql.Append("@ID,@Subject,@OptionA,@OptionB,@OptionC,@OptionD,@Answer);");
+            strSql.Append("@Subject,@OptionA,@OptionB,@OptionC,@OptionD,@Answer);");
             DbClient.Excute(strSql.ToString(), model);
         }
 

@@ -14,9 +14,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboRemoteProjectArchives(");
-            strSql.Append("ProjectArchiveID,ProjectID,ProjectArchiveName,Profession,ProfessionValue,ProjectArchiveStatus,ProjectArchiveAttachment,AttachmentTypeID");
+            strSql.Append("ProjectID,ProjectArchiveName,Profession,ProfessionValue,ProjectArchiveStatus,ProjectArchiveAttachment,AttachmentTypeID");
             strSql.Append(") VALUES (");
-            strSql.Append("@ProjectArchiveID,@ProjectID,@ProjectArchiveName,@Profession,@ProfessionValue,@ProjectArchiveStatus,@ProjectArchiveAttachment,@AttachmentTypeID);");
+            strSql.Append("@ProjectID,@ProjectArchiveName,@Profession,@ProfessionValue,@ProjectArchiveStatus,@ProjectArchiveAttachment,@AttachmentTypeID);");
             DbClient.Excute(strSql.ToString(), model);
         }
 

@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboRemoteTaskArchives(");
-            strSql.Append("ArchiveID,YCTaskID,ConstructCorp,ArchiveName,ArchiveStatus,ArchiveAttachment,PolicyArchiveType");
+            strSql.Append("YCTaskID,ConstructCorp,ArchiveName,ArchiveStatus,ArchiveAttachment,PolicyArchiveType");
             strSql.Append(") VALUES (");
-            strSql.Append("@ArchiveID,@YCTaskID,@ConstructCorp,@ArchiveName,@ArchiveStatus,@ArchiveAttachment,@PolicyArchiveType);");
+            strSql.Append("@YCTaskID,@ConstructCorp,@ArchiveName,@ArchiveStatus,@ArchiveAttachment,@PolicyArchiveType);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

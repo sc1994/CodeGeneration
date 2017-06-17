@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboLoginLog(");
-            strSql.Append("ID,LogIP,UserID,CreateTime,LogType");
+            strSql.Append("LogIP,UserID,CreateTime,LogType");
             strSql.Append(") VALUES (");
-            strSql.Append("@ID,@LogIP,@UserID,@CreateTime,@LogType);");
+            strSql.Append("@LogIP,@UserID,@CreateTime,@LogType);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<long>(strSql.ToString(), model);
         }

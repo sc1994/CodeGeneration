@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboTaskCensorFlow(");
-            strSql.Append("TaskCensorFlowID,RowGuid,TaskID,OperationNode,OperationItem,OperationMan,OperationDate,OperationDuration,IsOverTime,Description");
+            strSql.Append("RowGuid,TaskID,OperationNode,OperationItem,OperationMan,OperationDate,OperationDuration,IsOverTime,Description");
             strSql.Append(") VALUES (");
-            strSql.Append("@TaskCensorFlowID,@RowGuid,@TaskID,@OperationNode,@OperationItem,@OperationMan,@OperationDate,@OperationDuration,@IsOverTime,@Description);");
+            strSql.Append("@RowGuid,@TaskID,@OperationNode,@OperationItem,@OperationMan,@OperationDate,@OperationDuration,@IsOverTime,@Description);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<string>(strSql.ToString(), model);
         }

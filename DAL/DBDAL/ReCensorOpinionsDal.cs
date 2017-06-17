@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboReCensorOpinions(");
-            strSql.Append("ReExamineID,TaskID,Profession,ReviewDate,ReAssignTime,RePlanFinishTime,MasterCensor,ReCensorDate,ReAttachment,ReState,ReCensorNum,ReCensorChangeNum,TaskResponsibleMan,TaskResponsibleCensorDate");
+            strSql.Append("TaskID,Profession,ReviewDate,ReAssignTime,RePlanFinishTime,MasterCensor,ReCensorDate,ReAttachment,ReState,ReCensorNum,ReCensorChangeNum,TaskResponsibleMan,TaskResponsibleCensorDate");
             strSql.Append(") VALUES (");
-            strSql.Append("@ReExamineID,@TaskID,@Profession,@ReviewDate,@ReAssignTime,@RePlanFinishTime,@MasterCensor,@ReCensorDate,@ReAttachment,@ReState,@ReCensorNum,@ReCensorChangeNum,@TaskResponsibleMan,@TaskResponsibleCensorDate);");
+            strSql.Append("@TaskID,@Profession,@ReviewDate,@ReAssignTime,@RePlanFinishTime,@MasterCensor,@ReCensorDate,@ReAttachment,@ReState,@ReCensorNum,@ReCensorChangeNum,@TaskResponsibleMan,@TaskResponsibleCensorDate);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

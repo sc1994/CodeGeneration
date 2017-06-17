@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboTaskCertificate(");
-            strSql.Append("CID,TaskID,ConstructCorp,SurveyCorp,DesignCorp,ProjectIDs,ProjectName,ProjectLocation,ProjectType,ProjectLevel,FieldType,AseismaGrouptic,AseismaticLevel,AseismaticType,Structure,HighFloors,Foundation,Areas,CensorRange,CensorDateDate,ConstructionNo,SeismicNo,CertificateNote,AwardDate,Awarder");
+            strSql.Append("TaskID,ConstructCorp,SurveyCorp,DesignCorp,ProjectIDs,ProjectName,ProjectLocation,ProjectType,ProjectLevel,FieldType,AseismaGrouptic,AseismaticLevel,AseismaticType,Structure,HighFloors,Foundation,Areas,CensorRange,CensorDateDate,ConstructionNo,SeismicNo,CertificateNote,AwardDate,Awarder");
             strSql.Append(") VALUES (");
-            strSql.Append("@CID,@TaskID,@ConstructCorp,@SurveyCorp,@DesignCorp,@ProjectIDs,@ProjectName,@ProjectLocation,@ProjectType,@ProjectLevel,@FieldType,@AseismaGrouptic,@AseismaticLevel,@AseismaticType,@Structure,@HighFloors,@Foundation,@Areas,@CensorRange,@CensorDateDate,@ConstructionNo,@SeismicNo,@CertificateNote,@AwardDate,@Awarder);");
+            strSql.Append("@TaskID,@ConstructCorp,@SurveyCorp,@DesignCorp,@ProjectIDs,@ProjectName,@ProjectLocation,@ProjectType,@ProjectLevel,@FieldType,@AseismaGrouptic,@AseismaticLevel,@AseismaticType,@Structure,@HighFloors,@Foundation,@Areas,@CensorRange,@CensorDateDate,@ConstructionNo,@SeismicNo,@CertificateNote,@AwardDate,@Awarder);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

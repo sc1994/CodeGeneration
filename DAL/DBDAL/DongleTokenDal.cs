@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboDongleToken(");
-            strSql.Append("Id,Token,Seed,Status,IssuingName");
+            strSql.Append("Token,Seed,Status,IssuingName");
             strSql.Append(") VALUES (");
-            strSql.Append("@Id,@Token,@Seed,@Status,@IssuingName);");
+            strSql.Append("@Token,@Seed,@Status,@IssuingName);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }

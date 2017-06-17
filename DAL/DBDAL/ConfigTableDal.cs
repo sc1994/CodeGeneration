@@ -21,9 +21,9 @@ namespace DAL
         {
             var strSql = new StringBuilder();
             strSql.Append("INSERT INTO DJES.dboConfigTable(");
-            strSql.Append("ID,ConfigType,Text,Value,ConfigOrder,Remarks");
+            strSql.Append("ConfigType,Text,Value,ConfigOrder,Remarks");
             strSql.Append(") VALUES (");
-            strSql.Append("@ID,@ConfigType,@Text,@Value,@ConfigOrder,@Remarks);");
+            strSql.Append("@ConfigType,@Text,@Value,@ConfigOrder,@Remarks);");
             strSql.Append("SELECT @@IDENTITY");
             return DbClient.ExecuteScalar<int>(strSql.ToString(), model);
         }
