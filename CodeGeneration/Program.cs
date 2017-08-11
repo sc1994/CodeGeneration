@@ -934,7 +934,7 @@ namespace CodeGeneration
         static IEnumerable<TableInfo> GetTableInfos(string tables)
         {
             var where =
-                tables == "all"
+                tables.ToLower() == "all"
                     ? "1=1"
                     : $@"( CASE WHEN a.colorder = 1 THEN d.name
 	                               ELSE d.name
