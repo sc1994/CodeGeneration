@@ -1,9 +1,0 @@
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\bin\Debug\BLL.dll
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\bin\Debug\BLL.pdb
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\bin\Debug\IDAL.dll
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\bin\Debug\Model.dll
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\bin\Debug\IDAL.pdb
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\bin\Debug\Model.pdb
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\obj\Debug\BLL.csprojResolveAssemblyReference.cache
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\obj\Debug\BLL.dll
-C:\Users\Mr\Documents\Visual Studio 2015\Projects\CodeGeneration\BLL\obj\Debug\BLL.pdb

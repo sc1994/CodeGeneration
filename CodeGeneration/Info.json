@@ -1,9 +1,9 @@
 ﻿{
-  "SolutionPath": "C:/Users/Mr/Documents/Visual Studio 2015/Projects/CodeGeneration", //解决方案存在磁盘位置
-  "Dal": "DAL/DBDAL", // 三层分别对应位置(需要指定生成文件夹的话在"/"后面配置)
-  "Bll": "BLL/DBDLL",
+  "SolutionPath": "D:/Work/CrabStore", //解决方案存在磁盘位置
+  "Dal": "DAL", // 三层分别对应位置(需要指定生成文件夹的话在"/"后面配置)
+  "Bll": "BLL",
   "Model": "Model/DBModel",
   "IDal": "IDAL",
-  "DBService": "Data Source=120.26.239.189;Initial Catalog=DJES;Integrated Security=False;user id=sa;password=Zjqcx010622;", // 数据库连接字段
-  "DBName": "DJES"
+  "DBService": "Data Source=192.168.0.126;Integrated Security=False;user id=sa;password=sa;", // 数据库连接字段
+  "DBName": "CrabShop"
 }

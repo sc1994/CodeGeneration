@@ -254,7 +254,14 @@ namespace CodeGeneration
                                 if (!string.IsNullOrEmpty(path))
                                 {
                                     WriteToFile(GetDalCode(g), layersPath.Value + "\\" + g.Key + "Dal.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
-                                    WriteToFile(GetDalExtendCode(g), layersPath.Value + "\\" + g.Key + "Dal.Extend.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
+                                    if (File.Exists(layersPath.Value + "\\" + g.Key + "Dal.Extend.cs"))
+                                    {
+                                        ShowGood("已存在" + g.Key + "Dal.Extend.cs       跳过...");
+                                    }
+                                    else
+                                    {
+                                        WriteToFile(GetDalExtendCode(g), layersPath.Value + "\\" + g.Key + "Dal.Extend.cs", path + "\\" + InfoModel.Dal.Split('/')[0] + ".csproj");
+                                    }
                                 }
                                 else
                                 {
@@ -297,7 +304,6 @@ namespace CodeGeneration
             Console.Clear();
             goto START;
         }
-
 
 
         static StringBuilder GetBaseModelCode()
@@ -505,12 +511,16 @@ namespace CodeGeneration
             var code = new StringBuilder();
             code.AppendLine($"using {InfoModel.IDal.Split('/')[0]};");
             code.AppendLine($"using {InfoModel.Model.Split('/')[0]};");
-            code.AppendLine($"using System.Collections.Generic;\r\n");
+            code.AppendLine("using System.Collections.Generic;\r\n");
             code.AppendLine($"namespace {InfoModel.Bll.Split('/')[0]}");
             code.AppendLine("{");
             code.AppendLine("    public class BaseBll<TModel, TEmun, TKeyType> where TModel : BaseModel");
             code.AppendLine("    {");
-            code.AppendLine("        protected IBaseDal<TModel, TEmun, TKeyType> Dal;\r\n");
+            code.AppendLine("        protected IBaseDal<TModel, TEmun, TKeyType> Dal { get; set; }\r\n");
+            code.AppendLine("        public BaseBll(IBaseDal<TModel, TEmun, TKeyType> dal)");
+            code.AppendLine("        {");
+            code.AppendLine("            Dal = dal;");
+            code.AppendLine("        }\r\n");
             code.AppendLine("        /// <summary>");
             code.AppendLine("        /// 数据是否存在 (表中没有主键时此方法不适用)");
             code.AppendLine("        /// </summary>");
@@ -617,10 +627,13 @@ namespace CodeGeneration
             code.AppendLine("using System;\r\n");
             code.AppendLine($"namespace {InfoModel.Model.Replace("/", ".")}");
             code.AppendLine("{");
+            code.AppendLine("    /// <summary>");
+            code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe);
+            code.AppendLine("    /// </summary>");
             code.AppendLine($"    public class {tableInfo.Key} : BaseModel");
             code.AppendLine("    {");
-            code.AppendLine($"        public static string PrimaryKey = \"{tableInfo.FirstOrDefault(x => x.PrimaryKey == "1")?.FieldName ?? ""}\";");
-            code.AppendLine($"        public static string IdentityKey = \"{tableInfo.FirstOrDefault(x => x.IdentityKey == "1")?.FieldName ?? ""}\";\r\n");
+            code.AppendLine($"        public static string PrimaryKey {{ get; set; }} = \"{tableInfo.FirstOrDefault(x => x.PrimaryKey == "1")?.FieldName ?? ""}\";");
+            code.AppendLine($"        public static string IdentityKey {{ get; set; }} = \"{tableInfo.FirstOrDefault(x => x.IdentityKey == "1")?.FieldName ?? ""}\";\r\n");
             foreach (var field in tableInfo)
             {
                 code.AppendLine("        /// <summary>");
@@ -652,6 +665,9 @@ namespace CodeGeneration
             code.AppendLine("{");
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
             var typeAndDefault = primaryKey != null ? GetTypeAndDefault(primaryKey, "") : new[] { "object", "" };
+            code.AppendLine("    /// <summary>");
+            code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  数据接口层");
+            code.AppendLine("    /// </summary>");
             code.AppendLine($"    public interface I{tableInfo.Key}Dal : IBaseDal<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}>");
             code.AppendLine("    {\r\n");
             code.AppendLine("    }");
@@ -670,12 +686,15 @@ namespace CodeGeneration
             code.AppendLine("using System.Text;\r\n");
             code.AppendLine($"namespace {InfoModel.Dal.Replace("/", ".")}");
             code.AppendLine("{");
+            code.AppendLine("    /// <summary>");
+            code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  数据访问层");
+            code.AppendLine("    /// </summary>");
             code.AppendLine($"    public partial class {tableInfo.Key}Dal : I{tableInfo.Key}Dal");
             code.AppendLine("    {");
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
             var identityKey = tableInfo.FirstOrDefault(x => x.IdentityKey == "1");
             var typeAndDefault = new string[2];
-            var tableName = $"{InfoModel.DBName}.dbo.{tableInfo.Key}";
+            var tableName = $"{InfoModel.DBName}.dbo.[{tableInfo.Key}]";
 
             #region 是否存在
 
@@ -698,7 +717,7 @@ namespace CodeGeneration
             }
 
             code.AppendLine("        public bool ExistsByWhere(string where)");
-            code.AppendLine($"            => DbClient.ExecuteScalar<int>($\"SELECT COUNT(1) FROM {tableName} WHERE {{where}};\") > 0;\r\n");
+            code.AppendLine($"            => DbClient.ExecuteScalar<int>($\"SELECT COUNT(1) FROM {tableName} WHERE 1 = 1 {{where}};\") > 0;\r\n");
             #endregion
 
             #region Add
@@ -713,7 +732,7 @@ namespace CodeGeneration
             }
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
-            code.AppendLine($"            strSql.Append(\"INSERT INTO {InfoModel.DBName}.dbo{tableInfo.Key}(\");");
+            code.AppendLine($"            strSql.Append(\"INSERT INTO {InfoModel.DBName}.dbo.[{tableInfo.Key}] (\");");
             code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1").Aggregate("", (current, x) => current + x.FieldName + ",").TrimEnd(',')}\");");
             code.AppendLine("            strSql.Append(\") VALUES (\");");
             code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1").Aggregate("", (current, x) => current + "@" + x.FieldName + ",").TrimEnd(',')});\");");
@@ -737,7 +756,7 @@ namespace CodeGeneration
                 code.AppendLine($"        public bool Update({tableInfo.Key} model)");
                 code.AppendLine("        {");
                 code.AppendLine("            var strSql = new StringBuilder();");
-                code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
+                code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo.[{tableInfo.Key}] SET \");");
                 code.AppendLine(
                     $"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
                 code.AppendLine(primaryKey != null
@@ -757,7 +776,7 @@ namespace CodeGeneration
             code.AppendLine($"        public bool Update(Dictionary<{tableInfo.Key}Enum, object> updates, string where)");
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
-            code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo{tableInfo.Key} SET \");");
+            code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.DBName}.dbo.[{tableInfo.Key}] SET \");");
             code.AppendLine("            var para = new DynamicParameters();");
             code.AppendLine("            foreach (var update in updates)");
             code.AppendLine("            {");
@@ -817,20 +836,20 @@ namespace CodeGeneration
             // 普通查询
             code.AppendLine($"        public List<{tableInfo.Key}> GetModelList(string where)");
             code.AppendLine("        {");
-            code.AppendLine($"            var strSql = $\"SELECT * FROM {tableName} WHERE {{where}}\";");
+            code.AppendLine($"            var strSql = $\"SELECT * FROM {tableName} WHERE 1 = 1 {{where}}\";");
             code.AppendLine($"            return DbClient.Query<{tableInfo.Key}>(strSql).ToList();");
             code.AppendLine("        }\r\n");
             // 分页查询
             code.AppendLine($"        public List<{tableInfo.Key}> GetModelPage({tableInfo.Key}Enum order, string where, int pageIndex, int pageSize, out int total)");
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
-            code.AppendLine("            strSql.Append($\"SELECT * FROM ( SELECT TOP ( {pageSize} )\");");
+            code.AppendLine("            strSql.Append($\"SELECT * FROM ( SELECT TOP ({pageSize})\");");
             code.AppendLine("            strSql.Append($\"ROW_NUMBER() OVER ( ORDER BY {order} DESC ) AS ROWNUMBER,* \");");
             code.AppendLine($"            strSql.Append(\" FROM  {tableName} \");");
-            code.AppendLine("            strSql.Append($\" WHERE {where} \");");
+            code.AppendLine("            strSql.Append($\" WHERE 1 = 1 {where} \");");
             code.AppendLine("            strSql.Append(\" ) A\");");
-            code.AppendLine("            strSql.Append($\" WHERE   ROWNUMBER BETWEEN {(pageIndex - 1) * pageSize + 1} AND {pageIndex * pageSize}; \");");
-            code.AppendLine($"            total = DbClient.ExecuteScalar<int>($\"SELECT COUNT(1) FROM {tableName} WHERE {{where}};\");");
+            code.AppendLine("            strSql.Append($\" WHERE ROWNUMBER BETWEEN {(pageIndex - 1) * pageSize + 1} AND {pageIndex * pageSize}; \");");
+            code.AppendLine($"            total = DbClient.ExecuteScalar<int>($\"SELECT COUNT(1) FROM {tableName} WHERE 1 = 1 {{where}};\");");
             code.AppendLine($"            return DbClient.Query<{tableInfo.Key}>(strSql.ToString()).ToList();");
             code.AppendLine("        }\r\n");
             #endregion
@@ -845,6 +864,9 @@ namespace CodeGeneration
             var code = new StringBuilder();
             code.AppendLine($"namespace {InfoModel.Dal.Replace("/", ".")}");
             code.AppendLine("{");
+            code.AppendLine("    /// <summary>");
+            code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  数据访问扩展层(此类中的代码不会被覆盖)");
+            code.AppendLine("    /// </summary>");
             code.AppendLine($"    public partial class {tableInfo.Key}Dal");
             code.AppendLine("    {\r\n");
             code.AppendLine("    }");
@@ -855,13 +877,20 @@ namespace CodeGeneration
         static StringBuilder GetBllCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine("using Model.DBModel;\r\n");
+            code.AppendLine($"using {InfoModel.Dal.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.IDal.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Model.Replace("/", ".")};");
             code.AppendLine($"namespace {InfoModel.Bll.Replace("/", ".")}");
             code.AppendLine("{");
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
             var typeAndDefault = primaryKey != null ? GetTypeAndDefault(primaryKey, "") : new[] { "object", "" };
+            code.AppendLine("    /// <summary>");
+            code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  逻辑层");
+            code.AppendLine("    /// </summary>");
             code.AppendLine($"    public class {tableInfo.Key}Bll : BaseBll<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}>");
-            code.AppendLine("    {\r\n");
+            code.AppendLine("    {");
+            code.AppendLine($"        public {tableInfo.Key}Bll() : base(new {tableInfo.Key}Dal()) {{ }}\r\n");
+            code.AppendLine($"        public {tableInfo.Key}Bll(IBaseDal<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}> dal) : base(dal) {{ }}");
             code.AppendLine("    }");
             code.AppendLine("}");
             return code;
@@ -911,51 +940,84 @@ namespace CodeGeneration
 	                               ELSE d.name
 	                          END ) IN ('{tables.Replace(",", "','")}')";
 
-            var sql = $@"SELECT  ( CASE WHEN a.colorder = 1 THEN d.name
-                               ELSE d.name
-                          END ) AS TableName ,
-                        a.name AS FieldName ,
-                        ( CASE WHEN COLUMNPROPERTY(a.id, a.name, 'IsIdentity') = 1
-                               THEN '1'
-                               ELSE ''
-                          END ) AS IdentityKey ,
-                        ( CASE WHEN ( SELECT    COUNT(*)
-                                      FROM      sysobjects
-                                      WHERE     ( name IN (
-                                                  SELECT    name
-                                                  FROM      sysindexes
-                                                  WHERE     ( id = a.id )
-                                                            AND ( indid IN (
-                                                                  SELECT  indid
-                                                                  FROM    sysindexkeys
-                                                                  WHERE   ( id = a.id )
-                                                                          AND ( colid IN (
-                                                                          SELECT
-                                                                          colid
-                                                                          FROM
-                                                                          syscolumns
-                                                                          WHERE
-                                                                          ( id = a.id )
-                                                                          AND ( name = a.name ) ) ) ) ) ) )
-                                                AND ( xtype = 'PK' )
-                                    ) > 0 THEN '1'
-                               ELSE ''
-                          END ) AS PrimaryKey ,
-                        b.name AS Type ,
-                        COLUMNPROPERTY(a.id, a.name, 'PRECISION') AS Size ,
-                        ISNULL(e.text, '') AS [Default] ,
-                        ISNULL(g.[value], '') AS Describe
-                FROM    syscolumns a
-                        LEFT JOIN systypes b ON a.xtype = b.xusertype
-                        INNER JOIN sysobjects d ON a.id = d.id
-                                                   AND d.xtype = 'U'
-                                                   AND d.name <> 'dtproperties'
-                        LEFT JOIN syscomments e ON a.cdefault = e.id
-                        LEFT JOIN sys.extended_properties g ON a.id = g.major_id
-                                                               AND a.colid = g.minor_id
-	            WHERE {where}
-                ORDER BY a.id ,
-                        a.colorder;";
+            var sql = $@"USE {InfoModel.DBName};
+                        SELECT TableName = CASE
+                               WHEN a.colorder = 1 THEN
+                                   d.name
+                               ELSE
+                                   ''
+                           END,
+                           TableDescribe = CASE
+                                               WHEN a.colorder = 1 THEN
+                                                   ISNULL(f.value, '')
+                                               ELSE
+                                                   ''
+                                           END,
+                           (CASE
+                                WHEN a.colorder = 1 THEN
+                                    d.name
+                                ELSE
+                                    d.name
+                            END
+                           ) AS TableName,
+                           a.name AS FieldName,
+                           (CASE
+                                WHEN COLUMNPROPERTY(a.id, a.name, 'IsIdentity') = 1 THEN
+                                    '1'
+                                ELSE
+                                    ''
+                            END
+                           ) AS IdentityKey,
+                           (CASE
+                                WHEN
+                                (
+                                    SELECT COUNT(*)
+                                    FROM sysobjects
+                                    WHERE (name IN (
+                                                       SELECT name
+                                                       FROM sysindexes
+                                                       WHERE (id = a.id)
+                                                             AND (indid IN (
+                                                                               SELECT indid
+                                                                               FROM sysindexkeys
+                                                                               WHERE (id = a.id)
+                                                                                     AND (colid IN (
+                                                                                                       SELECT colid FROM syscolumns WHERE (id = a.id) AND (name = a.name)
+                                                                                                   )
+                                                                                         )
+                                                                           )
+                                                                 )
+                                                   )
+                                          )
+                                          AND (xtype = 'PK')
+                                ) > 0 THEN
+                                    '1'
+                                ELSE
+                                    ''
+                            END
+                           ) AS PrimaryKey,
+                           b.name AS Type,
+                           COLUMNPROPERTY(a.id, a.name, 'PRECISION') AS Size,
+                           ISNULL(e.text, '') AS [Default],
+                           ISNULL(g.[value], '') AS Describe
+                    FROM syscolumns a
+                        LEFT JOIN systypes b
+                            ON a.xusertype = b.xusertype
+                        INNER JOIN sysobjects d
+                            ON a.id = d.id
+                               AND d.xtype = 'U'
+                               AND d.name <> 'dtproperties'
+                        LEFT JOIN syscomments e
+                            ON a.cdefault = e.id
+                        LEFT JOIN sys.extended_properties g
+                            ON a.id = g.major_id
+                               AND a.colid = g.minor_id
+                        LEFT JOIN sys.extended_properties f
+                            ON d.id = f.major_id
+                               AND f.minor_id = 0
+                    WHERE {where}
+                    ORDER BY a.id,
+                             a.colorder;";
             return DbClient.Query<TableInfo>(sql);
         }
 
@@ -1001,7 +1063,8 @@ namespace CodeGeneration
             var def = "";
             field.Type = field.Type.ToLower();
             if (field.Type == "int"
-                || field.Type == "tinyint")
+                || field.Type == "tinyint"
+                || field.Type == "smallint")
             {
                 type = "int";
             }
@@ -1080,8 +1143,8 @@ namespace CodeGeneration
             Console.WriteLine($"*  逻辑层代码将生成在 : {InfoModel.Bll} 文件夹中 ");
             Console.WriteLine($"*  实体层代码将生成在 : {InfoModel.Model} 文件夹中 ");
             Console.WriteLine("*  将使用工厂模式  ");
-            Console.WriteLine($"*  *");
-            Console.WriteLine($"*  *");
+            //Console.WriteLine($"*  *");
+            //Console.WriteLine($"*  *");
             Console.WriteLine("**********************************************************************************");
             Console.WriteLine("请确认配置信息Y/N ?");
             Console.ResetColor();
@@ -1130,7 +1193,7 @@ namespace CodeGeneration
                 {
                     throw new ArgumentNullException(nameof(sql));
                 }
-                using (IDbConnection con = DataSource.GetConnection())
+                using (var con = DataSource.GetConnection())
                 {
                     IEnumerable<T> tList = con.Query<T>(sql, param);
                     con.Close();
@@ -1144,7 +1207,7 @@ namespace CodeGeneration
                 {
                     throw new ArgumentNullException(nameof(sql));
                 }
-                using (IDbConnection con = DataSource.GetConnection())
+                using (var con = DataSource.GetConnection())
                 {
                     return con.Execute(sql, param, transaction);
                 }
@@ -1155,7 +1218,7 @@ namespace CodeGeneration
                 {
                     throw new ArgumentNullException(nameof(sql));
                 }
-                using (IDbConnection con = DataSource.GetConnection())
+                using (var con = DataSource.GetConnection())
                 {
                     return con.ExecuteScalar<T>(sql, param);
                 }
@@ -1163,7 +1226,7 @@ namespace CodeGeneration
 
             public static T ExecuteScalarProc<T>(string strProcName, object param = null)
             {
-                using (IDbConnection con = DataSource.GetConnection())
+                using (var con = DataSource.GetConnection())
                 {
                     return (T)con.ExecuteScalar(strProcName, param, commandType: CommandType.StoredProcedure);
                 }
@@ -1177,7 +1240,7 @@ namespace CodeGeneration
             /// <returns></returns>
             public static IEnumerable<T> ExecuteQueryProc<T>(string strProcName, object param = null)
             {
-                using (IDbConnection con = DataSource.GetConnection())
+                using (var con = DataSource.GetConnection())
                 {
                     IEnumerable<T> tList = con.Query<T>(strProcName, param, commandType: CommandType.StoredProcedure);
                     con.Close();
@@ -1195,7 +1258,7 @@ namespace CodeGeneration
             {
                 try
                 {
-                    using (IDbConnection con = DataSource.GetConnection())
+                    using (var con = DataSource.GetConnection())
                     {
                         return con.Execute(strProcName, param, commandType: CommandType.StoredProcedure);
                     }
@@ -1257,6 +1320,7 @@ namespace CodeGeneration
 
     class TableInfo
     {
+        public string TableDescribe { get; set; }
         public string TableName { get; set; }
         public string FieldName { get; set; }
         public string IdentityKey { get; set; }
