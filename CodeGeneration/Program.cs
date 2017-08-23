@@ -232,7 +232,14 @@ namespace CodeGeneration
                                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.Bll.Split('/')[0]))?.FullName ?? "";
                                 if (!string.IsNullOrEmpty(path))
                                 {
-                                    WriteToFile(GetBllCode(g), layersPath.Value + "\\" + g.Key + "Bll.cs", path + "\\" + InfoModel.Bll.Split('/')[0] + ".csproj");
+                                    if (File.Exists(layersPath.Value + "\\" + g.Key + "Bll.cs"))
+                                    {
+                                        ShowGood("已存在" + g.Key + "Bll.cs       跳过...");
+                                    }
+                                    else
+                                    {
+                                        WriteToFile(GetBllCode(g), layersPath.Value + "\\" + g.Key + "Bll.cs", path + "\\" + InfoModel.Bll.Split('/')[0] + ".csproj");
+                                    }
                                 }
                                 else
                                 {
@@ -493,7 +500,7 @@ namespace CodeGeneration
             code.AppendLine("    }\r\n\r\n");
             code.AppendLine("    public class DataSource");
             code.AppendLine("    {");
-            code.AppendLine($"        public static string ConnString = ConfigurationManager.ConnectionStrings[\"{InfoModel.DBName}\"].ConnectionString;");
+            code.AppendLine("        public static string ConnString = ConfigurationManager.ConnectionStrings[\"DBString\"].ConnectionString;");
             code.AppendLine("        public static IDbConnection GetConnection()");
             code.AppendLine("        {");
             code.AppendLine("            if (string.IsNullOrEmpty(ConnString))");
