@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
-namespace Common
+namespace Template
 {
     public static class ConverHelper
     {

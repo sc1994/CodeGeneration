@@ -2,7 +2,7 @@
 using Model;
 using System.Collections.Generic;
 
-namespace BLL
+namespace Template
 {
     public class BaseBll<TModel, TEmun, TKeyType> where TModel : BaseModel
     {

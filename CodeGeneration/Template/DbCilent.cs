@@ -5,7 +5,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 
-namespace Common
+namespace Template
 {
     /// <summary>
     /// 数据库操作类

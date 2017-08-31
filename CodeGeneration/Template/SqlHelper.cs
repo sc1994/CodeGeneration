@@ -6,7 +6,7 @@ using System.Configuration;
 using System.ComponentModel;
 using System.Collections.Generic;
 
-namespace Common
+namespace Template
 {
     /// <summary>
     /// sql 帮助类 方便sql 的增删改查 操作

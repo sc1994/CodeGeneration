@@ -1,7 +1,7 @@
 ﻿using Model;
 using System.Collections.Generic;
 
-namespace IBLL
+namespace Template
 {
     public interface IBaseBll<TModel, TEmun, TKeyType> where TModel : BaseModel
     {

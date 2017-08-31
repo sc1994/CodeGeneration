@@ -1,7 +1,7 @@
 ﻿using Model;
 using System.Collections.Generic;
 
-namespace IDAL
+namespace Template
 {
     public interface IBaseDal<TModel, TEnum, TKeyType> where TModel : BaseModel
     {
