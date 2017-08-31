@@ -26,7 +26,7 @@
 - 加入 ConvertHelper.cs 文件 [点我查看](https://github.com/sc1994/ConverHelper)
 - 引入 Ninject (DI容器) 已基本配置 你需要的就是 在确保完全引入 Ninject 组件之后在App_Start/NinjectWebCommon.cs中写入
 ```
-    /// <summary>
+/// <summary>
 /// Load your modules or register your services here!
 /// </summary>
 /// <param name="kernel">The kernel.</param>
