@@ -17,15 +17,13 @@
 - 加入 SqlHelper.cs 文件 [link](https://github.com/sc1994/SqlHelper)
 - 加入 ConvertHelper.cs 文件 [link](https://github.com/sc1994/ConverHelper)
 - 引入 Ninject (DI容器) 已基本配置 你需要的就是 在确保完全引入 Ninject 组件之后在App_Start/NinjectWebCommon.cs中写入
-  `
-        /// <summary>
-        /// Load your modules or register your services here!
-        /// </summary>
-        /// <param name="kernel">The kernel.</param>
-        private static void RegisterServices(IKernel kernel)
-        {
-            var ninjectDependencyResolver = new NinjectDependencyResolver(kernel); 
-            System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = ninjectDependencyResolver;
-        } 
-  `
+/// <summary>
+/// Load your modules or register your services here!
+/// </summary>
+/// <param name="kernel">The kernel.</param>
+private static void RegisterServices(IKernel kernel)
+{
+    var ninjectDependencyResolver = new NinjectDependencyResolver(kernel); 
+    System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = ninjectDependencyResolver;
+}
 - 
