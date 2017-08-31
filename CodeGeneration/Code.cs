@@ -23,7 +23,7 @@ namespace CodeGeneration
             var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/IBaseDal.cs";
             Console.WriteLine("正在获取代码 From " + url);
             Console.WriteLine("这可能需要点时间.....");
-            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.IDal.Split('/')[0]);
+            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.IDal.Split('/')[0]).Replace("using Model", $"using {InfoModel.Info.Model.Split('/')[0]}");
             return new StringBuilder(code);
         }
 
@@ -50,7 +50,7 @@ namespace CodeGeneration
             var url = "https://raw.githubusercontent.com/sc1994/SqlHelper/master/SqlHelper/SqlHelper/SqlHelper.cs";
             Console.WriteLine("正在获取代码 From " + url);
             Console.WriteLine("这可能需要点时间.....");
-            var code = HttpGet(url).Replace(" SqlHelper", " " + InfoModel.Info.Common.Split('/')[0]);
+            var code = HttpGet(url).Replace("namespace SqlHelper", "namespace " + InfoModel.Info.Common.Split('/')[0]);
             return new StringBuilder(code);
         }
 
@@ -59,7 +59,10 @@ namespace CodeGeneration
             var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/BaseBll.cs";
             Console.WriteLine("正在获取代码 From " + url);
             Console.WriteLine("这可能需要点时间.....");
-            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.Bll.Split('/')[0]);
+            var code = HttpGet(url)
+                .Replace(" Template", " " + InfoModel.Info.Bll.Split('/')[0])
+                .Replace("using IDAL", $"using {InfoModel.Info.IDal.Split('/')[0]}")
+                .Replace("using Model", $"using {InfoModel.Info.Model.Split('/')[0]}");
             return new StringBuilder(code);
         }
 
@@ -68,7 +71,9 @@ namespace CodeGeneration
             var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/IBaseBll.cs";
             Console.WriteLine("正在获取代码 From " + url);
             Console.WriteLine("这可能需要点时间.....");
-            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.IBll.Split('/')[0]);
+            var code = HttpGet(url)
+                .Replace(" Template", " " + InfoModel.Info.IBll.Split('/')[0])
+                .Replace("using Model", $"using {InfoModel.Info.Model.Split('/')[0]}");
             return new StringBuilder(code);
         }
 
@@ -76,7 +81,6 @@ namespace CodeGeneration
         {
             var code = new StringBuilder();
             code.AppendLine("using System;");
-            code.AppendLine($"using {InfoModel.Info.Common.Split('/')[0]};\r\n");
             code.AppendLine($"namespace {InfoModel.Info.Model.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine("    /// <summary>");
@@ -353,12 +357,15 @@ namespace CodeGeneration
         public static StringBuilder GetIBllCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
+            code.AppendLine($"using {InfoModel.Info.Model.Replace("/", ".")};\r\n");
             code.AppendLine($"namespace {InfoModel.Info.IBll.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine("    /// <summary>");
             code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  逻辑接口层(此类中的代码不会被覆盖)");
             code.AppendLine("    /// </summary>");
-            code.AppendLine($"    public interface I{tableInfo.Key}Bll");
+            var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
+            var typeAndDefault = primaryKey != null ? Helper.GetTypeAndDefault(primaryKey, "") : new[] { "object", "" };
+            code.AppendLine($"    public interface I{tableInfo.Key}Bll : IBaseBll<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}>");
             code.AppendLine("    {\r\n");
             code.AppendLine("    }");
             code.AppendLine("}");
@@ -368,10 +375,11 @@ namespace CodeGeneration
         public static StringBuilder GetDiBindCode(Dictionary<string, string> bindToList)
         {
             var code = new StringBuilder();
+            code.AppendLine("using Ninject;");
             code.AppendLine($"using {InfoModel.Info.Bll.Replace("/", ".")};");
             code.AppendLine($"using {InfoModel.Info.Dal.Replace("/", ".")};");
             code.AppendLine($"using {InfoModel.Info.IBll.Replace("/", ".")};");
-            code.AppendLine($"using {InfoModel.Info.IDal.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.IDal.Replace("/", ".")};\r\n");
             code.AppendLine($"namespace {InfoModel.Info.Common.Split('/')[0]}.Infrastructure");
             code.AppendLine("{");
             code.AppendLine("    public class BindToConfig");

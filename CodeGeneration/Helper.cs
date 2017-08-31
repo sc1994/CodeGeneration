@@ -18,7 +18,7 @@ namespace CodeGeneration
         {
             if (!File.Exists(path))
             {
-                IntoCsproj(csprojPath, string.Join("\\", path.Split('\\').Except(csprojPath.Split('\\'))));
+                IntoCsproj(csprojPath, string.Join("\\", path.Replace("\\", "/").Split('/').Except(csprojPath.Replace("\\","/").Split('/'))));
             }
             var sw = File.CreateText(path);
             sw.Write(sb.ToString());
@@ -224,7 +224,7 @@ namespace CodeGeneration
                 }
                 else if (string.IsNullOrEmpty(timeDef))
                 {
-                    timeDef = "\"1900-1-1\".ToDate()";
+                    timeDef = "ToDateTime(\"1900-1-1\")";
                 }
                 else
                 {

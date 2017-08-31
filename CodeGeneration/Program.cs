@@ -74,8 +74,8 @@ namespace CodeGeneration
             {
                 Console.WriteLine($"验证: {pathDb} Success");
                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
-                Console.WriteLine("验证是否存在BaseModel.cs");
-                if (File.Exists(path + "\\BaseModel.cs"))
+                Console.WriteLine("验证是否存在IBaseDal.cs");
+                if (File.Exists(path + "\\IBaseDal.cs"))
                 {
                     Helper.ShowGood("已存在IBaseDal.cs");
                 }
@@ -94,10 +94,37 @@ namespace CodeGeneration
                 }
                 layersPaths.Add("IDal", Helper.ExamineFolder(InfoModel.Info.IDal, path));
             }
+            else
+                Helper.ShowError($"验证: {pathDb} Error");
             #endregion
 
             #region DAL
             pathDb = InfoModel.Info.Dal.Split('/')[0];
+            if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
+            {
+                Console.WriteLine($"验证: {pathDb} Success");
+                Console.WriteLine("验证是否存在DBClient.cs");
+                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
+                if (File.Exists(path + "\\DBClient.cs"))
+                {
+                    Helper.ShowGood("已存在DBClient.cs");
+                }
+                else
+                {
+                    Console.WriteLine("正在帮您生成 DBClient.cs...");
+                    try
+                    {
+                        Helper.WriteToFile(Code.GetDbClientCode(), path + "\\DBClient.cs", path + "\\" + pathDb + ".csproj");
+                    }
+                    catch (Exception ex)
+                    {
+                        Helper.ShowError("出现异常-->" + ex.Message);
+                    }
+                    Helper.ShowGood("生成DBClient.cs Success");
+                }
+            }
+            else
+                Helper.ShowError($"验证: {pathDb} Error");
             path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
             layersPaths.Add("Dal", Helper.ExamineFolder(InfoModel.Info.Dal, path));
             #endregion
@@ -169,27 +196,6 @@ namespace CodeGeneration
             if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
             {
                 Console.WriteLine($"验证: {pathDb} Success");
-                #region DBClient
-                Console.WriteLine("验证是否存在DBClient.cs");
-                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
-                if (File.Exists(path + "\\DBClient.cs"))
-                {
-                    Helper.ShowGood("已存在DBClient.cs");
-                }
-                else
-                {
-                    Console.WriteLine("正在帮您生成 DBClient.cs...");
-                    try
-                    {
-                        Helper.WriteToFile(Code.GetDbClientCode(), path + "\\DBClient.cs", path + "\\" + pathDb + ".csproj");
-                    }
-                    catch (Exception ex)
-                    {
-                        Helper.ShowError("出现异常-->" + ex.Message);
-                    }
-                    Helper.ShowGood("生成DBClient.cs Success");
-                }
-                #endregion
 
                 #region ConvertHelper
                 Console.WriteLine("验证是否存在ConvertHelper.cs");
@@ -339,7 +345,14 @@ namespace CodeGeneration
                                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(InfoModel.Info.IBll.Split('/')[0]))?.FullName ?? "";
                                 if (!string.IsNullOrEmpty(path))
                                 {
-                                    Helper.WriteToFile(Code.GetIBllCode(g), layersPath.Value + "\\" + g.Key + "IBll.cs", path + "\\" + InfoModel.Info.IBll.Split('/')[0] + ".csproj");
+                                    if (!File.Exists(layersPath.Value + "\\" + g.Key + "IBll.cs"))
+                                    {
+                                        Helper.WriteToFile(Code.GetIBllCode(g), layersPath.Value + "\\" + g.Key + "IBll.cs", path + "\\" + InfoModel.Info.IBll.Split('/')[0] + ".csproj");
+                                    }
+                                    else
+                                    {
+                                        Helper.ShowGood("已存在" + g.Key + "IBll.cs       跳过...");
+                                    }
                                 }
                                 else
                                 {
@@ -430,7 +443,15 @@ namespace CodeGeneration
             }
             #endregion
 
+            #region 检查程序集之间的引用
             Console.WriteLine("正在检查程序集之间的引用关系...."); // todo
+            #endregion
+
+            #region 检查是否包含必须的nuget包
+
+            #endregion
+
+
             Console.ReadLine();
             Console.Clear();
             goto START;
