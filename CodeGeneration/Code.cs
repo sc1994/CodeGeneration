@@ -1,330 +1,83 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Net;
+using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 
 namespace CodeGeneration
 {
-  public  class Code
+    public class Code
     {
         public static StringBuilder GetBaseModelCode()
         {
-            var code = new StringBuilder();
-            code.AppendLine("using System;\r\n");
-            code.AppendLine($"namespace {Program.InfoModel.Model.Split('/')[0]}");
-            code.AppendLine("{");
-            code.AppendLine("    public class BaseModel");
-            code.AppendLine("    {");
-            code.AppendLine("        protected static DateTime ToDateTime(string str)");
-            code.AppendLine("        {");
-            code.AppendLine("            DateTime data;");
-            code.AppendLine("            try");
-            code.AppendLine("            {");
-            code.AppendLine("                data = Convert.ToDateTime(str);");
-            code.AppendLine("            }");
-            code.AppendLine("            catch (Exception)");
-            code.AppendLine("            {");
-            code.AppendLine("                data = Convert.ToDateTime(\"1900-01-01\");");
-            code.AppendLine("            }");
-            code.AppendLine("            return data;");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        protected static long Tolong(string str)");
-            code.AppendLine("        {");
-            code.AppendLine("            long data;");
-            code.AppendLine("            try");
-            code.AppendLine("            {");
-            code.AppendLine("                data = Convert.ToInt64(str);");
-            code.AppendLine("            }");
-            code.AppendLine("            catch (Exception)");
-            code.AppendLine("            {");
-            code.AppendLine("                data = 0;");
-            code.AppendLine("            }");
-            code.AppendLine("            return data;");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        protected static int ToInt(string str)");
-            code.AppendLine("        {");
-            code.AppendLine("            int data;");
-            code.AppendLine("            try");
-            code.AppendLine("            {");
-            code.AppendLine("                data = Convert.ToInt32(str);");
-            code.AppendLine("            }");
-            code.AppendLine("            catch (Exception)");
-            code.AppendLine("            {");
-            code.AppendLine("                data = 0;");
-            code.AppendLine("            }");
-            code.AppendLine("            return data;");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        protected static decimal ToDecimal(string str)");
-            code.AppendLine("        {");
-            code.AppendLine("            decimal data;");
-            code.AppendLine("            try");
-            code.AppendLine("            {");
-            code.AppendLine("                data = Convert.ToDecimal(str);");
-            code.AppendLine("            }");
-            code.AppendLine("            catch (Exception)");
-            code.AppendLine("            {");
-            code.AppendLine("                data = 0;");
-            code.AppendLine("            }");
-            code.AppendLine("            return data;");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        protected static double ToDouble(string str)");
-            code.AppendLine("        {");
-            code.AppendLine("            double data;");
-            code.AppendLine("            try");
-            code.AppendLine("            {");
-            code.AppendLine("                data = Convert.ToDouble(str);");
-            code.AppendLine("            }");
-            code.AppendLine("            catch (Exception)");
-            code.AppendLine("            {");
-            code.AppendLine("                data = 0;");
-            code.AppendLine("            }");
-            code.AppendLine("            return data;");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        protected static bool ToBool(string str)");
-            code.AppendLine("        {");
-            code.AppendLine("            return str == \"1\";");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("    }");
-            code.AppendLine("}");
-            return code;
+            var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/BaseModel.cs";
+            Console.WriteLine("正在获取代码 From " + url);
+            Console.WriteLine("这可能需要点时间.....");
+            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.Model.Split('/')[0]);
+            return new StringBuilder(code);
         }
 
         public static StringBuilder GetIBaseDalCode()
         {
-            var code = new StringBuilder();
-            code.AppendLine($"using {Program.InfoModel.Model.Split('/')[0]};");
-            code.AppendLine("using System.Collections.Generic;\r\n");
-            code.AppendLine($"namespace {Program.InfoModel.IDal.Split('/')[0]}");
-            code.AppendLine("{");
-            code.AppendLine("    public interface IBaseDal<TModel, TEnum, TKeyType> where TModel : BaseModel");
-            code.AppendLine("    {");
-            code.AppendLine("        bool Exists(TKeyType primaryKey);\r\n");
-            code.AppendLine("        bool ExistsByWhere(string where);\r\n");
-            code.AppendLine("        TKeyType Add(TModel model);\r\n");
-            code.AppendLine("        bool Update(TModel model);\r\n");
-            code.AppendLine("        bool Update(Dictionary<TEnum, object> updates, string where);\r\n");
-            code.AppendLine("        bool Delete(TKeyType primaryKey);\r\n");
-            code.AppendLine("        int DeleteByWhere(string where);\r\n");
-            code.AppendLine("        TModel GetModel(TKeyType primaryKey);\r\n");
-            code.AppendLine("        List<TModel> GetModelList(string where);\r\n");
-            code.AppendLine("        List<TModel> GetModelPage(TEnum order, string where, int pageIndex, int pageSize, out int total);\r\n");
-            code.AppendLine("    }");
-            code.AppendLine("}");
-            return code;
+            var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/IBaseDal.cs";
+            Console.WriteLine("正在获取代码 From " + url);
+            Console.WriteLine("这可能需要点时间.....");
+            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.IDal.Split('/')[0]);
+            return new StringBuilder(code);
         }
 
         public static StringBuilder GetDbClientCode()
         {
-            var code = new StringBuilder();
-            code.AppendLine("using Dapper;");
-            code.AppendLine("using System;");
-            code.AppendLine("using System.Collections.Generic;");
-            code.AppendLine("using System.Configuration;");
-            code.AppendLine("using System.Data.SqlClient;");
-            code.AppendLine("using System.Data;\r\n");
-            code.AppendLine($"namespace {Program.InfoModel.Dal.Split('/')[0]}");
-            code.AppendLine("{");
-            code.AppendLine("    public class DbClient");
-            code.AppendLine("    {");
-            code.AppendLine("        public static IEnumerable<T> Query<T>(string sql, object param = null)");
-            code.AppendLine("        {");
-            code.AppendLine("            if (string.IsNullOrEmpty(sql))");
-            code.AppendLine("            {");
-            code.AppendLine("                throw new ArgumentNullException(nameof(sql));");
-            code.AppendLine("            }");
-            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
-            code.AppendLine("            {");
-            code.AppendLine("                IEnumerable<T> tList = con.Query<T>(sql, param);");
-            code.AppendLine("                con.Close();");
-            code.AppendLine("                return tList;");
-            code.AppendLine("            }");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        public static int Excute(string sql, object param = null, IDbTransaction transaction = null)");
-            code.AppendLine("        {");
-            code.AppendLine("            if (string.IsNullOrEmpty(sql))");
-            code.AppendLine("            {");
-            code.AppendLine("                throw new ArgumentNullException(nameof(sql));");
-            code.AppendLine("            }");
-            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
-            code.AppendLine("            {");
-            code.AppendLine("                return con.Execute(sql, param, transaction);");
-            code.AppendLine("            }");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        public static T ExecuteScalar<T>(string sql, object param = null)");
-            code.AppendLine("        {");
-            code.AppendLine("            if (string.IsNullOrEmpty(sql))");
-            code.AppendLine("            {");
-            code.AppendLine("                throw new ArgumentNullException(nameof(sql));");
-            code.AppendLine("            }");
-            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
-            code.AppendLine("            {");
-            code.AppendLine("                return con.ExecuteScalar<T>(sql, param);");
-            code.AppendLine("            }");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        public static T ExecuteScalarProc<T>(string strProcName, object param = null)");
-            code.AppendLine("        {");
-            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
-            code.AppendLine("            {");
-            code.AppendLine("                return (T)con.ExecuteScalar(strProcName, param, commandType: CommandType.StoredProcedure);");
-            code.AppendLine("            }");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        public static IEnumerable<T> ExecuteQueryProc<T>(string strProcName, object param = null)");
-            code.AppendLine("        {");
-            code.AppendLine("            using (IDbConnection con = DataSource.GetConnection())");
-            code.AppendLine("            {");
-            code.AppendLine("                IEnumerable<T> tList = con.Query<T>(strProcName, param, commandType: CommandType.StoredProcedure);");
-            code.AppendLine("                con.Close();");
-            code.AppendLine("                return tList;");
-            code.AppendLine("            }");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        public static int ExecuteProc(string strProcName, object param = null)");
-            code.AppendLine("        {");
-            code.AppendLine("            try");
-            code.AppendLine("            {");
-            code.AppendLine("                using (IDbConnection con = DataSource.GetConnection())");
-            code.AppendLine("                {");
-            code.AppendLine("                    return con.Execute(strProcName, param, commandType: CommandType.StoredProcedure);");
-            code.AppendLine("                }");
-            code.AppendLine("            }");
-            code.AppendLine("            catch (Exception)");
-            code.AppendLine("            {");
-            code.AppendLine("                return 0;");
-            code.AppendLine("            }");
-            code.AppendLine("        }");
-            code.AppendLine("    }\r\n\r\n");
-            code.AppendLine("    public class DataSource");
-            code.AppendLine("    {");
-            code.AppendLine("        public static string ConnString = ConfigurationManager.ConnectionStrings[\"DBString\"].ConnectionString;");
-            code.AppendLine("        public static IDbConnection GetConnection()");
-            code.AppendLine("        {");
-            code.AppendLine("            if (string.IsNullOrEmpty(ConnString))");
-            code.AppendLine("                throw new NoNullAllowedException(nameof(ConnString));");
-            code.AppendLine("            return new SqlConnection(ConnString);");
-            code.AppendLine("        }");
-            code.AppendLine("    }");
-            code.AppendLine("}");
+            var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/DbCilent.cs";
+            Console.WriteLine("正在获取代码 From " + url);
+            Console.WriteLine("这可能需要点时间.....");
+            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.Common.Split('/')[0]);
+            return new StringBuilder(code);
+        }
 
-            return code;
+        public static StringBuilder GetConvertCode()
+        {
+            var url = "https://raw.githubusercontent.com/sc1994/ConverHelper/master/ConverHelper.cs";
+            Console.WriteLine("正在获取代码 From " + url);
+            Console.WriteLine("这可能需要点时间.....");
+            var code = HttpGet(url).Replace(" Common", " " + InfoModel.Info.Common.Split('/')[0]);
+            return new StringBuilder(code);
+        }
+
+        public static StringBuilder GetSqlHelperCode()
+        {
+            var url = "https://raw.githubusercontent.com/sc1994/SqlHelper/master/SqlHelper/SqlHelper/SqlHelper.cs";
+            Console.WriteLine("正在获取代码 From " + url);
+            Console.WriteLine("这可能需要点时间.....");
+            var code = HttpGet(url).Replace(" SqlHelper", " " + InfoModel.Info.Common.Split('/')[0]);
+            return new StringBuilder(code);
         }
 
         public static StringBuilder GetBaseBllCode()
         {
-            var code = new StringBuilder();
-            code.AppendLine($"using {Program.InfoModel.IDal.Split('/')[0]};");
-            code.AppendLine($"using {Program.InfoModel.Model.Split('/')[0]};");
-            code.AppendLine("using System.Collections.Generic;\r\n");
-            code.AppendLine($"namespace {Program.InfoModel.Bll.Split('/')[0]}");
-            code.AppendLine("{");
-            code.AppendLine("    public class BaseBll<TModel, TEmun, TKeyType> where TModel : BaseModel");
-            code.AppendLine("    {");
-            code.AppendLine("        protected IBaseDal<TModel, TEmun, TKeyType> Dal { get; set; }\r\n");
-            code.AppendLine("        public BaseBll(IBaseDal<TModel, TEmun, TKeyType> dal)");
-            code.AppendLine("        {");
-            code.AppendLine("            Dal = dal;");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 数据是否存在 (表中没有主键时此方法不适用)");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"primaryKey\">主键</param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public bool Exists(TKeyType primaryKey)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.Exists(primaryKey);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 数据是否存在");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public bool ExistsByWhere(string where)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.ExistsByWhere(where);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 向表中添加一条数据");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"model\"></param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public TKeyType Add(TModel model)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.Add(model);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 更新一条数据");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"model\"></param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public bool Update(TModel model)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.Update(model);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 批量更新");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"updates\">需要更新字段的键值对</param>");
-            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public bool Update(Dictionary<TEmun, object> updates, string where)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.Update(updates, where);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 删除一条数据 (表中没有主键时此方法不适用)");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"primaryKey\">主键</param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public bool Delete(TKeyType primaryKey)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.Delete(primaryKey);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 批量删除");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public int DeleteByWhere(string where)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.DeleteByWhere(where);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 获取对象 (表中没有主键时此方法不适用)");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"primaryKey\">主键</param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public TModel GetModel(TKeyType primaryKey)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.GetModel(primaryKey);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 获取对象列表");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public List<TModel> GetModelList(string where)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.GetModelList(where);");
-            code.AppendLine("        }\r\n");
-            code.AppendLine("        /// <summary>");
-            code.AppendLine("        /// 获取分页对象列表");
-            code.AppendLine("        /// </summary>");
-            code.AppendLine("        /// <param name=\"order\">分页排序的依据</param>");
-            code.AppendLine("        /// <param name=\"where\">条件语句</param>");
-            code.AppendLine("        /// <param name=\"pageIndex\">开始页数</param>");
-            code.AppendLine("        /// <param name=\"pageSize\">每页大小</param>");
-            code.AppendLine("        /// <param name=\"total\">out 总数</param>");
-            code.AppendLine("        /// <returns></returns>");
-            code.AppendLine("        public List<TModel> GetModelPage(TEmun order, string where, int pageIndex, int pageSize, out int total)");
-            code.AppendLine("        {");
-            code.AppendLine("            return Dal.GetModelPage(order, where, pageIndex, pageSize, out total);");
-            code.AppendLine("        }");
-            code.AppendLine("    }");
-            code.AppendLine("}");
-            return code;
+            var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/BaseBll.cs";
+            Console.WriteLine("正在获取代码 From " + url);
+            Console.WriteLine("这可能需要点时间.....");
+            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.Bll.Split('/')[0]);
+            return new StringBuilder(code);
+        }
+
+        public static StringBuilder GetIBaseBllCode()
+        {
+            var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/IBaseBll.cs";
+            Console.WriteLine("正在获取代码 From " + url);
+            Console.WriteLine("这可能需要点时间.....");
+            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.IBll.Split('/')[0]);
+            return new StringBuilder(code);
         }
 
         public static StringBuilder GetModelCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine("using System;\r\n");
-            code.AppendLine($"namespace {Program.InfoModel.Model.Replace("/", ".")}");
+            code.AppendLine("using System;");
+            code.AppendLine($"using {InfoModel.Info.Common.Split('/')[0]};\r\n");
+            code.AppendLine($"namespace {InfoModel.Info.Model.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine("    /// <summary>");
             code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe);
@@ -359,8 +112,8 @@ namespace CodeGeneration
         public static StringBuilder GetIDalCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine($"using {Program.InfoModel.Model.Replace("/", ".")};\r\n");
-            code.AppendLine($"namespace {Program.InfoModel.IDal.Replace("/", ".")}");
+            code.AppendLine($"using {InfoModel.Info.Model.Replace("/", ".")};\r\n");
+            code.AppendLine($"namespace {InfoModel.Info.IDal.Replace("/", ".")}");
             code.AppendLine("{");
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
             var typeAndDefault = primaryKey != null ? Helper.GetTypeAndDefault(primaryKey, "") : new[] { "object", "" };
@@ -380,10 +133,11 @@ namespace CodeGeneration
             code.AppendLine("using Dapper;");
             code.AppendLine("using System.Collections.Generic;");
             code.AppendLine("using System.Linq;");
-            code.AppendLine($"using {Program.InfoModel.IDal.Replace("/", ".")};");
-            code.AppendLine($"using {Program.InfoModel.Model.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.IDal.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.Model.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.Common.Split('/')[0]};");
             code.AppendLine("using System.Text;\r\n");
-            code.AppendLine($"namespace {Program.InfoModel.Dal.Replace("/", ".")}");
+            code.AppendLine($"namespace {InfoModel.Info.Dal.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine("    /// <summary>");
             code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  数据访问层");
@@ -393,7 +147,7 @@ namespace CodeGeneration
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
             var identityKey = tableInfo.FirstOrDefault(x => x.IdentityKey == "1");
             var typeAndDefault = new string[2];
-            var tableName = $"{Program.InfoModel.DBName}.dbo.[{tableInfo.Key}]";
+            var tableName = $"{InfoModel.Info.DBName}.dbo.[{tableInfo.Key}]";
 
             #region 是否存在
 
@@ -431,7 +185,7 @@ namespace CodeGeneration
             }
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
-            code.AppendLine($"            strSql.Append(\"INSERT INTO {Program.InfoModel.DBName}.dbo.[{tableInfo.Key}] (\");");
+            code.AppendLine($"            strSql.Append(\"INSERT INTO {InfoModel.Info.DBName}.dbo.[{tableInfo.Key}] (\");");
             code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1").Aggregate("", (current, x) => current + x.FieldName + ",").TrimEnd(',')}\");");
             code.AppendLine("            strSql.Append(\") VALUES (\");");
             code.AppendLine($"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1").Aggregate("", (current, x) => current + "@" + x.FieldName + ",").TrimEnd(',')});\");");
@@ -455,7 +209,7 @@ namespace CodeGeneration
                 code.AppendLine($"        public bool Update({tableInfo.Key} model)");
                 code.AppendLine("        {");
                 code.AppendLine("            var strSql = new StringBuilder();");
-                code.AppendLine($"            strSql.Append(\"UPDATE {Program.InfoModel.DBName}.dbo.[{tableInfo.Key}] SET \");");
+                code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.Info.DBName}.dbo.[{tableInfo.Key}] SET \");");
                 code.AppendLine(
                     $"            strSql.Append(\"{tableInfo.Where(x => x.IdentityKey != "1" && x.PrimaryKey != "1").Aggregate("", (current, x) => current + x.FieldName + " = @" + x.FieldName + ",").TrimEnd(',')}\");");
                 code.AppendLine(primaryKey != null
@@ -475,7 +229,7 @@ namespace CodeGeneration
             code.AppendLine($"        public bool Update(Dictionary<{tableInfo.Key}Enum, object> updates, string where)");
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
-            code.AppendLine($"            strSql.Append(\"UPDATE {Program.InfoModel.DBName}.dbo.[{tableInfo.Key}] SET \");");
+            code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.Info.DBName}.dbo.[{tableInfo.Key}] SET \");");
             code.AppendLine("            var para = new DynamicParameters();");
             code.AppendLine("            foreach (var update in updates)");
             code.AppendLine("            {");
@@ -561,7 +315,7 @@ namespace CodeGeneration
         public static StringBuilder GetDalExtendCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine($"namespace {Program.InfoModel.Dal.Replace("/", ".")}");
+            code.AppendLine($"namespace {InfoModel.Info.Dal.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine("    /// <summary>");
             code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  数据访问扩展层(此类中的代码不会被覆盖)");
@@ -576,23 +330,105 @@ namespace CodeGeneration
         public static StringBuilder GetBllCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine($"using {Program.InfoModel.Dal.Replace("/", ".")};");
-            code.AppendLine($"using {Program.InfoModel.IDal.Replace("/", ".")};");
-            code.AppendLine($"using {Program.InfoModel.Model.Replace("/", ".")};");
-            code.AppendLine($"namespace {Program.InfoModel.Bll.Replace("/", ".")}");
+            code.AppendLine($"using {InfoModel.Info.Dal.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.IDal.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.IBll.Split('/')[0]};");
+            code.AppendLine($"using {InfoModel.Info.Model.Replace("/", ".")};\r\n");
+            code.AppendLine($"namespace {InfoModel.Info.Bll.Replace("/", ".")}");
             code.AppendLine("{");
             var primaryKey = tableInfo.FirstOrDefault(x => x.PrimaryKey == "1");
             var typeAndDefault = primaryKey != null ? Helper.GetTypeAndDefault(primaryKey, "") : new[] { "object", "" };
             code.AppendLine("    /// <summary>");
-            code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  逻辑层");
+            code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  逻辑层(此类中的代码不会被覆盖)");
             code.AppendLine("    /// </summary>");
-            code.AppendLine($"    public class {tableInfo.Key}Bll : BaseBll<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}>");
+            code.AppendLine($"    public class {tableInfo.Key}Bll : BaseBll<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}>, I{tableInfo.Key}Bll");
             code.AppendLine("    {");
             code.AppendLine($"        public {tableInfo.Key}Bll() : base(new {tableInfo.Key}Dal()) {{ }}\r\n");
             code.AppendLine($"        public {tableInfo.Key}Bll(IBaseDal<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}> dal) : base(dal) {{ }}");
             code.AppendLine("    }");
             code.AppendLine("}");
             return code;
+        }
+
+        public static StringBuilder GetIBllCode(IGrouping<string, TableInfo> tableInfo)
+        {
+            var code = new StringBuilder();
+            code.AppendLine($"namespace {InfoModel.Info.IBll.Replace("/", ".")}");
+            code.AppendLine("{");
+            code.AppendLine("    /// <summary>");
+            code.AppendLine("    /// " + tableInfo.FirstOrDefault(x => !string.IsNullOrEmpty(x.TableDescribe))?.TableDescribe + "  逻辑接口层(此类中的代码不会被覆盖)");
+            code.AppendLine("    /// </summary>");
+            code.AppendLine($"    public interface I{tableInfo.Key}Bll");
+            code.AppendLine("    {\r\n");
+            code.AppendLine("    }");
+            code.AppendLine("}");
+            return code;
+        }
+
+        public static StringBuilder GetDiBindCode(Dictionary<string, string> bindToList)
+        {
+            var code = new StringBuilder();
+            code.AppendLine($"using {InfoModel.Info.Bll.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.Dal.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.IBll.Replace("/", ".")};");
+            code.AppendLine($"using {InfoModel.Info.IDal.Replace("/", ".")};");
+            code.AppendLine($"namespace {InfoModel.Info.Common.Split('/')[0]}.Infrastructure");
+            code.AppendLine("{");
+            code.AppendLine("    public class BindToConfig");
+            code.AppendLine("    {");
+            code.AppendLine("        public static void BindTo(IKernel kernel)");
+            code.AppendLine("        {");
+            foreach (var bindTo in bindToList)
+            {
+                code.AppendLine($"            kernel.Bind<{bindTo.Key}>().To<{bindTo.Value}>().InSingletonScope();");
+            }
+            code.AppendLine("        }");
+            code.AppendLine("    }");
+            code.AppendLine("}");
+            return code;
+        }
+
+        public static StringBuilder GetDiBaseCode()
+        {
+            var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/NinjectDependencyResolver.cs";
+            Console.WriteLine("正在获取代码 From " + url);
+            Console.WriteLine("这可能需要点时间.....");
+            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.Common.Split('/')[0]);
+            return new StringBuilder(code);
+        }
+
+
+        /// <summary>
+        /// 发送GET请求 
+        /// </summary>
+        /// <param name="url">服务器地址</param>
+        /// <returns></returns>
+        public static string HttpGet(string url)
+        {
+            try
+            {
+                //创建Get请求
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "GET";
+                request.ContentType = "text/html;charset=UTF-8";
+
+                //接受返回来的数据
+                var response = (HttpWebResponse)request.GetResponse();
+                var stream = response.GetResponseStream();
+                // ReSharper disable once AssignNullToNotNullAttribute
+                var streamReader = new StreamReader(stream, Encoding.GetEncoding("UTF-8"));
+                var retString = streamReader.ReadToEnd();
+
+                streamReader.Close();
+                stream.Close();
+                response.Close();
+
+                return retString;
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
     }
 }

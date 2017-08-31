@@ -1,9 +1,11 @@
 ﻿{
-  "SolutionPath": "D:/Work/CrabStore", //解决方案存在磁盘位置
+  "SolutionPath": "D:/Work/CodeGeneration", //解决方案存在磁盘位置
   "Dal": "DAL", // 三层分别对应位置(需要指定生成文件夹的话在"/"后面配置)
   "Bll": "BLL",
+  "IBll": "IBLL",
   "Model": "Model/DBModel",
   "IDal": "IDAL",
   "DBService": "Data Source=192.168.0.126;Integrated Security=False;user id=sa;password=sa;", // 数据库连接字段
-  "DBName": "CrabShop"
+  "DBName": "CrabShop",
+  "Common": "Common"
 }

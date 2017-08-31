@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -41,14 +40,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BaseModel.cs" />
+    <Compile Include="DBModel\CsUsers.cs" />
+    <Compile Include="DBModel\CsPrice.cs" />
+    <Compile Include="DBModel\CsRebate.cs" />
+    <Compile Include="DBModel\CsDistrict.cs" />
+    <Compile Include="DBModel\CsCart.cs" />
+    <Compile Include="DBModel\CsOrderDetail.cs" />
+    <Compile Include="DBModel\CsSystemUsers.cs" />
+    <Compile Include="DBModel\CsProducts.cs" />
+    <Compile Include="DBModel\CsParts.cs" />
+    <Compile Include="DBModel\CsSend.cs" />
+    <Compile Include="DBModel\CsAddress.cs" />
+    <Compile Include="DBModel\CsOrder.cs" />
+    <Compile Include="DBModel\CsMenus.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{75501400-e774-4254-93e9-3b3eb48c5a76}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

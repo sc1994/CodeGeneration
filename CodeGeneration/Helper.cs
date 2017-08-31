@@ -66,7 +66,7 @@ namespace CodeGeneration
 	                               ELSE d.name
 	                          END ) IN ('{tables.Replace(",", "','")}')";
 
-            var sql = $@"USE {Program.InfoModel.DBName};
+            var sql = $@"USE {InfoModel.Info.DBName};
                         SELECT TableName = CASE
                                WHEN a.colorder = 1 THEN
                                    d.name
@@ -217,7 +217,20 @@ namespace CodeGeneration
                      field.Type == "date")
             {
                 type = "DateTime";
-                def = $" = ToDateTime(\"{field.Default.Replace("(", "").Replace(")", "").Replace("'", "")}\");";
+                var timeDef = field.Default.Replace("(", "").Replace(")", "").Replace("'", "");
+                if (timeDef.ToLower() == "getdate")
+                {
+                    timeDef = "DateTime.Now";
+                }
+                else if (string.IsNullOrEmpty(timeDef))
+                {
+                    timeDef = "\"1900-1-1\".ToDate()";
+                }
+                else
+                {
+                    timeDef = $"ToDateTime(\"{timeDef}\")";
+                }
+                def = $" = {timeDef};";
             }
             else
             {
@@ -263,11 +276,11 @@ namespace CodeGeneration
             Console.ForegroundColor = ConsoleColor.Yellow;
 
             Console.WriteLine("**********************************************************************************");
-            Console.WriteLine($"*  解决方案路径 : {Program.InfoModel.SolutionPath} ");
-            Console.WriteLine($"*  数据库连接信息 : {Program.InfoModel.DBService} ");
-            Console.WriteLine($"*  数据层代码将生成在 : {Program.InfoModel.Dal} 文件夹中 ");
-            Console.WriteLine($"*  逻辑层代码将生成在 : {Program.InfoModel.Bll} 文件夹中 ");
-            Console.WriteLine($"*  实体层代码将生成在 : {Program.InfoModel.Model} 文件夹中 ");
+            Console.WriteLine($"*  解决方案路径 : {InfoModel.Info.SolutionPath} ");
+            Console.WriteLine($"*  数据库连接信息 : {InfoModel.Info.DBService} ");
+            Console.WriteLine($"*  数据层代码将生成在 : {InfoModel.Info.Dal} 文件夹中 ");
+            Console.WriteLine($"*  逻辑层代码将生成在 : {InfoModel.Info.Bll} 文件夹中 ");
+            Console.WriteLine($"*  实体层代码将生成在 : {InfoModel.Info.Model} 文件夹中 ");
             Console.WriteLine("*  将使用工厂模式  ");
             //Console.WriteLine($"*  *");
             //Console.WriteLine($"*  *");

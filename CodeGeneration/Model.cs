@@ -20,6 +20,8 @@ namespace CodeGeneration
         public string SolutionPath { get; set; }
         public string Dal { get; set; }
         public string Bll { get; set; }
+        // ReSharper disable once InconsistentNaming
+        public string IBll { get; set; }
         public string Model { get; set; }
         // ReSharper disable once InconsistentNaming
         public string DBName { get; set; }
@@ -27,6 +29,7 @@ namespace CodeGeneration
         public bool Factory { get; set; }
         // ReSharper disable once InconsistentNaming
         public string IDal { get; set; }
+        public string Common { get; set; }
     }
 
 

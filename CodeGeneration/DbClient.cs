@@ -8,8 +8,6 @@ namespace CodeGeneration
 {
     public class DbClient
     {
-        public static Info InfoModel = Program.InfoModel;
-
         public static IEnumerable<T> Query<T>(string sql, object param = null)
         {
             if (string.IsNullOrEmpty(sql))
@@ -92,7 +90,7 @@ namespace CodeGeneration
             }
         }
 
-        public static string ConnString = InfoModel.DBService;
+        public static string ConnString = InfoModel.Info.DBService;
         public static IDbConnection GetConnection()
         {
             if (string.IsNullOrEmpty(ConnString))

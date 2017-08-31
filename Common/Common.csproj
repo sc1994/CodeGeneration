@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A8C24F5F-0206-497A-9551-B9C583F7BF52}</ProjectGuid>
+    <ProjectGuid>{75501400-E774-4254-93E9-3B3EB48C5A76}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BLL</RootNamespace>
-    <AssemblyName>BLL</AssemblyName>
+    <RootNamespace>Common</RootNamespace>
+    <AssemblyName>Common</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,7 +29,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,38 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BaseBll.cs" />
-    <Compile Include="CsUsersBll.cs" />
-    <Compile Include="CsPriceBll.cs" />
-    <Compile Include="CsRebateBll.cs" />
-    <Compile Include="CsDistrictBll.cs" />
-    <Compile Include="CsCartBll.cs" />
-    <Compile Include="CsOrderDetailBll.cs" />
-    <Compile Include="CsSystemUsersBll.cs" />
-    <Compile Include="CsProductsBll.cs" />
-    <Compile Include="CsPartsBll.cs" />
-    <Compile Include="CsSendBll.cs" />
-    <Compile Include="CsAddressBll.cs" />
-    <Compile Include="CsOrderBll.cs" />
-    <Compile Include="CsMenusBll.cs" />
+    <Compile Include="D:/Work/CodeGeneration/Common/Infrastructure/NinjectDependencyResolver.cs" />
+    <Compile Include="D:/Work/CodeGeneration/Common/Infrastructure/BindToInfo.cs" />
+    <Compile Include="DBClient.cs" />
+    <Compile Include="ConvertHelper.cs" />
+    <Compile Include="SqlHelper.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DAL\DAL.csproj">
-      <Project>{0fa0d53f-0617-42b5-8bbe-1a1be6932548}</Project>
-      <Name>DAL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IBLL\IBLL.csproj">
-      <Project>{8929c4c5-e010-4e4b-a3ce-c5b9aea7a18a}</Project>
-      <Name>IBLL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IDAL\IDAL.csproj">
-      <Project>{99b4eaa8-03c2-4b4a-ae10-feb66969d91b}</Project>
-      <Name>IDAL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Model\Model.csproj">
-      <Project>{dde9fce2-8894-4780-ad22-d4f02b381826}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
