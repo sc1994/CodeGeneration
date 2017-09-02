@@ -16,10 +16,7 @@ namespace CodeGeneration
     {
         public static void WriteToFile(StringBuilder sb, string path, string csprojPath)
         {
-            if (!File.Exists(path))
-            {
-                IntoCsproj(csprojPath, string.Join("\\", path.Replace("\\", "/").Split('/').Except(csprojPath.Replace("\\","/").Split('/'))));
-            }
+            IntoCsproj(csprojPath, string.Join("\\", path.Replace("\\", "/").Split('/').Except(csprojPath.Replace("\\", "/").Split('/'))));
             var sw = File.CreateText(path);
             sw.Write(sb.ToString());
             sw.Close();
@@ -33,28 +30,85 @@ namespace CodeGeneration
             var xml = path.GetFileText();
             var csproj = xml.XmlToObject<Project>();
             // 找到需要配置文件的实体
+            var count = 0;
             foreach (var item in csproj.Items)
             {
                 var type = item.GetType();
                 if (type.Name == "ProjectItemGroup")
                 {
                     var group = item as ProjectItemGroup;
-                    if (group?.Compile?.Count > 0)
+                    if (group?.Compile?.Count > 0
+                        && group.Compile != null
+                        && group.Compile.All(x => x.Include != fileName))
                     {
-                        if (group.Compile != null)
+                        group.Compile.Add(new ProjectItemGroupCompile
                         {
-                            group.Compile.Add(new ProjectItemGroupCompile
+                            Include = fileName
+                        });
+                        count++;
+                    }
+
+                }
+            }
+            if (count != 0)
+            {
+                // 重新写入然后关闭文件
+                var sw = File.CreateText(path);
+                sw.Write(csproj.ToXml<Project>());
+                sw.Close();
+            }
+        }
+
+        public static void AddReferenceFormProject(string path, string name)
+        {
+            var xml = "D:/self/CodeExample/test/Test.DAL/Test.DAL.csproj".GetFileText();
+            var csproj = xml.XmlToObject<Project>();
+            var countProjectReference = 0; // 记录是否有 Project Reference 
+            var count = 0; // 记录是否有添加操作
+            foreach (var item in csproj.Items)
+            {
+                var type = item.GetType();
+                if (type.Name == "ProjectItemGroup")
+                {
+                    var group = item as ProjectItemGroup;
+                    if (group?.ProjectReference.Count > 0)
+                    {
+                        if (group.ProjectReference.All(x => x.Name != name))
+                        {
+                            group.ProjectReference.Add(new ProjectItemGroupProjectReference
                             {
-                                Include = fileName
+                                Name = name,
+                                Include = $"..\\{name}\\{name}.csproj",
+                                Project = "{" + Guid.NewGuid() + "}"
                             });
+                            countProjectReference++;
+                            count++;
                         }
                     }
                 }
             }
-            // 重新写入然后关闭文件
-            var sw = File.CreateText(path);
-            sw.Write(csproj.ToXml<Project>());
-            sw.Close();
+            if (countProjectReference == 0)
+            {
+                csproj.Items.Add(new ProjectItemGroup
+                {
+                    ProjectReference = new List<ProjectItemGroupProjectReference>
+                                                        {
+                                                            new ProjectItemGroupProjectReference
+                                                            {
+                                                                Name = "123"
+                                                            }
+                                                        }
+                });
+                count++;
+            }
+            if (count != 0)
+            {
+                // 重新写入然后关闭文件
+                var sw = File.CreateText("D:/self/CodeExample/test/Test.DAL/Test.DAL.csproj");
+                sw.Write(csproj.ToXml<Project>());
+                sw.Close();
+                Console.ReadLine();
+            }
         }
 
         public static IEnumerable<TableInfo> GetTableInfos(string tables)
@@ -213,8 +267,7 @@ namespace CodeGeneration
                 def = " = string.Empty;";
             }
             else if (field.Type == "datetime"
-                     ||
-                     field.Type == "date")
+                     || field.Type == "date")
             {
                 type = "DateTime";
                 var timeDef = field.Default.Replace("(", "").Replace(")", "").Replace("'", "");

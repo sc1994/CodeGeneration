@@ -62,7 +62,6 @@ namespace CodeGeneration
                     Helper.ShowGood("生成BaseModel.cs Success");
                 }
                 layersPaths.Add("Model", Helper.ExamineFolder(InfoModel.Info.Model, path));
-
             }
             else
                 Helper.ShowError($"验证: {InfoModel.Info.Model} Error");
@@ -103,25 +102,6 @@ namespace CodeGeneration
             if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
             {
                 Console.WriteLine($"验证: {pathDb} Success");
-                Console.WriteLine("验证是否存在DBClient.cs");
-                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
-                if (File.Exists(path + "\\DBClient.cs"))
-                {
-                    Helper.ShowGood("已存在DBClient.cs");
-                }
-                else
-                {
-                    Console.WriteLine("正在帮您生成 DBClient.cs...");
-                    try
-                    {
-                        Helper.WriteToFile(Code.GetDbClientCode(), path + "\\DBClient.cs", path + "\\" + pathDb + ".csproj");
-                    }
-                    catch (Exception ex)
-                    {
-                        Helper.ShowError("出现异常-->" + ex.Message);
-                    }
-                    Helper.ShowGood("生成DBClient.cs Success");
-                }
             }
             else
                 Helper.ShowError($"验证: {pathDb} Error");
@@ -240,9 +220,64 @@ namespace CodeGeneration
                     Helper.ShowGood("生成SqlHelper Success");
                 }
                 #endregion
+
+                #region DBClient
+                Console.WriteLine("验证是否存在DBClient.cs");
+                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
+                if (File.Exists(path + "\\DBClient.cs"))
+                {
+                    Helper.ShowGood("已存在DBClient.cs");
+                }
+                else
+                {
+                    Console.WriteLine("正在帮您生成 DBClient.cs...");
+                    try
+                    {
+                        Helper.WriteToFile(Code.GetDbClientCode(), path + "\\DBClient.cs", path + "\\" + pathDb + ".csproj");
+                    }
+                    catch (Exception ex)
+                    {
+                        Helper.ShowError("出现异常-->" + ex.Message);
+                    }
+                    Helper.ShowGood("生成DBClient.cs Success");
+                }
+                #endregion
             }
             else
                 Helper.ShowError($"验证: {pathDb} Error");
+            #endregion
+
+            #region Infrastructure
+            pathDb = InfoModel.Info.Infrastructure.Split('/')[0];
+            if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
+            {
+                Console.WriteLine($"验证: {pathDb} Success");
+                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
+                Console.WriteLine("验证是否存在NinjectDependencyResolver.cs");
+                if (File.Exists(path + "/" + "NinjectDependencyResolver.cs"))
+                {
+                    Helper.ShowGood("已存在NinjectDependencyResolver.cs");
+                }
+                else
+                {
+                    Console.WriteLine("正在帮您生成 NinjectDependencyResolver.cs...");
+                    try
+                    {
+                        Helper.WriteToFile(Code.GetDiBaseCode(),
+                                           path + "/" + "NinjectDependencyResolver.cs",
+                                           path + "/" + InfoModel.Info.Infrastructure.Split('/')[0] + ".csproj");
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Helper.ShowError("出现异常-->" + ex.Message);
+                    }
+                    Helper.ShowGood("生成 NinjectDependencyResolver.cs Success");
+                }
+            }
+            else
+                Helper.ShowError($"验证: {pathDb} Error");
+
             #endregion
 
             #region 和数据库握手
@@ -431,23 +466,20 @@ namespace CodeGeneration
             if (tables.ToLower() == "all")
             {
                 Console.WriteLine("生成 DI 相关代码....");
-                var diPath = InfoModel.Info.SolutionPath + "/" + InfoModel.Info.Common.Split('/')[0];
-                if (!Directory.Exists(diPath + "/" + "Infrastructure"))
-                    Directory.CreateDirectory(diPath + "/" + "Infrastructure");
-                Helper.WriteToFile(Code.GetDiBaseCode(),
-                                   diPath + "/" + "Infrastructure" + "/" + "NinjectDependencyResolver.cs",
-                                   diPath + "/" + InfoModel.Info.Common.Split('/')[0] + ".csproj");
+                var diPath = InfoModel.Info.SolutionPath + "/" + InfoModel.Info.Infrastructure.Replace("/", ".");
+                if (!Directory.Exists(diPath))
+                    Directory.CreateDirectory(diPath);
                 Helper.WriteToFile(Code.GetDiBindCode(bindToList),
-                                   diPath + "/" + "Infrastructure" + "/" + "BindToInfo.cs",
-                                   diPath + "/" + InfoModel.Info.Common.Split('/')[0] + ".csproj");
+                                   diPath + "/" + "BindToInfo.cs",
+                                   diPath + "/" + InfoModel.Info.Infrastructure.Split('/')[0] + ".csproj");
             }
             #endregion
 
-            #region 检查程序集之间的引用
-            Console.WriteLine("正在检查程序集之间的引用关系...."); // todo
+            #region 配置程序集之间的引用
+            Console.WriteLine("正在配置程序集之间的引用关系...."); // todo
             #endregion
 
-            #region 检查是否包含必须的nuget包
+            #region 配置nuget包
 
             #endregion
 

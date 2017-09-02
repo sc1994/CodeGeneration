@@ -375,12 +375,17 @@ namespace CodeGeneration
         public static StringBuilder GetDiBindCode(Dictionary<string, string> bindToList)
         {
             var code = new StringBuilder();
+            code.AppendLine("//*******************************************");
+            code.AppendLine("// 依次绑定了接口和实现之间的关系, ");
+            code.AppendLine("// 据说可以直接引用其DLL去绑定,");
+            code.AppendLine("// 但是不才, 先曲线救国一下 ");
+            code.AppendLine("//*******************************************");
             code.AppendLine("using Ninject;");
             code.AppendLine($"using {InfoModel.Info.Bll.Replace("/", ".")};");
             code.AppendLine($"using {InfoModel.Info.Dal.Replace("/", ".")};");
             code.AppendLine($"using {InfoModel.Info.IBll.Replace("/", ".")};");
             code.AppendLine($"using {InfoModel.Info.IDal.Replace("/", ".")};\r\n");
-            code.AppendLine($"namespace {InfoModel.Info.Common.Split('/')[0]}.Infrastructure");
+            code.AppendLine($"namespace {InfoModel.Info.Infrastructure.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine("    public class BindToConfig");
             code.AppendLine("    {");
@@ -401,7 +406,7 @@ namespace CodeGeneration
             var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/NinjectDependencyResolver.cs";
             Console.WriteLine("正在获取代码 From " + url);
             Console.WriteLine("这可能需要点时间.....");
-            var code = HttpGet(url).Replace(" Template", " " + InfoModel.Info.Common.Split('/')[0]);
+            var code = HttpGet(url).Replace(" Template.Infrastructure", " " + InfoModel.Info.Infrastructure.Replace("/", "."));
             return new StringBuilder(code);
         }
 

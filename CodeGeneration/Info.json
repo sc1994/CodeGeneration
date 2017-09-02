@@ -1,11 +1,13 @@
 ﻿{
+  // N层分别对应位置(需要指定生成文件夹的话在"/"后面配置)
   "Bll": "Test.BLL",
   "Common": "Test.Common",
-  "Dal": "Test.DAL", // 三层分别对应位置(需要指定生成文件夹的话在"/"后面配置)
+  "Dal": "Test.DAL",
   "DBName": "CrabShop",
-  "DBService": "Data Source=192.168.0.126;Integrated Security=False;user id=sa;password=sa;", // 数据库连接字段
+  "DBService": "Data Source=122.114.13.52;Integrated Security=False;user id=sa;password=1qaz@WSX;", // 数据库连接字段
   "IBll": "Test.IBLL",
   "IDal": "Test.IDAL",
   "Model": "Test.Model/DBModel",
-  "SolutionPath": "D:/self/test" //解决方案存在磁盘位置
+  "Infrastructure": "Test.Infrastructure", // 基础层 配置了 DI 容器的对应关系,和一些基本设置
+  "SolutionPath": "D:/self/CodeExample/test" //解决方案存在磁盘位置
 }
