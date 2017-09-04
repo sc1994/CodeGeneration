@@ -80,7 +80,7 @@ namespace CodeGeneration
         public static StringBuilder GetModelCode(IGrouping<string, TableInfo> tableInfo)
         {
             var code = new StringBuilder();
-            code.AppendLine("using System;");
+            code.AppendLine("using System;\r\n");
             code.AppendLine($"namespace {InfoModel.Info.Model.Replace("/", ".")}");
             code.AppendLine("{");
             code.AppendLine("    /// <summary>");

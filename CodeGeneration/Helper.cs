@@ -47,7 +47,6 @@ namespace CodeGeneration
                         });
                         count++;
                     }
-
                 }
             }
             if (count != 0)
@@ -59,9 +58,15 @@ namespace CodeGeneration
             }
         }
 
-        public static void AddReferenceFormProject(string path, string name)
+        /// <summary>
+        /// 添加程序集之间的引用
+        /// </summary>
+        /// <param name="toName"></param>
+        /// <param name="fromName"></param>
+        public static void AddReferenceFormProject(string toName, string fromName)
         {
-            var xml = "D:/self/CodeExample/test/Test.DAL/Test.DAL.csproj".GetFileText();
+            Console.WriteLine($"正在帮您的{toName}引用{fromName} ....");
+            var xml = $"{InfoModel.Info.SolutionPath}/{toName}/{toName}.csproj".GetFileText();
             var csproj = xml.XmlToObject<Project>();
             var countProjectReference = 0; // 记录是否有 Project Reference 
             var count = 0; // 记录是否有添加操作
@@ -73,17 +78,20 @@ namespace CodeGeneration
                     var group = item as ProjectItemGroup;
                     if (group?.ProjectReference.Count > 0)
                     {
-                        if (group.ProjectReference.All(x => x.Name != name))
+                        countProjectReference++;
+                        if (group.ProjectReference.All(x => x.Name != fromName))
                         {
                             group.ProjectReference.Add(new ProjectItemGroupProjectReference
                             {
-                                Name = name,
-                                Include = $"..\\{name}\\{name}.csproj",
+                                Name = fromName,
+                                Include = $"..\\{fromName}\\{fromName}.csproj",
                                 Project = "{" + Guid.NewGuid() + "}"
                             });
-                            countProjectReference++;
                             count++;
+                            break;
                         }
+                        Console.WriteLine($"已存在{fromName}引用, 在{toName}中");
+                        return;
                     }
                 }
             }
@@ -95,7 +103,9 @@ namespace CodeGeneration
                                                         {
                                                             new ProjectItemGroupProjectReference
                                                             {
-                                                                Name = "123"
+                                                                Name = fromName,
+                                                                Include = $"..\\{fromName}\\{fromName}.csproj",
+                                                                Project = "{" + Guid.NewGuid() + "}"
                                                             }
                                                         }
                 });
@@ -104,11 +114,106 @@ namespace CodeGeneration
             if (count != 0)
             {
                 // 重新写入然后关闭文件
-                var sw = File.CreateText("D:/self/CodeExample/test/Test.DAL/Test.DAL.csproj");
+                var sw = File.CreateText($"{InfoModel.Info.SolutionPath}/{toName}/{toName}.csproj");
                 sw.Write(csproj.ToXml<Project>());
                 sw.Close();
-                Console.ReadLine();
+                ShowGood($"引用 {fromName} 成功, 在{toName}中");
             }
+        }
+
+        /// <summary>
+        /// 添加 NuGet 程序引用 
+        /// </summary>
+        public static void AddReferenceFromNuGet(string toName, string fromKey)
+        {
+            var xml = $"{InfoModel.Info.SolutionPath}/{toName}/{toName}.csproj".GetFileText();
+            var csproj = xml.XmlToObject<Project>();
+            var countProjectReference = 0; // 记录是否有 Project Reference 
+            var count = 0; // 记录是否有添加操作
+            foreach (var item in csproj.Items)
+            {
+                if (item.GetType().Name == "ProjectItemGroup")
+                {
+                    var group = item as ProjectItemGroup;
+                    if (group?.Reference.Count > 0)
+                    {
+                        countProjectReference++;
+                        if (group.Reference.All(x => !x.Include.StartsWith(fromKey)))
+                        {
+                            group.Reference.Add(InfoModel.NuGetInfo[fromKey].Reference);
+                            count++;
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"已存在{fromKey}引用, 在{toName}中");
+                            return;
+                        }
+                    }
+                }
+            }
+            if (countProjectReference == 0)
+            {
+                csproj.Items.Add(new ProjectItemGroup
+                {
+                    Reference = new List<ProjectItemGroupReference>
+                    {
+                        InfoModel.NuGetInfo[fromKey].Reference
+                    }
+                });
+                count++;
+            }
+            if (count != 0)
+            {
+                var sw = File.CreateText($"{InfoModel.Info.SolutionPath}/{toName}/{toName}.csproj");
+                sw.Write(csproj.ToXml<Project>());
+                sw.Close();
+                ShowGood($"引用 {fromKey} 成功, 在{toName}中");
+            }
+        }
+
+        /// <summary>
+        /// 添加 packages.config 配置
+        /// </summary>
+        public static void AddPackages(string toName, string fromKey)
+        {
+            var path = $"{InfoModel.Info.SolutionPath}/{toName}/packages.config";
+            if (!File.Exists(path))
+            {
+                CreatePackage(path);
+            }
+            var xml = path.GetFileText();
+            var csproj = xml.XmlToObject<packages>();
+            var count = 0; // 记录是否有添加操作
+            if (csproj.package.All(x => x.id != fromKey))
+            {
+                var item = InfoModel.NuGetInfo[fromKey];
+                csproj.package.Add(new packagesPackage
+                {
+                    id = fromKey,
+                    version = item.Version,
+                    targetFramework = "net452"
+                });
+                count++;
+            }
+            else
+            {
+                Console.WriteLine($"已存在{fromKey}引用, 在{toName}/package.config中");
+            }
+            if (count != 0)
+            {
+                var sw = File.CreateText(path);
+                sw.Write(csproj.ToXml<packages>());
+                sw.Close();
+                ShowGood($"引用 {fromKey} 成功, 在{toName}/package.config中");
+            }
+        }
+
+        public static void CreatePackage(string path)
+        {
+            var sw = File.CreateText(path);
+            sw.Write(new packages().ToXml<packages>());
+            sw.Close();
         }
 
         public static IEnumerable<TableInfo> GetTableInfos(string tables)
@@ -332,11 +437,19 @@ namespace CodeGeneration
             Console.WriteLine($"*  解决方案路径 : {InfoModel.Info.SolutionPath} ");
             Console.WriteLine($"*  数据库连接信息 : {InfoModel.Info.DBService} ");
             Console.WriteLine($"*  数据层代码将生成在 : {InfoModel.Info.Dal} 文件夹中 ");
+            Console.WriteLine($"*  数据接口层代码将生成在 : {InfoModel.Info.IDal} 文件夹中 ");
             Console.WriteLine($"*  逻辑层代码将生成在 : {InfoModel.Info.Bll} 文件夹中 ");
+            Console.WriteLine($"*  逻辑接口层代码将生成在 : {InfoModel.Info.IBll} 文件夹中 ");
             Console.WriteLine($"*  实体层代码将生成在 : {InfoModel.Info.Model} 文件夹中 ");
-            Console.WriteLine("*  将使用工厂模式  ");
-            //Console.WriteLine($"*  *");
-            //Console.WriteLine($"*  *");
+            Console.WriteLine($"*  Infrastructure层代码将生成在 : {InfoModel.Info.Infrastructure} 文件夹中 ");
+            if (!string.IsNullOrEmpty(InfoModel.Info.Web))
+            {
+                Console.WriteLine($"*  UI层配置在 : {InfoModel.Info.Web} 将自动帮您添加引用 ");
+            }
+            if (!string.IsNullOrEmpty(InfoModel.Info.Factory))
+            {
+                Console.WriteLine($"*  Factory层配置在 : {InfoModel.Info.Factory} 将自动帮您添加引用 ");
+            }
             Console.WriteLine("**********************************************************************************");
             Console.WriteLine("请确认配置信息Y/N ?");
             Console.ResetColor();

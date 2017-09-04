@@ -92,6 +92,7 @@ namespace CodeGeneration
                     Helper.ShowGood("生成IBaseDal.cs Success");
                 }
                 layersPaths.Add("IDal", Helper.ExamineFolder(InfoModel.Info.IDal, path));
+                Helper.AddReferenceFormProject(InfoModel.Info.IDal.Split('/')[0], InfoModel.Info.Model.Split('/')[0]);
             }
             else
                 Helper.ShowError($"验证: {pathDb} Error");
@@ -102,11 +103,16 @@ namespace CodeGeneration
             if (directoryInfos.Any(x => x.FullName.Contains(pathDb)))
             {
                 Console.WriteLine($"验证: {pathDb} Success");
+                path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
+                layersPaths.Add("Dal", Helper.ExamineFolder(InfoModel.Info.Dal, path));
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Dal.Split('/')[0], "Dapper");
+                Helper.AddPackages(InfoModel.Info.Dal.Split('/')[0], "Dapper");
+                Helper.AddReferenceFormProject(InfoModel.Info.Dal.Split('/')[0], InfoModel.Info.IDal.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Dal.Split('/')[0], InfoModel.Info.Model.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Dal.Split('/')[0], InfoModel.Info.Common.Split('/')[0]);
             }
             else
                 Helper.ShowError($"验证: {pathDb} Error");
-            path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
-            layersPaths.Add("Dal", Helper.ExamineFolder(InfoModel.Info.Dal, path));
             #endregion
 
             #region BLL
@@ -135,6 +141,11 @@ namespace CodeGeneration
                 }
                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
                 layersPaths.Add("Bll", Helper.ExamineFolder(InfoModel.Info.Bll, path));
+                Helper.AddReferenceFormProject(InfoModel.Info.Bll.Split('/')[0], InfoModel.Info.Dal.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Bll.Split('/')[0], InfoModel.Info.IDal.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Bll.Split('/')[0], InfoModel.Info.IBll.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Bll.Split('/')[0], InfoModel.Info.Model.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Bll.Split('/')[0], InfoModel.Info.Common.Split('/')[0]);
             }
             else
                 Helper.ShowError($"验证: {pathDb} Error");
@@ -166,6 +177,7 @@ namespace CodeGeneration
                 }
                 path = directoryInfos.FirstOrDefault(x => x.FullName.Contains(pathDb))?.FullName ?? "";
                 layersPaths.Add("IBll", Helper.ExamineFolder(InfoModel.Info.IBll, path));
+                Helper.AddReferenceFormProject(InfoModel.Info.IBll.Split('/')[0], InfoModel.Info.Model.Split('/')[0]);
             }
             else
                 Helper.ShowError($"验证: {pathDb} Error");
@@ -242,6 +254,12 @@ namespace CodeGeneration
                     Helper.ShowGood("生成DBClient.cs Success");
                 }
                 #endregion
+
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Common.Split('/')[0], "Newtonsoft.Json");
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Common.Split('/')[0], "Dapper");
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Common.Split('/')[0], "System.configuration");
+                Helper.AddPackages(InfoModel.Info.Common.Split('/')[0], "Newtonsoft.Json");
+                Helper.AddPackages(InfoModel.Info.Common.Split('/')[0], "Dapper");
             }
             else
                 Helper.ShowError($"验证: {pathDb} Error");
@@ -274,10 +292,86 @@ namespace CodeGeneration
                     }
                     Helper.ShowGood("生成 NinjectDependencyResolver.cs Success");
                 }
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Infrastructure.Split('/')[0], "Ninject");
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Infrastructure.Split('/')[0], "Ninject.Web.Common");
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Infrastructure.Split('/')[0], "Ninject.Web.WebApi");
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Infrastructure.Split('/')[0], "Newtonsoft.Json");
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Infrastructure.Split('/')[0], "System.Web.Http");
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Infrastructure.Split('/')[0], "System.Net.Http.Formatting");
+                Helper.AddReferenceFromNuGet(InfoModel.Info.Infrastructure.Split('/')[0], "System.Web.Mvc");
+                Helper.AddPackages(InfoModel.Info.Infrastructure.Split('/')[0], "Microsoft.AspNet.WebApi.Client");
+                Helper.AddPackages(InfoModel.Info.Infrastructure.Split('/')[0], "Microsoft.AspNet.WebApi.Core");
+                Helper.AddPackages(InfoModel.Info.Infrastructure.Split('/')[0], "Newtonsoft.Json");
+                Helper.AddPackages(InfoModel.Info.Infrastructure.Split('/')[0], "Ninject");
+                Helper.AddPackages(InfoModel.Info.Infrastructure.Split('/')[0], "Ninject.Web.Common");
+                Helper.AddPackages(InfoModel.Info.Infrastructure.Split('/')[0], "Ninject.Web.WebApi");
+                Helper.AddReferenceFormProject(InfoModel.Info.Infrastructure.Split('/')[0], InfoModel.Info.Dal.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Infrastructure.Split('/')[0], InfoModel.Info.Bll.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Infrastructure.Split('/')[0], InfoModel.Info.IDal.Split('/')[0]);
+                Helper.AddReferenceFormProject(InfoModel.Info.Infrastructure.Split('/')[0], InfoModel.Info.IBll.Split('/')[0]);
             }
             else
                 Helper.ShowError($"验证: {pathDb} Error");
+            #endregion
 
+            #region Factory
+            if (!string.IsNullOrEmpty(InfoModel.Info.Factory))
+            {
+                if (directoryInfos.Any(x => x.FullName.Contains(InfoModel.Info.Factory)))
+                {
+                    Helper.AddReferenceFormProject(InfoModel.Info.Factory, InfoModel.Info.Model.Split('/')[0]);
+                    Helper.AddReferenceFormProject(InfoModel.Info.Factory, InfoModel.Info.Common.Split('/')[0]);
+                    Helper.AddReferenceFormProject(InfoModel.Info.Factory, InfoModel.Info.IBll.Split('/')[0]);
+                }
+                else
+                {
+                    Helper.ShowError($"验证: {InfoModel.Info.Factory} Error");
+                }
+            }
+            else
+            {
+                Helper.ShowGood("未配置Factory , 跳过....");
+            }
+            #endregion
+
+            #region Web
+            if (!string.IsNullOrEmpty(InfoModel.Info.Web))
+            {
+                foreach (var item in InfoModel.Info.Web.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (directoryInfos.Any(x => x.FullName.Contains(item)))
+                    {
+                        Helper.AddReferenceFromNuGet(item, "Ninject");
+                        Helper.AddReferenceFromNuGet(item, "Ninject.Web.Common");
+                        Helper.AddReferenceFromNuGet(item, "Ninject.Web.Mvc");
+                        Helper.AddReferenceFromNuGet(item, "System.Web.Mvc");
+                        Helper.AddReferenceFromNuGet(item, "WebActivatorEx");
+                        Helper.AddReferenceFromNuGet(item, "Newtonsoft.Json");
+                        Helper.AddReferenceFromNuGet(item, "Ninject.Web.WebApi");
+                        Helper.AddReferenceFromNuGet(item, "System.Diagnostics.DiagnosticSource");
+                        Helper.AddReferenceFromNuGet(item, "System.Web.Http.WebHost");
+                        Helper.AddReferenceFromNuGet(item, "System.Web.Http");
+                        Helper.AddPackages(item, "Ninject");
+                        Helper.AddPackages(item, "Ninject.MVC5");
+                        Helper.AddPackages(item, "Ninject.Web.Common");
+                        Helper.AddPackages(item, "Newtonsoft.Json");
+                        Helper.AddPackages(item, "Ninject.Web.Common.WebHost");
+                        Helper.AddReferenceFormProject(item, InfoModel.Info.IBll.Split('/')[0]);
+                        Helper.AddReferenceFormProject(item, InfoModel.Info.Common.Split('/')[0]);
+                        Helper.AddReferenceFormProject(item, InfoModel.Info.Model.Split('/')[0]);
+                        Helper.AddReferenceFormProject(item, InfoModel.Info.Factory.Split('/')[0]);
+                        Helper.AddReferenceFormProject(item, InfoModel.Info.Infrastructure.Split('/')[0]);
+                    }
+                    else
+                    {
+                        Helper.ShowError($"验证 {item} Error ");
+                    }
+                }
+            }
+            else
+            {
+                Helper.ShowGood("未配置Web , 跳过....");
+            }
             #endregion
 
             #region 和数据库握手

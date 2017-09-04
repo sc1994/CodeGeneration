@@ -26,11 +26,18 @@ namespace CodeGeneration
         // ReSharper disable once InconsistentNaming
         public string DBName { get; set; }
         public string DBService { get; set; }
-        public bool Factory { get; set; }
         // ReSharper disable once InconsistentNaming
         public string IDal { get; set; }
         public string Common { get; set; }
         public string Infrastructure { get; set; }
+        public string Web { get; set; }
+        public string Factory { get; set; }
+    }
+
+    public class NuGetInfo
+    {
+        public ProjectItemGroupReference Reference { get; set; }
+        public string Version { get; set; }
     }
 
     #region csproj
@@ -153,7 +160,7 @@ namespace CodeGeneration
 
         private ProjectItemGroupNone[] noneField;
 
-        private ProjectItemGroupReference[] referenceField;
+        private List<ProjectItemGroupReference> referenceField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("ProjectReference")]
@@ -227,7 +234,7 @@ namespace CodeGeneration
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Reference")]
-        public ProjectItemGroupReference[] Reference
+        public List<ProjectItemGroupReference> Reference
         {
             get
             {
@@ -1547,11 +1554,11 @@ namespace CodeGeneration
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class packages
     {
-        private packagesPackage[] packageField;
+        private List<packagesPackage> packageField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("package")]
-        public packagesPackage[] package
+        public List<packagesPackage> package
         {
             get
             {
