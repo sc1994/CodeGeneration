@@ -138,6 +138,20 @@ namespace CodeGeneration
                     if (group?.Reference.Count > 0)
                     {
                         countProjectReference++;
+                        if (fromKey == "System.Web.Http.WebHost") // 特别对待 
+                        {
+                            if (group.Reference.All(x => x.HintPath != InfoModel.NuGetInfo[fromKey].Reference.HintPath))
+                            {
+                                group.Reference.Add(InfoModel.NuGetInfo[fromKey].Reference);
+                                count++;
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"已存在{fromKey}引用, 在{toName}中");
+                                return;
+                            }
+                        }
                         if (group.Reference.All(x => !x.Include.StartsWith(fromKey)))
                         {
                             group.Reference.Add(InfoModel.NuGetInfo[fromKey].Reference);
@@ -146,6 +160,20 @@ namespace CodeGeneration
                         }
                         else
                         {
+                            if (fromKey == "System.Web.Http")
+                            {
+                                if (group.Reference.All(x => x.HintPath != InfoModel.NuGetInfo[fromKey].Reference.HintPath))
+                                {
+                                    group.Reference.Add(InfoModel.NuGetInfo[fromKey].Reference);
+                                    count++;
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"已存在{fromKey}引用, 在{toName}中");
+                                    return;
+                                }
+                            }
                             Console.WriteLine($"已存在{fromKey}引用, 在{toName}中");
                             return;
                         }

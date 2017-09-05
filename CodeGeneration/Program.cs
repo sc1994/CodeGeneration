@@ -350,12 +350,22 @@ namespace CodeGeneration
                         Helper.AddReferenceFromNuGet(item, "Ninject.Web.WebApi");
                         Helper.AddReferenceFromNuGet(item, "System.Diagnostics.DiagnosticSource");
                         Helper.AddReferenceFromNuGet(item, "System.Web.Http.WebHost");
+                        Helper.AddReferenceFromNuGet(item, "System.Net.Http.Formatting");
                         Helper.AddReferenceFromNuGet(item, "System.Web.Http");
+                        Helper.AddReferenceFromNuGet(item, "System.Web.Mvc");
+                        Helper.AddReferenceFromNuGet(item, "System.Web.Razor");
+                        Helper.AddReferenceFromNuGet(item, "System.Web.WebPages");
+                        Helper.AddReferenceFromNuGet(item, "System.Web.WebPages.Deployment");
+                        Helper.AddReferenceFromNuGet(item, "System.Web.WebPages.Razor");
                         Helper.AddPackages(item, "Ninject");
                         Helper.AddPackages(item, "Ninject.MVC5");
                         Helper.AddPackages(item, "Ninject.Web.Common");
                         Helper.AddPackages(item, "Newtonsoft.Json");
                         Helper.AddPackages(item, "Ninject.Web.Common.WebHost");
+                        Helper.AddPackages(item, "Microsoft.AspNet.WebApi.Client");
+                        Helper.AddPackages(item, "Microsoft.AspNet.Mvc");
+                        Helper.AddPackages(item, "Microsoft.AspNet.Razor");
+                        Helper.AddPackages(item, "Microsoft.AspNet.WebPages");
                         Helper.AddReferenceFormProject(item, InfoModel.Info.IBll.Split('/')[0]);
                         Helper.AddReferenceFormProject(item, InfoModel.Info.Common.Split('/')[0]);
                         Helper.AddReferenceFormProject(item, InfoModel.Info.Model.Split('/')[0]);
@@ -569,15 +579,8 @@ namespace CodeGeneration
             }
             #endregion
 
-            #region 配置程序集之间的引用
-            Console.WriteLine("正在配置程序集之间的引用关系...."); // todo
-            #endregion
 
-            #region 配置nuget包
-
-            #endregion
-
-
+            Console.WriteLine("全部完成,回车键清空窗口."); // todo
             Console.ReadLine();
             Console.Clear();
             goto START;

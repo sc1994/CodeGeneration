@@ -14,10 +14,10 @@ namespace CodeGeneration
                     new NuGetInfo
                     {
                         Reference = new ProjectItemGroupReference
-                        {
-                            Include = "Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL",
-                            HintPath = @"..\packages\Dapper.1.50.2\lib\net451\Dapper.dll"
-                        },
+                                    {
+                                        Include = "Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL",
+                                        HintPath = @"..\packages\Dapper.1.50.2\lib\net451\Dapper.dll"
+                                    },
                         Version = "1.50.2.0"
                     }
                 },
@@ -50,9 +50,10 @@ namespace CodeGeneration
                     {
                         Reference = new ProjectItemGroupReference
                                     {
-                                        Include = "System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL",
+                                        Include = "System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL",
+                                        HintPath = @"..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll"
                                     },
-                        Version = "4.0.0.1"
+                        Version = "5.2.3"
                     }
                 },
                 {
@@ -142,7 +143,7 @@ namespace CodeGeneration
                     {
                         Reference = new ProjectItemGroupReference
                                     {
-                                        Include = "System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL",
+                                        Include = "System.Net.Http.Formatting",
                                         HintPath = @"..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll",
                                     },
                         Version = "5.2.3.0"
@@ -196,6 +197,77 @@ namespace CodeGeneration
                     new NuGetInfo
                     {
                         Version = "5.2.3"
+                    }
+                },
+                {
+                    "Microsoft.AspNet.WebPages",
+                    new NuGetInfo
+                    {
+                        Version = "3.2.3"
+                    }
+                },
+                {
+                    "System.Web.Razor",
+                    new NuGetInfo
+                    {
+                        Reference = new ProjectItemGroupReference
+                                    {
+                                        Include = "System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL",
+                                        HintPath = @"..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll",
+                                        Private = "True"
+                                    },
+                        Version = "3.2.3"
+                    }
+                },
+                {
+                    "System.Web.WebPages",
+                    new NuGetInfo
+                    {
+                        Reference = new ProjectItemGroupReference
+                                    {
+                                        Include = "System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL",
+                                        HintPath = @"..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll",
+                                        Private = "True"
+                                    },
+                        Version = "3.2.3"
+                    }
+                },
+                {
+                    "System.Web.WebPages.Deployment",
+                    new NuGetInfo
+                    {
+                        Reference = new ProjectItemGroupReference
+                                    {
+                                        Include = "System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL",
+                                        HintPath = @"..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll"
+                                    },
+                        Version = "3.2.3"
+                    }
+                },
+                {
+                    "System.Web.WebPages.Razor",
+                    new NuGetInfo
+                    {
+                        Reference = new ProjectItemGroupReference
+                                    {
+                                        Include = "System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL",
+                                        HintPath = @"..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll"
+                                    },
+                        Version = "3.2.3"
+                    }
+                },
+                {
+                    "Microsoft.AspNet.Mvc",
+                    new NuGetInfo
+                    {
+                        Version = "5.2.3",
+                    }
+                },
+                {
+                    "Microsoft.AspNet.Razor",
+                    new NuGetInfo
+                    {
+                        Version = "3.2.3",
                     }
                 }
             };
