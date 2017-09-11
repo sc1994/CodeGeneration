@@ -6,11 +6,11 @@ namespace Template
 {
     public class BaseBll<TModel, TEmun, TKeyType> where TModel : BaseModel
     {
-        protected IBaseDal<TModel, TEmun, TKeyType> Dal { get; set; }
+        private readonly IBaseDal<TModel, TEmun, TKeyType> _dal;
 
         public BaseBll(IBaseDal<TModel, TEmun, TKeyType> dal)
         {
-            Dal = dal;
+            _dal = dal;
         }
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace Template
         /// <returns></returns>
         public bool Exists(TKeyType primaryKey)
         {
-            return Dal.Exists(primaryKey);
+            return _dal.Exists(primaryKey);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Template
         /// <returns></returns>
         public bool ExistsByWhere(string where)
         {
-            return Dal.ExistsByWhere(where);
+            return _dal.ExistsByWhere(where);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Template
         /// <returns></returns>
         public TKeyType Add(TModel model)
         {
-            return Dal.Add(model);
+            return _dal.Add(model);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Template
         /// <returns></returns>
         public bool Update(TModel model)
         {
-            return Dal.Update(model);
+            return _dal.Update(model);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Template
         /// <returns></returns>
         public bool Update(Dictionary<TEmun, object> updates, string where)
         {
-            return Dal.Update(updates, where);
+            return _dal.Update(updates, where);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Template
         /// <returns></returns>
         public bool Delete(TKeyType primaryKey)
         {
-            return Dal.Delete(primaryKey);
+            return _dal.Delete(primaryKey);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Template
         /// <returns></returns>
         public int DeleteByWhere(string where)
         {
-            return Dal.DeleteByWhere(where);
+            return _dal.DeleteByWhere(where);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Template
         /// <returns></returns>
         public TModel GetModel(TKeyType primaryKey)
         {
-            return Dal.GetModel(primaryKey);
+            return _dal.GetModel(primaryKey);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Template
         /// <returns></returns>
         public List<TModel> GetModelList(string where)
         {
-            return Dal.GetModelList(where);
+            return _dal.GetModelList(where);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Template
         /// <returns></returns>
         public List<TModel> GetModelPage(TEmun order, string where, int pageIndex, int pageSize, out int total)
         {
-            return Dal.GetModelPage(order, where, pageIndex, pageSize, out total);
+            return _dal.GetModelPage(order, where, pageIndex, pageSize, out total);
         }
     }
 }

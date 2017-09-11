@@ -15,10 +15,10 @@ namespace Template
         /// <summary>
         /// 执行带参查询
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">返回列表类型</typeparam>
+        /// <param name="sql">脚本</param>
+        /// <param name="param">参数</param>
+        /// <returns>列表</returns>
         public static IEnumerable<T> Query<T>(string sql, object param = null)
         {
             if (string.IsNullOrEmpty(sql))
@@ -29,9 +29,7 @@ namespace Template
             {
                 try
                 {
-                    var tList = con.Query<T>(sql, param);
-                    con.Close();
-                    return tList;
+                    return con.Query<T>(sql, param);
                 }
                 catch (Exception ex)
                 {
@@ -41,58 +39,74 @@ namespace Template
         }
 
         /// <summary>
-        /// 执行受影响行数 的 sql
+        /// 执行 sql 返回受影响行数
         /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <param name="transaction"></param>
-        /// <returns></returns>
-        public static int Excute(string sql, object param = null, IDbTransaction transaction = null)
+        /// <param name="sql">脚本</param>
+        /// <param name="param">参数</param>
+        /// <param name="connection">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
+        /// <returns>受影响行数</returns>
+        public static int Excute(string sql, object param = null, IDbConnection connection = null, IDbTransaction transaction = null)
         {
             if (string.IsNullOrEmpty(sql))
             {
                 throw new ArgumentNullException(nameof(sql));
             }
-            using (var con = DataSource.GetConnection())
+            var isClose = connection == null;
+            var con = connection ?? DataSource.GetConnection();
+            try
             {
-                int line;
-                try
-                {
-                    line = con.Execute(sql, param, transaction);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message + "-------------- SQL:" + sql);
-                }
-                return line;
+                return con.Execute(sql, param, transaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "-------------- SQL:" + sql);
+            }
+            finally
+            {
+                if (isClose)
+                    con.Close();
             }
         }
 
         /// <summary>
-        /// 
+        /// 返回单个值/对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
+        /// <typeparam name="T">返回值类型</typeparam>
+        /// <param name="sql">脚本</param>
+        /// <param name="param">参数</param>
+        /// <param name="connection">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        public static T ExecuteScalar<T>(string sql, object param = null)
+        public static T ExecuteScalar<T>(string sql, object param = null, IDbConnection connection = null, IDbTransaction transaction = null)
         {
             if (string.IsNullOrEmpty(sql))
             {
                 throw new ArgumentNullException(nameof(sql));
             }
-            using (var con = DataSource.GetConnection())
+            var isClose = connection == null;
+            var con = connection ?? DataSource.GetConnection();
+            try
             {
-                return con.ExecuteScalar<T>(sql, param);
+                return con.ExecuteScalar<T>(sql, param, transaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "-------------- SQL:" + sql);
+            }
+            finally
+            {
+                if (isClose)
+                    con.Close();
             }
         }
 
         /// <summary>
         /// 执行带参数的存储过程
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="strProcName"></param>
-        /// <param name="param"></param>
+        /// <typeparam name="T">返回值</typeparam>
+        /// <param name="strProcName">存储过程名称</param>
+        /// <param name="param">参数</param>
         /// <returns></returns>
         public static T ExecuteScalarProc<T>(string strProcName, object param = null)
         {
@@ -103,39 +117,18 @@ namespace Template
         }
 
         /// <summary>
-        /// 执行带参数的存储过程(查询)
+        /// 执行存储过程(查询)
         /// </summary>
-        /// <param name="strProcName"></param>
+        /// <typeparam name="T">返回列表类型</typeparam>
+        /// <param name="strProcName">存储过程名称</param>
         /// <param name="param"></param>
-        /// <returns></returns>
+        /// <returns>参数</returns>
         public static IEnumerable<T> ExecuteQueryProc<T>(string strProcName, object param = null)
         {
             using (var con = DataSource.GetConnection())
             {
                 var tList = con.Query<T>(strProcName, param, commandType: CommandType.StoredProcedure);
-                con.Close();
                 return tList;
-            }
-        }
-
-        /// <summary>
-        /// 执行带参数的存储过程
-        /// </summary>
-        /// <param name="strProcName"></param>
-        /// <param name="param"></param>
-        /// <returns></returns>
-        public static int ExecuteProc(string strProcName, object param = null)
-        {
-            try
-            {
-                using (var con = DataSource.GetConnection())
-                {
-                    return con.Execute(strProcName, param, commandType: CommandType.StoredProcedure);
-                }
-            }
-            catch
-            {
-                return 0;
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Model;
+using System.Data;
 using System.Collections.Generic;
 
 namespace Template
@@ -13,7 +14,6 @@ namespace Template
         /// <returns></returns>
         bool Exists(TKeyType primaryKey);
 
-
         /// <summary>
         /// 数据是否存在
         /// </summary>
@@ -25,37 +25,47 @@ namespace Template
         /// 向表中添加一条数据
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        TKeyType Add(TModel model);
+        TKeyType Add(TModel model, IDbConnection conn = null, IDbTransaction transaction = null);
 
         /// <summary>
         /// 更新一条数据
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        bool Update(TModel model);
+        bool Update(TModel model, IDbConnection conn = null, IDbTransaction transaction = null);
 
         /// <summary>
         /// 批量更新
         /// </summary>
         /// <param name="updates">需要更新字段的键值对</param>
         /// <param name="where">条件语句</param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        bool Update(Dictionary<TEmun, object> updates, string where);
+        bool Update(Dictionary<TEmun, object> updates, string where, IDbConnection conn = null, IDbTransaction transaction = null);
 
         /// <summary>
         /// 删除一条数据 (表中没有主键时此方法不适用)
         /// </summary>
         /// <param name="primaryKey">主键</param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        bool Delete(TKeyType primaryKey);
+        bool Delete(TKeyType primaryKey, IDbConnection conn = null, IDbTransaction transaction = null);
 
         /// <summary>
         /// 批量删除
         /// </summary>
         /// <param name="where">条件语句</param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        int DeleteByWhere(string where);
+        int DeleteByWhere(string where, IDbConnection conn = null, IDbTransaction transaction = null);
 
         /// <summary>
         /// 获取对象 (表中没有主键时此方法不适用)
