@@ -373,17 +373,19 @@ namespace CodeGeneration
         public static string[] GetTypeAndDefault(TableInfo field, string tableName)
         {
             string type;
-            var def = "";
+            string def;
             field.Type = field.Type.ToLower();
             if (field.Type == "int"
                 || field.Type == "tinyint"
                 || field.Type == "smallint")
             {
                 type = "int";
+                def = $" = ToInt(\"{field.Default.Trim('(').Trim(')')}\")";
             }
             else if (field.Type == "bigint")
             {
                 type = "long";
+                def = $" = ToLong(\"{field.Default.Trim('(').Trim(')')}\")";
             }
             else if (field.Type == "decimal"
                      || field.Type == "smallmoney"
@@ -391,19 +393,20 @@ namespace CodeGeneration
                      || field.Type == "float")
             {
                 type = "decimal";
+                def = $" = ToDecimal(\"{field.Default.Trim('(').Trim(')')}\")";
             }
             else if (field.Type.Contains("char")
                      || field.Type.Contains("text")
                      || field.Type.Contains("image"))
             {
                 type = "string";
-                def = " = string.Empty;";
+                def = $" = \"{field.Default.Trim('(').Trim(')').Trim('\'')}\";";
             }
             else if (field.Type == "datetime"
                      || field.Type == "date")
             {
                 type = "DateTime";
-                var timeDef = field.Default.Replace("(", "").Replace(")", "").Replace("'", "");
+                var timeDef = field.Default.Trim('(').Trim(')').Trim('\'');
                 if (timeDef.ToLower() == "getdate")
                 {
                     timeDef = "DateTime.Now";
