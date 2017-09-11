@@ -380,12 +380,12 @@ namespace CodeGeneration
                 || field.Type == "smallint")
             {
                 type = "int";
-                def = $" = ToInt(\"{field.Default.Trim('(').Trim(')')}\")";
+                def = $" = ToInt(\"{field.Default.Trim('(').Trim(')')}\");";
             }
             else if (field.Type == "bigint")
             {
                 type = "long";
-                def = $" = ToLong(\"{field.Default.Trim('(').Trim(')')}\")";
+                def = $" = ToLong(\"{field.Default.Trim('(').Trim(')')}\");";
             }
             else if (field.Type == "decimal"
                      || field.Type == "smallmoney"
@@ -393,7 +393,7 @@ namespace CodeGeneration
                      || field.Type == "float")
             {
                 type = "decimal";
-                def = $" = ToDecimal(\"{field.Default.Trim('(').Trim(')')}\")";
+                def = $" = ToDecimal(\"{field.Default.Trim('(').Trim(')')}\");";
             }
             else if (field.Type.Contains("char")
                      || field.Type.Contains("text")

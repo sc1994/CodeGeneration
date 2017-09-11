@@ -135,11 +135,12 @@ namespace CodeGeneration
         {
             var code = new StringBuilder();
             code.AppendLine("using Dapper;");
-            code.AppendLine("using System.Collections.Generic;");
             code.AppendLine("using System.Linq;");
+            code.AppendLine("using System.Data;");
             code.AppendLine($"using {InfoModel.Info.IDal.Replace("/", ".")};");
             code.AppendLine($"using {InfoModel.Info.Model.Replace("/", ".")};");
             code.AppendLine($"using {InfoModel.Info.Common.Split('/')[0]};");
+            code.AppendLine("using System.Collections.Generic;");
             code.AppendLine("using System.Text;\r\n");
             code.AppendLine($"namespace {InfoModel.Info.Dal.Replace("/", ".")}");
             code.AppendLine("{");
@@ -181,11 +182,11 @@ namespace CodeGeneration
             if (primaryKey != null)
             {
                 typeAndDefault = Helper.GetTypeAndDefault(primaryKey, tableInfo.Key);
-                code.AppendLine($"        public {typeAndDefault[0]} Add({tableInfo.Key} model)");
+                code.AppendLine($"        public {typeAndDefault[0]} Add({tableInfo.Key} model, IDbConnection conn = null, IDbTransaction transaction = null)");
             }
             else
             {
-                code.AppendLine($"        public object Add({tableInfo.Key} model)");
+                code.AppendLine($"        public object Add({tableInfo.Key} model, IDbConnection conn = null, IDbTransaction transaction = null)");
             }
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
@@ -196,11 +197,11 @@ namespace CodeGeneration
             if (primaryKey != null)
             {
                 code.AppendLine("            strSql.Append(\"SELECT @@IDENTITY\");");
-                code.AppendLine($"            return DbClient.ExecuteScalar<{typeAndDefault[0]}>(strSql.ToString(), model);");
+                code.AppendLine($"            return DbClient.ExecuteScalar<{typeAndDefault[0]}>(strSql.ToString(), model, conn, transaction);");
             }
             else
             {
-                code.AppendLine("            return DbClient.Excute(strSql.ToString(), model);");
+                code.AppendLine("            return DbClient.Excute(strSql.ToString(), model, conn, transaction);");
             }
             code.AppendLine("        }\r\n");
             #endregion
@@ -210,7 +211,7 @@ namespace CodeGeneration
             if (primaryKey != null ||
                 identityKey != null)
             {
-                code.AppendLine($"        public bool Update({tableInfo.Key} model)");
+                code.AppendLine($"        public bool Update({tableInfo.Key} model, IDbConnection conn = null, IDbTransaction transaction = null)");
                 code.AppendLine("        {");
                 code.AppendLine("            var strSql = new StringBuilder();");
                 code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.Info.DBName}.dbo.[{tableInfo.Key}] SET \");");
@@ -219,18 +220,18 @@ namespace CodeGeneration
                 code.AppendLine(primaryKey != null
                                     ? $"            strSql.Append(\" WHERE {primaryKey.FieldName} = @{primaryKey.FieldName}\");"
                                     : $"            strSql.Append(\" WHERE {identityKey.FieldName} = @{identityKey.FieldName}\");");
-                code.AppendLine("            return DbClient.Excute(strSql.ToString(), model) > 0;");
+                code.AppendLine("            return DbClient.Excute(strSql.ToString(), model, conn, transaction) > 0;");
                 code.AppendLine("        }\r\n");
 
             }
             else
             {
-                code.AppendLine($"        public bool Update({tableInfo.Key} model)");
+                code.AppendLine($"        public bool Update({tableInfo.Key} model, IDbConnection conn = null, IDbTransaction transaction = null)");
                 code.AppendLine("        {");
                 code.AppendLine("            return false;");
                 code.AppendLine("        }\r\n");
             }
-            code.AppendLine($"        public bool Update(Dictionary<{tableInfo.Key}Enum, object> updates, string where)");
+            code.AppendLine($"        public bool Update(Dictionary<{tableInfo.Key}Enum, object> updates, string where, IDbConnection conn = null, IDbTransaction transaction = null)");
             code.AppendLine("        {");
             code.AppendLine("            var strSql = new StringBuilder();");
             code.AppendLine($"            strSql.Append(\"UPDATE {InfoModel.Info.DBName}.dbo.[{tableInfo.Key}] SET \");");
@@ -242,7 +243,7 @@ namespace CodeGeneration
             code.AppendLine("            }");
             code.AppendLine("            strSql.Remove(strSql.Length - 1, 1);");
             code.AppendLine("            strSql.Append($\" WHERE 1=1 {where}\");");
-            code.AppendLine("            return DbClient.Excute(strSql.ToString(), para) > 0;");
+            code.AppendLine("            return DbClient.Excute(strSql.ToString(), para, conn, transaction) > 0;");
             code.AppendLine("        }\r\n");
             #endregion
 
@@ -252,22 +253,22 @@ namespace CodeGeneration
             {
                 typeAndDefault = Helper.GetTypeAndDefault(primaryKey, tableInfo.Key);
                 var fileName = primaryKey.FieldName;
-                code.AppendLine($"        public bool Delete({typeAndDefault[0]} primaryKey)");
+                code.AppendLine($"        public bool Delete({typeAndDefault[0]} primaryKey, IDbConnection conn = null, IDbTransaction transaction = null)");
                 code.AppendLine("        {");
                 code.AppendLine($"            var strSql = \"DELETE FROM {tableName} WHERE {fileName} = @primaryKey\";");
-                code.AppendLine("            return DbClient.Excute(strSql, new { primaryKey }) > 0;");
+                code.AppendLine("            return DbClient.Excute(strSql, new { primaryKey }, conn, transaction) > 0;");
                 code.AppendLine("        }\r\n");
             }
             else
             {
-                code.AppendLine("        public bool Delete(object primaryKey)");
+                code.AppendLine("        public bool Delete(object primaryKey, IDbConnection conn = null, IDbTransaction transaction = null)");
                 code.AppendLine("        {");
                 code.AppendLine("            return false;");
                 code.AppendLine("        }\r\n");
             }
 
-            code.AppendLine("        public int DeleteByWhere(string where)");
-            code.AppendLine($"            => DbClient.Excute($\"DELETE FROM {tableName} WHERE 1 = 1 {{where}}\");\r\n");
+            code.AppendLine("        public int DeleteByWhere(string where, IDbConnection conn = null, IDbTransaction transaction = null)");
+            code.AppendLine($"            => DbClient.Excute($\"DELETE FROM {tableName} WHERE 1 = 1 {{where}}\", null, conn, transaction);\r\n");
             #endregion
 
             #region Select
@@ -347,8 +348,12 @@ namespace CodeGeneration
             code.AppendLine("    /// </summary>");
             code.AppendLine($"    public class {tableInfo.Key}Bll : BaseBll<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}>, I{tableInfo.Key}Bll");
             code.AppendLine("    {");
-            code.AppendLine($"        public {tableInfo.Key}Bll() : base(new {tableInfo.Key}Dal()) {{ }}\r\n");
-            code.AppendLine($"        public {tableInfo.Key}Bll(IBaseDal<{tableInfo.Key}, {tableInfo.Key}Enum, {typeAndDefault[0]}> dal) : base(dal) {{ }}");
+            code.AppendLine($"        // ReSharper disable once NotAccessedField.Local");
+            code.AppendLine($"        private readonly {tableInfo.Key}Dal _dal;");
+            code.AppendLine($"        public {tableInfo.Key}Bll({tableInfo.Key}Dal dal) : base(dal)");
+            code.AppendLine("        {");
+            code.AppendLine("            _dal = dal;");
+            code.AppendLine("        }\r\n");
             code.AppendLine("    }");
             code.AppendLine("}");
             return code;
