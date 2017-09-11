@@ -18,7 +18,13 @@
 
 ### 事项
 - 使用之前请先配置Info.json
-- 在使用代码生成器之前需要注意,引用的各种库版本是否有更新,
+- 在被生成代码的项目的web.config(如果你是asp.net项目,亦或其他项目的xx.config)配置
+```
+<connectionStrings>
+    <add name="DATABASE" connectionString="数据库名称"/> <!-- SqlHelper.cs 文件需要此配置 --><!-- 如果您不止一个数据库,那您可能不能使用SqlHelper.cs文件 -->
+    <add name="DBString" connectionString="数据库链接字符串"/> <!-- 整个底层数据访问需要此配置 -->
+</connectionStrings>
+```
 - 代码生成完成之后需要在nuget上还原库,且更新(这边不建议使用F5生成代码然后他去还原库,而是在nuget页面去还原和更新库)
 - 程序可以多表一起生成,也可以指定单表生成
 - 本人不才,此软件可能比较脆弱, 使用出现问题可能需要各位自己解决, (多半是引用不全,引用版本之间的问题, 需要各位耐心的解决, 仔细观察问题出现的地方,
