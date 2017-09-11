@@ -47,7 +47,33 @@ private static void RegisterServices(IKernel kernel)
 - 迁移数据访问基类到common中, 除common/model外,其他层都可以依赖common
 - 使用代码添加package.config 的配置
 - 使用代码添加 .csproj 文件内容
-- 
+
+### 2017年9月11日 更新
+- 三层总为add,update,delete添加事务操作. 示例如下
+```
+var ids = string.Empty; // 记录新增的Id
+using (var con = DataSource.GetConnection())
+{
+    con.Open();
+    // 开始事务
+    var t = con.BeginTransaction(); 
+    for (var i = 0; i < 5; i++)
+    {
+        ids += _csOrder.Add(new CsOrder
+        {
+            RowStatus = 0
+        }, con, t) + ","; // 循环向表中插入无效的数据
+    }
+    if (isSubmit) // 判断条件是否可以提交事务
+    {
+        t.Commit(); // 提交
+    }
+    else
+    {
+        t.Rollback(); // 回滚
+    }
+}
+```
 
 ### TODO
-- 为dal中的数据基本操作添加事务
+- 截至最新的一次功能更新,以及填完之前的坑,可能接下来的事情就是代码易读性的优化了
