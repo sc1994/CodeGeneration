@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace Template
 {
-    public class BaseBll<TModel, TEmun, TKeyType> where TModel : BaseModel
+    public class BaseBll<TModel, TEnum, TKeyType> where TModel : BaseModel
     {
-        private readonly IBaseDal<TModel, TEmun, TKeyType> _dal;
+        private readonly IBaseDal<TModel, TEnum, TKeyType> _dal;
 
-        public BaseBll(IBaseDal<TModel, TEmun, TKeyType> dal)
+        public BaseBll(IBaseDal<TModel, TEnum, TKeyType> dal)
         {
             _dal = dal;
         }
@@ -59,7 +59,7 @@ namespace Template
         /// <param name="updates">需要更新字段的键值对</param>
         /// <param name="where">条件语句</param>
         /// <returns></returns>
-        public bool Update(Dictionary<TEmun, object> updates, string where)
+        public bool Update(Dictionary<TEnum, object> updates, string where)
         {
             return _dal.Update(updates, where);
         }
@@ -113,7 +113,7 @@ namespace Template
         /// <param name="pageSize">每页大小</param>
         /// <param name="total">out 总数</param>
         /// <returns></returns>
-        public List<TModel> GetModelPage(TEmun order, string where, int pageIndex, int pageSize, out int total)
+        public List<TModel> GetModelPage(TEnum order, string where, int pageIndex, int pageSize, out int total)
         {
             return _dal.GetModelPage(order, where, pageIndex, pageSize, out total);
         }

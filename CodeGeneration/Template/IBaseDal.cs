@@ -46,7 +46,7 @@ namespace Template
         /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
         /// <param name="transaction">事务</param>
         /// <returns></returns>
-        bool Update(Dictionary<TEmun, object> updates, string where, IDbConnection conn = null, IDbTransaction transaction = null);
+        bool Update(Dictionary<TEnum, object> updates, string where, IDbConnection conn = null, IDbTransaction transaction = null);
 
         /// <summary>
         /// 删除一条数据 (表中没有主键时此方法不适用)
@@ -89,6 +89,6 @@ namespace Template
         /// <param name="pageSize">每页大小</param>
         /// <param name="total">out 总数</param>
         /// <returns></returns>
-        List<TModel> GetModelPage(TEmun order, string where, int pageIndex, int pageSize, out int total);
+        List<TModel> GetModelPage(TEnum order, string where, int pageIndex, int pageSize, out int total);
     }
 }
