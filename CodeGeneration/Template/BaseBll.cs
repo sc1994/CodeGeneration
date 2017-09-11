@@ -1,5 +1,6 @@
 ﻿using IDAL;
 using Model;
+using System.Data;
 using System.Collections.Generic;
 
 namespace Template
@@ -37,20 +38,24 @@ namespace Template
         /// 向表中添加一条数据
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        public TKeyType Add(TModel model)
+        public TKeyType Add(TModel model, IDbConnection conn = null, IDbTransaction transaction = null)
         {
-            return _dal.Add(model);
+            return _dal.Add(model, conn, transaction);
         }
 
         /// <summary>
         /// 更新一条数据
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        public bool Update(TModel model)
+        public bool Update(TModel model, IDbConnection conn = null, IDbTransaction transaction = null)
         {
-            return _dal.Update(model);
+            return _dal.Update(model, conn, transaction);
         }
 
         /// <summary>
@@ -58,30 +63,36 @@ namespace Template
         /// </summary>
         /// <param name="updates">需要更新字段的键值对</param>
         /// <param name="where">条件语句</param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        public bool Update(Dictionary<TEnum, object> updates, string where)
+        public bool Update(Dictionary<TEnum, object> updates, string where, IDbConnection conn = null, IDbTransaction transaction = null)
         {
-            return _dal.Update(updates, where);
+            return _dal.Update(updates, where, conn, transaction);
         }
 
         /// <summary>
         /// 删除一条数据 (表中没有主键时此方法不适用)
         /// </summary>
         /// <param name="primaryKey">主键</param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        public bool Delete(TKeyType primaryKey)
+        public bool Delete(TKeyType primaryKey, IDbConnection conn = null, IDbTransaction transaction = null)
         {
-            return _dal.Delete(primaryKey);
+            return _dal.Delete(primaryKey, conn, transaction);
         }
 
         /// <summary>
         /// 批量删除
         /// </summary>
         /// <param name="where">条件语句</param>
+        /// <param name="conn">连接池(当您传入此参数,那么请记得释放连接池)</param>
+        /// <param name="transaction">事务</param>
         /// <returns></returns>
-        public int DeleteByWhere(string where)
+        public int DeleteByWhere(string where, IDbConnection conn = null, IDbTransaction transaction = null)
         {
-            return _dal.DeleteByWhere(where);
+            return _dal.DeleteByWhere(where, conn, transaction);
         }
 
         /// <summary>
