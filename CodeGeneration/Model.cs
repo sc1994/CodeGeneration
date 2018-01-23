@@ -29,7 +29,6 @@ namespace CodeGeneration
         // ReSharper disable once InconsistentNaming
         public string IDal { get; set; }
         public string Common { get; set; }
-        public string Infrastructure { get; set; }
         public string Web { get; set; }
         public string Factory { get; set; }
     }

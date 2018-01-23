@@ -382,7 +382,7 @@ namespace CodeGeneration
             var code = new StringBuilder();
             code.AppendLine("//*******************************************");
             code.AppendLine("// 依次绑定了接口和实现之间的关系, ");
-            code.AppendLine("// 据说可以直接引用其DLL去绑定,");
+            code.AppendLine("// 应可以直接引用其DLL去绑定,");
             code.AppendLine("// 但是不才, 先曲线救国一下 ");
             code.AppendLine("//*******************************************");
             code.AppendLine("using Ninject;");
@@ -408,10 +408,10 @@ namespace CodeGeneration
 
         public static StringBuilder GetDiBaseCode()
         {
-            var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/NinjectDependencyResolver.cs";
+            var url = "https://raw.githubusercontent.com/sc1994/CodeGeneration/master/CodeGeneration/Template/InjectionConfig.cs";
             Console.WriteLine("正在获取代码 From " + url);
             Console.WriteLine("这可能需要点时间.....");
-            var code = HttpGet(url).Replace(" Template.Infrastructure", " " + InfoModel.Info.Infrastructure.Replace("/", "."));
+            var code = HttpGet(url);
             return new StringBuilder(code);
         }
 
